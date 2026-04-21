@@ -1,0 +1,26 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.DS_Store
+*.log
+.env.local
+.env.*.local
+
+src-tauri/target/
+src-tauri/gen/schemas/
+src-tauri/WixTools/
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+*.tsbuildinfo
+
+.env
+# Backup volatile files (WAL/SHM do SQLite não devem entrar no snapshot)
+backup/**/*.db-shm
+backup/**/*.db-wal
+backup/**/*.tmp
+
+# Backup volatile files (WAL/SHM do SQLite não devem entrar no snapshot)
