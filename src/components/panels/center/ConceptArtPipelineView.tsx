@@ -231,6 +231,30 @@ export function ConceptArtPipelineView() {
     await loadAll();
   }, [currentProject?.id, loadAll]);
 
+  // Jobs no estado "generated" dentro da visão atual (respeita filtros
+  // de status/tier/search). É o que o botão "Aprovar gerados" vai atingir.
+  const generatedFiltered = useMemo(
+    () => filtered.filter((j) => j.status === "generated"),
+    [filtered]
+  );
+
+  const handleApproveAll = useCallback(async () => {
+    if (!currentProject) return;
+    const ids = generatedFiltered.map((j) => j.id);
+    if (ids.length === 0) return;
+    const ok = window.confirm(
+      `Aprovar ${ids.length} concept art${ids.length === 1 ? "" : "s"} em massa?\n\n` +
+        `Vai marcar status como "approved" nos jobs E nos assets vinculados ` +
+        `(pipeline pula itens aprovados em futuras execuções).`
+    );
+    if (!ok) return;
+    const res = await jobsRepo.approveMany(ids);
+    console.log(
+      `[F0] bulk approve: ${res.jobsUpdated} jobs + ${res.assetsUpdated} assets`
+    );
+    await loadAll();
+  }, [currentProject?.id, generatedFiltered, loadAll]);
+
   // ---------- Ações por job ----------
 
   const toggleJob = (id: string) => {
@@ -301,6 +325,17 @@ export function ConceptArtPipelineView() {
             <Button size="sm" variant="outline" onClick={handleRetryAllFailed}>
               <RotateCw className="h-3 w-3 mr-1" />
               Retry todos falhos
+            </Button>
+          )}
+          {generatedFiltered.length > 0 && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={handleApproveAll}
+              title="Aprova todos os concept arts com status 'gerado' dentro dos filtros atuais"
+            >
+              <Check className="h-3 w-3 mr-1" />
+              Aprovar gerados ({generatedFiltered.length})
             </Button>
           )}
         </div>

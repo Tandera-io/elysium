@@ -324,6 +324,56 @@ export async function approveJob(jobId: string): Promise<void> {
   );
 }
 
+/**
+ * Aprova vários jobs em massa, propagando o status para os generated_assets
+ * vinculados. Não usa transação explícita (tauri-plugin-sql não expõe API
+ * trivial) — as duas queries são idempotentes, então re-execução é segura.
+ * Retorna counts separados por tabela para telemetria da UI.
+ */
+export async function approveMany(
+  jobIds: string[]
+): Promise<{ jobsUpdated: number; assetsUpdated: number }> {
+  if (jobIds.length === 0) return { jobsUpdated: 0, assetsUpdated: 0 };
+
+  const placeholders = jobIds.map(() => "?").join(",");
+
+  // 1. Levanta os asset_ids vinculados ANTES de mudar status do job.
+  const linked = await q<{ asset_id: string | null }>(
+    `SELECT asset_id FROM asset_jobs WHERE id IN (${placeholders})`,
+    jobIds
+  );
+  const assetIds = linked
+    .map((r) => r.asset_id)
+    .filter((x): x is string => typeof x === "string" && x.length > 0);
+
+  // 2. UPDATE em asset_jobs.
+  const d = await db();
+  const jobsResult = (await d.execute(
+    `UPDATE asset_jobs
+     SET status = 'approved', updated_at = datetime('now')
+     WHERE id IN (${placeholders})`,
+    jobIds
+  )) as { rowsAffected?: number };
+
+  // 3. UPDATE em generated_assets (se houver assets vinculados).
+  let assetsUpdated = 0;
+  if (assetIds.length > 0) {
+    const aPlaceholders = assetIds.map(() => "?").join(",");
+    const assetsResult = (await d.execute(
+      `UPDATE generated_assets
+       SET status = 'approved', approved_at = datetime('now')
+       WHERE id IN (${aPlaceholders})`,
+      assetIds
+    )) as { rowsAffected?: number };
+    assetsUpdated = assetsResult?.rowsAffected ?? 0;
+  }
+
+  return {
+    jobsUpdated: jobsResult?.rowsAffected ?? 0,
+    assetsUpdated,
+  };
+}
+
 export async function updatePrompt(
   jobId: string,
   prompt: string,
