@@ -22,6 +22,18 @@ pub fn run() {
             sql: include_str!("../migrations/002_expansion_phases.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "expand generator CHECK to include 'openai' (gpt-image concept art)",
+            sql: include_str!("../migrations/003_openai_generator.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 4,
+            description: "asset_jobs table for F0 concept pipeline v2",
+            sql: include_str!("../migrations/004_asset_jobs.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()

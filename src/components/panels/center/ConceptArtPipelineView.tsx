@@ -1,218 +1,274 @@
-// Pipeline end-to-end de Concept Arts:
-//   idle      → pré-requisitos + botão "Planejar com IA" (ou "Retomar plano")
-//   planning  → stream do Claude compondo o JSON do plano
-//   review    → tabela editável de itens, contador, "Gerar selecionados"
-//   generating→ grid de cards com status por item, barra de progresso global
-//   done      → resumo, CTA para abrir o Grafo Semântico
-//
-// Cada imagem gerada com auto-aprovação dispara ingestAsset no KB e emite o
-// evento global "kb-updated" consumido pelo SemanticGraphView para
-// recarregar em tempo real.
+// F0 Concept Arts — Pipeline v2.
+// Sincroniza plano determinístico derivado do canon.json com a fila asset_jobs,
+// permite revisar/filtrar/editar prompts e dispara geração resiliente via OpenAI.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import {
-  Wand2,
   Sparkles,
   Play,
-  StopCircle,
-  Check,
-  X,
-  Loader2,
+  Square,
   RefreshCw,
-  Image as ImageIcon,
-  Network,
-  ArrowRight,
-  AlertCircle,
-  CheckCircle2,
-  Trash2,
+  Search,
+  AlertTriangle,
+  Check,
+  Clock,
+  X,
+  RotateCw,
+  Wand2,
 } from "lucide-react";
 import { useProjectStore } from "@/stores/projectStore";
-import { useUiStore } from "@/stores/uiStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  checkPlanPreReqs,
-  loadPlan,
-  planConceptArts,
-  savePlan,
-  type ConceptArtPlan,
-  type ConceptArtPlanItem,
-  type ConceptArtSize,
-  type PlanPreReqs,
-} from "@/lib/conceptPlanner";
-import {
-  runConceptBatch,
-  type RunItemState,
-} from "@/lib/conceptRunner";
-import { cn, truncate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { assetsRepo } from "@/lib/db";
+import { loadCanon } from "@/lib/canon";
+import { buildPlanFromCanon } from "@/lib/conceptPlannerV2";
+import * as jobsRepo from "@/lib/assetJobs";
+import { runAssetQueue } from "@/lib/conceptRunnerV2";
+import { TIER_COST_USD } from "@/lib/conceptPrompts";
+import type {
+  AssetJob,
+  AssetJobStatus,
+  AssetJobTier,
+  GeneratedAsset,
+  QueueSnapshot,
+} from "@/types/domain";
+import { invoke } from "@tauri-apps/api/core";
 
-type PipelineStatus =
-  | "idle"
-  | "planning"
-  | "review"
-  | "generating"
-  | "done"
-  | "error";
+type StatusFilter = AssetJobStatus | "all";
 
-const CATEGORY_LABEL: Record<ConceptArtPlanItem["category"], string> = {
-  character: "Personagem",
-  location: "Local",
-  scene: "Cena",
-  item: "Item",
-  ui: "UI / Key Visual",
+const TIERS: AssetJobTier[] = ["high", "medium", "low"];
+const STATUS_ORDER: AssetJobStatus[] = [
+  "pending",
+  "running",
+  "generated",
+  "approved",
+  "failed",
+  "skipped",
+];
+
+const STATUS_LABELS: Record<AssetJobStatus, string> = {
+  pending: "Pendente",
+  running: "Gerando…",
+  generated: "Gerado",
+  approved: "Aprovado",
+  failed: "Falhou",
+  skipped: "Pulado",
 };
-
-const CATEGORY_COLOR: Record<ConceptArtPlanItem["category"], string> = {
-  character: "hsl(var(--primary))",
-  location: "#4cc9f0",
-  scene: "#b5179e",
-  item: "#f4a261",
-  ui: "#90e0ef",
-};
-
-const SIZES: ConceptArtSize[] = [64, 96, 128, 192, 256];
 
 export function ConceptArtPipelineView() {
   const { currentProject } = useProjectStore();
-  const openTab = useUiStore((s) => s.openTab);
-
-  const [status, setStatus] = useState<PipelineStatus>("idle");
-  const [preReqs, setPreReqs] = useState<PlanPreReqs | null>(null);
-  const [plan, setPlan] = useState<ConceptArtPlan | null>(null);
-  const [planningText, setPlanningText] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [runStates, setRunStates] = useState<Map<string, RunItemState>>(
-    new Map()
-  );
-
+  const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [jobs, setJobs] = useState<AssetJob[]>([]);
+  const [assetsById, setAssetsById] = useState<Map<string, GeneratedAsset>>(new Map());
+  const [snap, setSnap] = useState<QueueSnapshot | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [tierFilter, setTierFilter] = useState<Set<AssetJobTier>>(new Set(TIERS));
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [editing, setEditing] = useState<{ id: string; text: string } | null>(null);
+  const [pauseNotice, setPauseNotice] = useState<string | null>(null);
+  const [concurrency, setConcurrency] = useState(4);
   const abortRef = useRef<AbortController | null>(null);
-  const saveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const refreshPreReqs = useCallback(async () => {
+  // ---------- Carregamento ----------
+
+  const loadAll = useCallback(async () => {
     if (!currentProject) return;
+    setLoading(true);
     try {
-      const pr = await checkPlanPreReqs(currentProject.id);
-      setPreReqs(pr);
-    } catch {
-      // ignora
+      const list = await jobsRepo.listByProject(currentProject.id);
+      setJobs(list);
+      const snapshot = await jobsRepo.snapshot(currentProject.id);
+      setSnap(snapshot);
+      const assetIds = list.map((j) => j.asset_id).filter((x): x is string => !!x);
+      if (assetIds.length > 0) {
+        const assets = await assetsRepo.listByProject(currentProject.id);
+        const byId = new Map(assets.map((a) => [a.id, a]));
+        setAssetsById(byId);
+      } else {
+        setAssetsById(new Map());
+      }
+    } finally {
+      setLoading(false);
     }
   }, [currentProject?.id]);
 
   useEffect(() => {
-    refreshPreReqs();
-    if (!currentProject) return;
-    void loadPlan(currentProject.id).then((p) => {
-      if (p) setPlan(p);
-    });
-  }, [currentProject?.id, refreshPreReqs]);
+    loadAll();
+  }, [loadAll]);
 
   useEffect(() => {
-    return () => {
-      if (saveDebounce.current) clearTimeout(saveDebounce.current);
-      abortRef.current?.abort();
-    };
+    const handler = () => loadAll();
+    window.addEventListener("canon-updated", handler);
+    return () => window.removeEventListener("canon-updated", handler);
+  }, [loadAll]);
+
+  // ---------- Sincronização com canon ----------
+
+  const handleSync = useCallback(async () => {
+    if (!currentProject || syncing) return;
+    setSyncing(true);
+    try {
+      const [plan, canon] = await Promise.all([
+        buildPlanFromCanon(currentProject.id),
+        loadCanon(currentProject.id),
+      ]);
+      const canonAssetsBySlug = new Map<string, string>();
+      for (const e of canon.entries) {
+        if (e.conceptAssetIds && e.conceptAssetIds.length > 0) {
+          canonAssetsBySlug.set(e.slug, e.conceptAssetIds[0]);
+        }
+      }
+      const result = await jobsRepo.syncPlan(currentProject.id, plan.items, canonAssetsBySlug);
+      console.log("[F0] sync result", result, "skipped kinds:", plan.skipped);
+      await loadAll();
+    } finally {
+      setSyncing(false);
+    }
+  }, [currentProject?.id, syncing, loadAll]);
+
+  // ---------- Filtragem ----------
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return jobs.filter((j) => {
+      if (statusFilter !== "all" && j.status !== statusFilter) return false;
+      if (!tierFilter.has(j.tier)) return false;
+      if (q) {
+        const hay = `${j.canon_slug} ${j.kind} ${j.category} ${j.prompt}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [jobs, statusFilter, tierFilter, search]);
+
+  const selectedPending = useMemo(
+    () =>
+      filtered.filter(
+        (j) => selected.has(j.id) && (j.status === "pending" || j.status === "failed")
+      ),
+    [filtered, selected]
+  );
+
+  const estCost = useMemo(() => {
+    return selectedPending.reduce((sum, j) => sum + TIER_COST_USD[j.tier], 0);
+  }, [selectedPending]);
+
+  // ---------- Execução ----------
+
+  const handleRun = useCallback(async () => {
+    if (!currentProject || running) return;
+    if (selectedPending.length === 0) return;
+
+    // Marca falhos selecionados como pending pra entrarem na fila
+    for (const j of selectedPending) {
+      if (j.status === "failed") {
+        await jobsRepo.requeue(j.id);
+      }
+    }
+
+    // Pending não-selecionados ficam skipped temporariamente pra runner só pegar os certos.
+    const nonSelectedPending = jobs.filter(
+      (j) => j.status === "pending" && !selected.has(j.id)
+    );
+    for (const j of nonSelectedPending) {
+      await jobsRepo.skipJob(j.id);
+    }
+
+    setRunning(true);
+    setPauseNotice(null);
+    abortRef.current = new AbortController();
+
+    try {
+      await runAssetQueue({
+        projectId: currentProject.id,
+        concurrency,
+        tierFilter: Array.from(tierFilter),
+        signal: abortRef.current.signal,
+        onEvent: (e) => {
+          if (e.kind === "snapshot") setSnap(e.snapshot);
+          if (e.kind === "paused")
+            setPauseNotice(
+              `Pausado (${e.reason}). Retoma às ${new Date(e.resumeAt).toLocaleTimeString()}.`
+            );
+          if (e.kind === "resumed") setPauseNotice(null);
+          if (e.kind === "job-success" || e.kind === "job-failed") void loadAll();
+        },
+      });
+    } finally {
+      for (const j of nonSelectedPending) {
+        await jobsRepo.requeue(j.id);
+      }
+      setRunning(false);
+      abortRef.current = null;
+      await loadAll();
+    }
+  }, [currentProject?.id, running, selectedPending, jobs, selected, concurrency, tierFilter, loadAll]);
+
+  const handleStop = useCallback(() => {
+    abortRef.current?.abort();
+    setRunning(false);
   }, []);
 
-  function schedulePlanSave(next: ConceptArtPlan) {
-    if (saveDebounce.current) clearTimeout(saveDebounce.current);
-    saveDebounce.current = setTimeout(() => {
-      savePlan(next).catch((e) =>
-        console.warn("[pipeline] falha ao persistir plano:", e)
-      );
-    }, 600);
-  }
+  const handleRequeueStale = useCallback(async () => {
+    if (!currentProject) return;
+    const n = await jobsRepo.requeueStale(currentProject.id, 60);
+    console.log(`[F0] requeued ${n} stale jobs`);
+    await loadAll();
+  }, [currentProject?.id, loadAll]);
 
-  function updateItem(id: string, patch: Partial<ConceptArtPlanItem>) {
-    setPlan((cur) => {
-      if (!cur) return cur;
-      const next: ConceptArtPlan = {
-        ...cur,
-        items: cur.items.map((it) =>
-          it.id === id ? { ...it, ...patch } : it
-        ),
-      };
-      schedulePlanSave(next);
+  const handleRetryAllFailed = useCallback(async () => {
+    if (!currentProject) return;
+    const n = await jobsRepo.retryFailed(currentProject.id);
+    console.log(`[F0] retry ${n} failed jobs -> pending`);
+    await loadAll();
+  }, [currentProject?.id, loadAll]);
+
+  // ---------- Ações por job ----------
+
+  const toggleJob = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
-  }
+  };
 
-  async function startPlanning() {
-    if (!currentProject) return;
-    setError(null);
-    setPlanningText("");
-    setStatus("planning");
-    abortRef.current = new AbortController();
-    try {
-      const p = await planConceptArts({
-        projectId: currentProject.id,
-        onText: (delta) => setPlanningText((t) => t + delta),
-        signal: abortRef.current.signal,
-      });
-      setPlan(p);
-      setStatus("review");
-    } catch (e: any) {
-      setError(String(e?.message ?? e));
-      setStatus("error");
-    } finally {
-      abortRef.current = null;
+  const selectAllFiltered = () => {
+    const next = new Set(selected);
+    for (const j of filtered) {
+      if (j.status === "pending" || j.status === "failed") next.add(j.id);
     }
-  }
+    setSelected(next);
+  };
 
-  function cancelPlanning() {
-    abortRef.current?.abort();
-    abortRef.current = null;
-    setStatus(plan ? "review" : "idle");
-  }
+  const clearSelection = () => setSelected(new Set());
 
-  async function startGeneration() {
-    if (!currentProject || !plan) return;
-    const included = plan.items.filter((it) => it.included);
-    if (included.length === 0) return;
-    setError(null);
-    setRunStates(new Map());
-    setStatus("generating");
-    abortRef.current = new AbortController();
-    try {
-      await runConceptBatch({
-        projectId: currentProject.id,
-        items: included,
-        autoApprove: true,
-        concurrency: 2,
-        onItemUpdate: (state) => {
-          setRunStates((prev) => {
-            const next = new Map(prev);
-            next.set(state.plan.id, state);
-            return next;
-          });
-        },
-        signal: abortRef.current.signal,
-      });
-      setStatus("done");
-    } catch (e: any) {
-      setError(String(e?.message ?? e));
-      setStatus("error");
-    } finally {
-      abortRef.current = null;
-    }
-  }
-
-  function cancelGeneration() {
-    abortRef.current?.abort();
-    abortRef.current = null;
-  }
-
-  function discardPlan() {
-    setPlan(null);
-    setRunStates(new Map());
-    setStatus("idle");
-  }
+  const handleSavePrompt = async () => {
+    if (!editing) return;
+    const newPrompt = editing.text.trim();
+    if (!newPrompt) return;
+    const hash = await invoke<string>("compute_prompt_hash", {
+      prompt: newPrompt,
+      generator: "openai",
+      kind: "concept_art",
+    });
+    await jobsRepo.updatePrompt(editing.id, newPrompt, hash);
+    setEditing(null);
+    await loadAll();
+  };
 
   if (!currentProject) {
     return (
-      <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+      <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
         Selecione um projeto.
       </div>
     );
@@ -220,643 +276,340 @@ export function ConceptArtPipelineView() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="panel-header gap-3">
-        <Wand2 className="h-3 w-3" />
-        <span>Pipeline de Concept Arts</span>
-        <StatusPill status={status} />
-        <div className="flex-1" />
-        {plan && (
-          <span className="text-[10px] text-muted-foreground">
-            {plan.items.length} itens no plano
-          </span>
-        )}
-      </div>
-      <div className="flex-1 min-h-0">
-        {status === "idle" && (
-          <IdleView
-            preReqs={preReqs}
-            hasPlan={!!plan}
-            onRefreshPreReqs={refreshPreReqs}
-            onPlan={startPlanning}
-            onResume={() => setStatus("review")}
-            onDiscard={discardPlan}
-          />
-        )}
-        {status === "planning" && (
-          <PlanningView text={planningText} onCancel={cancelPlanning} />
-        )}
-        {status === "review" && plan && (
-          <ReviewView
-            plan={plan}
-            onChange={updateItem}
-            onToggleAll={(included) => {
-              setPlan((cur) => {
-                if (!cur) return cur;
-                const next = {
-                  ...cur,
-                  items: cur.items.map((it) => ({ ...it, included })),
-                };
-                schedulePlanSave(next);
-                return next;
-              });
-            }}
-            onRemove={(id) => {
-              setPlan((cur) => {
-                if (!cur) return cur;
-                const next = {
-                  ...cur,
-                  items: cur.items.filter((it) => it.id !== id),
-                };
-                schedulePlanSave(next);
-                return next;
-              });
-            }}
-            onReplan={startPlanning}
-            onDiscard={discardPlan}
-            onGenerate={startGeneration}
-          />
-        )}
-        {status === "generating" && plan && (
-          <GeneratingView
-            items={plan.items.filter((it) => it.included)}
-            runStates={runStates}
-            onCancel={cancelGeneration}
-          />
-        )}
-        {status === "done" && plan && (
-          <DoneView
-            items={plan.items.filter((it) => it.included)}
-            runStates={runStates}
-            onOpenGraph={() =>
-              openTab({
-                id: "panel:semantic-graph",
-                kind: "semantic-graph",
-                title: "Grafo Semântico",
-              })
-            }
-            onReplan={() => setStatus("idle")}
-          />
-        )}
-        {status === "error" && (
-          <ErrorView
-            message={error ?? "Erro desconhecido"}
-            onReset={() => setStatus(plan ? "review" : "idle")}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------
-// Sub-views
-// ---------------------------------------------------------------
-
-function IdleView({
-  preReqs,
-  hasPlan,
-  onRefreshPreReqs,
-  onPlan,
-  onResume,
-  onDiscard,
-}: {
-  preReqs: PlanPreReqs | null;
-  hasPlan: boolean;
-  onRefreshPreReqs: () => void;
-  onPlan: () => void;
-  onResume: () => void;
-  onDiscard: () => void;
-}) {
-  const ready = preReqs?.ready ?? false;
-  return (
-    <ScrollArea className="h-full">
-      <div className="p-6 max-w-3xl mx-auto space-y-5">
-        <div className="rounded-lg border border-border/60 bg-card/40 p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">
-              Planejar Concept Arts com IA
-            </h3>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            O planejador lê <strong>todos os documentos aprovados</strong> do
-            projeto (Lore, Personagens, Níveis, Direção de Arte, Storyboard) e
-            propõe uma lista estruturada de 8 a 16 concept arts cobrindo
-            personagens principais, locais-chave, cenas narrativas, artefatos
-            icônicos e key visuals. Você revisa, edita e aprova antes de
-            disparar a geração em lote no Pixellab.
-          </p>
-          <PreReqList preReqs={preReqs} onRefresh={onRefreshPreReqs} />
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <Button
-              variant="glow"
-              size="sm"
-              onClick={onPlan}
-              disabled={!ready}
-            >
-              <Wand2 className="h-3 w-3" />
-              {hasPlan
-                ? "Re-planejar com IA"
-                : "Planejar Concept Arts com IA"}
+      <header className="border-b border-border/60 px-4 py-3 space-y-3">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <h1 className="text-sm font-semibold">F0 · Concept Arts</h1>
+          {snap && (
+            <div className="text-[11px] text-muted-foreground ml-2">
+              {snap.total} items · {snap.byStatus.approved} aprovados ·{" "}
+              {snap.byStatus.generated} gerados · {snap.byStatus.pending} pendentes
+              {snap.byStatus.failed > 0 && (
+                <span className="text-destructive"> · {snap.byStatus.failed} falhou</span>
+              )}
+            </div>
+          )}
+          <div className="flex-1" />
+          <Button size="sm" variant="outline" onClick={handleSync} disabled={syncing}>
+            <RefreshCw className={cn("h-3 w-3 mr-1", syncing && "animate-spin")} />
+            Sincronizar com Canon
+          </Button>
+          <Button size="sm" variant="outline" onClick={handleRequeueStale}>
+            Recuperar órfãos
+          </Button>
+          {snap && snap.byStatus.failed > 0 && (
+            <Button size="sm" variant="outline" onClick={handleRetryAllFailed}>
+              <RotateCw className="h-3 w-3 mr-1" />
+              Retry todos falhos
             </Button>
-            {hasPlan && (
-              <>
-                <Button variant="outline" size="sm" onClick={onResume}>
-                  Retomar plano anterior
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onDiscard}
-                  className="text-destructive"
-                >
-                  <Trash2 className="h-3 w-3" />
-                  Descartar plano
-                </Button>
-              </>
-            )}
-          </div>
-          {!ready && preReqs && preReqs.missing.length > 0 && (
-            <p className="text-[11px] text-amber-400">
-              Aprove antes: {preReqs.missing.join(", ")}.
-            </p>
           )}
         </div>
-      </div>
-    </ScrollArea>
-  );
-}
 
-function PreReqList({
-  preReqs,
-  onRefresh,
-}: {
-  preReqs: PlanPreReqs | null;
-  onRefresh: () => void;
-}) {
-  if (!preReqs) {
-    return (
-      <div className="text-[11px] text-muted-foreground">
-        Verificando pré-requisitos…
-      </div>
-    );
-  }
-  const rows: Array<[boolean, string]> = [
-    [preReqs.phase9Approved, "Etapa 9 — Direção de Arte (obrigatório, RN007)"],
-    [preReqs.phase5Approved, "Etapa 5 — Lore (obrigatório)"],
-    [preReqs.phase6Approved, "Etapa 6 — Personagens (obrigatório)"],
-    [preReqs.phase10Approved, "Etapa 10 — Storyboard (recomendado)"],
-  ];
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-2">
-        <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
-          Pré-requisitos
+        {pauseNotice && (
+          <div className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 flex items-center gap-2">
+            <AlertTriangle className="h-3 w-3" /> {pauseNotice}
+          </div>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative w-64">
+            <Search className="h-3 w-3 absolute left-2 top-2.5 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="buscar slug, kind, prompt..."
+              className="pl-7 h-8"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            className="h-8 rounded border border-border/60 bg-background px-2 text-xs"
+          >
+            <option value="all">Todos os status</option>
+            {STATUS_ORDER.map((s) => (
+              <option key={s} value={s}>
+                {STATUS_LABELS[s]} ({snap?.byStatus[s] ?? 0})
+              </option>
+            ))}
+          </select>
+          <div className="flex items-center gap-1">
+            {TIERS.map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  setTierFilter((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(t)) next.delete(t);
+                    else next.add(t);
+                    return next;
+                  });
+                }}
+                className={cn(
+                  "text-[10px] px-2 h-7 rounded border",
+                  tierFilter.has(t)
+                    ? "border-primary/60 bg-primary/15 text-primary"
+                    : "border-border/40 text-muted-foreground"
+                )}
+              >
+                {t.toUpperCase()} ({snap?.byTier[t] ?? 0})
+              </button>
+            ))}
+          </div>
+          <div className="flex-1" />
+          <label className="text-[11px] text-muted-foreground flex items-center gap-1">
+            workers
+            <select
+              value={concurrency}
+              onChange={(e) => setConcurrency(Number(e.target.value))}
+              className="h-7 rounded border border-border/60 bg-background px-1 text-xs"
+              disabled={running}
+            >
+              {[1, 2, 3, 4, 6, 8].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-5 w-5"
-          onClick={onRefresh}
-          title="Recarregar"
-        >
-          <RefreshCw className="h-3 w-3" />
-        </Button>
-      </div>
-      {rows.map(([ok, label]) => (
-        <div key={label} className="flex items-center gap-2 text-xs">
-          {ok ? (
-            <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          ) : (
-            <X className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          )}
-          <span className={ok ? "text-foreground" : "text-muted-foreground"}>
-            {label}
+
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-muted-foreground">
+            {filtered.length} visíveis · {selected.size} selecionados
+            {selectedPending.length > 0 && (
+              <span>
+                {" "}
+                · <b>{selectedPending.length}</b> para gerar ≈{" "}
+                <b>${estCost.toFixed(2)}</b>
+              </span>
+            )}
           </span>
+          <Button size="sm" variant="ghost" onClick={selectAllFiltered}>
+            Selecionar todos filtrados (pending/failed)
+          </Button>
+          <Button size="sm" variant="ghost" onClick={clearSelection}>
+            Limpar seleção
+          </Button>
+          <div className="flex-1" />
+          {!running ? (
+            <Button size="sm" onClick={handleRun} disabled={selectedPending.length === 0}>
+              <Play className="h-3 w-3 mr-1" />
+              Gerar {selectedPending.length} selecionados
+            </Button>
+          ) : (
+            <Button size="sm" variant="destructive" onClick={handleStop}>
+              <Square className="h-3 w-3 mr-1" />
+              Parar
+            </Button>
+          )}
         </div>
-      ))}
+      </header>
+
+      <ScrollArea className="flex-1">
+        <div className="divide-y divide-border/40">
+          {loading && (
+            <div className="p-6 text-center text-xs text-muted-foreground">
+              Carregando…
+            </div>
+          )}
+          {!loading && filtered.length === 0 && (
+            <div className="p-6 text-center text-xs text-muted-foreground">
+              Nenhum job encontrado. Clique em "Sincronizar com Canon" para gerar a fila
+              a partir do canon.json.
+            </div>
+          )}
+          {filtered.map((job) => (
+            <JobRow
+              key={job.id}
+              job={job}
+              asset={job.asset_id ? assetsById.get(job.asset_id) : undefined}
+              selected={selected.has(job.id)}
+              onToggle={() => toggleJob(job.id)}
+              onEdit={() => setEditing({ id: job.id, text: job.prompt })}
+              onSkip={async () => {
+                await jobsRepo.skipJob(job.id);
+                await loadAll();
+              }}
+              onRetry={async () => {
+                await jobsRepo.requeue(job.id);
+                await loadAll();
+              }}
+            />
+          ))}
+        </div>
+      </ScrollArea>
+
+      {editing && (
+        <EditPromptModal
+          text={editing.text}
+          onChange={(t) => setEditing({ ...editing, text: t })}
+          onSave={handleSavePrompt}
+          onCancel={() => setEditing(null)}
+        />
+      )}
     </div>
   );
 }
 
-function PlanningView({
+function JobRow({
+  job,
+  asset,
+  selected,
+  onToggle,
+  onEdit,
+  onSkip,
+  onRetry,
+}: {
+  job: AssetJob;
+  asset?: GeneratedAsset;
+  selected: boolean;
+  onToggle: () => void;
+  onEdit: () => void;
+  onSkip: () => void;
+  onRetry: () => void;
+}) {
+  const canSelect = job.status === "pending" || job.status === "failed";
+  return (
+    <div className={cn("p-2 flex gap-3 hover:bg-accent/10", selected && "bg-primary/5")}>
+      <input
+        type="checkbox"
+        checked={selected}
+        disabled={!canSelect}
+        onChange={onToggle}
+        className="mt-1"
+      />
+      {asset ? (
+        <img
+          src={convertFileSrc(asset.file_path)}
+          alt={job.canon_slug}
+          className="h-14 w-14 object-cover rounded border border-border/40 shrink-0"
+        />
+      ) : (
+        <div className="h-14 w-14 rounded border border-border/30 border-dashed flex items-center justify-center text-muted-foreground shrink-0">
+          <Clock className="h-3 w-3" />
+        </div>
+      )}
+
+      <div className="flex-1 min-w-0 space-y-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <StatusPill status={job.status} />
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {job.canon_slug}
+          </span>
+          <Badge variant="outline" className="text-[9px]">
+            {job.kind}
+          </Badge>
+          <Badge
+            variant={
+              job.tier === "high"
+                ? "default"
+                : job.tier === "medium"
+                  ? "secondary"
+                  : "outline"
+            }
+            className="text-[9px]"
+          >
+            {job.tier.toUpperCase()}
+          </Badge>
+          {job.attempts > 0 && (
+            <span className="text-[10px] text-muted-foreground">#{job.attempts}</span>
+          )}
+        </div>
+        <div className="text-[11px] text-muted-foreground truncate">{job.prompt}</div>
+        {job.last_error && (
+          <div className="text-[10px] text-destructive truncate">
+            <AlertTriangle className="h-2.5 w-2.5 inline mr-1" />
+            {job.last_error}
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1 shrink-0">
+        <Button size="sm" variant="ghost" onClick={onEdit} title="Editar prompt">
+          <Wand2 className="h-3 w-3" />
+        </Button>
+        {job.status === "failed" && (
+          <Button size="sm" variant="ghost" onClick={onRetry} title="Retry">
+            <RotateCw className="h-3 w-3" />
+          </Button>
+        )}
+        {(job.status === "pending" || job.status === "failed") && (
+          <Button size="sm" variant="ghost" onClick={onSkip} title="Pular">
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StatusPill({ status }: { status: AssetJobStatus }) {
+  const base =
+    "text-[9px] px-1.5 py-0.5 rounded font-medium inline-flex items-center gap-1";
+  if (status === "approved")
+    return (
+      <span className={cn(base, "bg-emerald-500/20 text-emerald-300")}>
+        <Check className="h-2.5 w-2.5" /> aprovado
+      </span>
+    );
+  if (status === "generated")
+    return (
+      <span className={cn(base, "bg-sky-500/20 text-sky-300")}>
+        <Check className="h-2.5 w-2.5" /> gerado
+      </span>
+    );
+  if (status === "running")
+    return (
+      <span className={cn(base, "bg-violet-500/20 text-violet-300")}>
+        <RefreshCw className="h-2.5 w-2.5 animate-spin" /> gerando
+      </span>
+    );
+  if (status === "failed")
+    return (
+      <span className={cn(base, "bg-red-500/20 text-red-300")}>
+        <AlertTriangle className="h-2.5 w-2.5" /> falhou
+      </span>
+    );
+  if (status === "skipped")
+    return <span className={cn(base, "bg-muted text-muted-foreground")}>pulado</span>;
+  return (
+    <span className={cn(base, "bg-amber-500/20 text-amber-200")}>
+      <Clock className="h-2.5 w-2.5" /> pendente
+    </span>
+  );
+}
+
+function EditPromptModal({
   text,
+  onChange,
+  onSave,
   onCancel,
 }: {
   text: string;
+  onChange: (t: string) => void;
+  onSave: () => void;
   onCancel: () => void;
 }) {
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex items-center gap-2 p-3 border-b border-border/60">
-        <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-        <span className="text-xs font-medium">
-          Planejando com Claude… analisando documentos aprovados
-        </span>
-        <div className="flex-1" />
-        <Button variant="outline" size="sm" onClick={onCancel}>
-          <StopCircle className="h-3 w-3" />
-          Cancelar
-        </Button>
-      </div>
-      <ScrollArea className="flex-1">
-        <pre className="p-4 text-[10px] font-mono whitespace-pre-wrap text-muted-foreground leading-relaxed">
-          {text || "(aguardando resposta…)"}
-        </pre>
-      </ScrollArea>
-    </div>
-  );
-}
-
-function ReviewView({
-  plan,
-  onChange,
-  onToggleAll,
-  onRemove,
-  onReplan,
-  onDiscard,
-  onGenerate,
-}: {
-  plan: ConceptArtPlan;
-  onChange: (id: string, patch: Partial<ConceptArtPlanItem>) => void;
-  onToggleAll: (included: boolean) => void;
-  onRemove: (id: string) => void;
-  onReplan: () => void;
-  onDiscard: () => void;
-  onGenerate: () => void;
-}) {
-  const includedCount = plan.items.filter((it) => it.included).length;
-  const allIncluded =
-    plan.items.length > 0 && includedCount === plan.items.length;
-
-  return (
-    <div className="h-full flex flex-col">
-      <div className="flex flex-wrap items-center gap-2 p-3 border-b border-border/60">
-        <Badge variant="secondary">
-          {includedCount} de {plan.items.length} incluídos
-        </Badge>
-        <span className="text-[10px] text-muted-foreground">
-          Criado em {new Date(plan.createdAt).toLocaleString()}
-        </span>
-        <div className="flex-1" />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onToggleAll(!allIncluded)}
-        >
-          {allIncluded ? "Desmarcar todos" : "Marcar todos"}
-        </Button>
-        <Button variant="outline" size="sm" onClick={onReplan}>
-          <RefreshCw className="h-3 w-3" />
-          Re-planejar com IA
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-destructive"
-          onClick={onDiscard}
-        >
-          <Trash2 className="h-3 w-3" />
-          Descartar
-        </Button>
-        <Button
-          variant="glow"
-          size="sm"
-          disabled={includedCount === 0}
-          onClick={onGenerate}
-        >
-          <Play className="h-3 w-3" />
-          Gerar {includedCount} selecionado{includedCount === 1 ? "" : "s"}
-        </Button>
-      </div>
-      <ScrollArea className="flex-1">
-        <div className="p-3 space-y-2">
-          {plan.items.map((it) => (
-            <ReviewRow
-              key={it.id}
-              item={it}
-              onChange={(patch) => onChange(it.id, patch)}
-              onRemove={() => onRemove(it.id)}
-            />
-          ))}
-        </div>
-      </ScrollArea>
-    </div>
-  );
-}
-
-function ReviewRow({
-  item,
-  onChange,
-  onRemove,
-}: {
-  item: ConceptArtPlanItem;
-  onChange: (patch: Partial<ConceptArtPlanItem>) => void;
-  onRemove: () => void;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-md border p-3 space-y-2 transition-colors",
-        item.included
-          ? "border-border/60 bg-card/40"
-          : "border-border/40 bg-card/20 opacity-60"
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={item.included}
-          onChange={(e) => onChange({ included: e.target.checked })}
-          className="h-3.5 w-3.5 accent-primary"
+    <div className="fixed inset-0 z-50 bg-background/80 flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl bg-card border border-border/60 rounded-lg p-4 space-y-3">
+        <h3 className="text-sm font-semibold">Editar prompt</h3>
+        <Textarea
+          value={text}
+          onChange={(e) => onChange(e.target.value)}
+          rows={10}
+          className="text-xs font-mono"
         />
-        <input
-          type="text"
-          value={item.name}
-          onChange={(e) => onChange({ name: e.target.value })}
-          className="flex-1 bg-transparent text-sm font-medium outline-none border-b border-transparent focus:border-border/60 pb-0.5"
-        />
-        <Badge
-          variant="outline"
-          style={{
-            borderColor: CATEGORY_COLOR[item.category],
-            color: CATEGORY_COLOR[item.category],
-          }}
-        >
-          {CATEGORY_LABEL[item.category]}
-        </Badge>
-        <Badge variant="secondary" className="text-[9px]">
-          fase {item.sourcePhase}
-        </Badge>
-        <select
-          value={item.size}
-          onChange={(e) =>
-            onChange({ size: Number(e.target.value) as ConceptArtSize })
-          }
-          className="bg-secondary rounded px-2 py-1 text-[11px]"
-        >
-          {SIZES.map((s) => (
-            <option key={s} value={s}>
-              {s}x{s}
-            </option>
-          ))}
-        </select>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6 text-destructive"
-          onClick={onRemove}
-          title="Remover item"
-        >
-          <Trash2 className="h-3 w-3" />
-        </Button>
-      </div>
-      <Textarea
-        rows={2}
-        value={item.prompt}
-        onChange={(e) => onChange({ prompt: e.target.value })}
-        className="text-[11px] font-mono"
-      />
-      {item.rationale && (
-        <p className="text-[10px] text-muted-foreground italic">
-          {item.rationale}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function GeneratingView({
-  items,
-  runStates,
-  onCancel,
-}: {
-  items: ConceptArtPlanItem[];
-  runStates: Map<string, RunItemState>;
-  onCancel: () => void;
-}) {
-  const total = items.length;
-  const done = useMemo(
-    () =>
-      items.filter((it) => {
-        const s = runStates.get(it.id);
-        return s?.status === "success" || s?.status === "error";
-      }).length,
-    [items, runStates]
-  );
-  const success = useMemo(
-    () =>
-      items.filter((it) => runStates.get(it.id)?.status === "success").length,
-    [items, runStates]
-  );
-  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-
-  return (
-    <div className="h-full flex flex-col">
-      <div className="p-3 border-b border-border/60 space-y-2">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-          <span className="text-xs font-medium">
-            Gerando concept arts… {done}/{total} ({success} ok)
-          </span>
-          <div className="flex-1" />
+        <div className="flex justify-end gap-2">
           <Button variant="outline" size="sm" onClick={onCancel}>
-            <StopCircle className="h-3 w-3" />
             Cancelar
           </Button>
+          <Button size="sm" onClick={onSave}>
+            Salvar
+          </Button>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
-      <ScrollArea className="flex-1">
-        <div className="p-3 grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          {items.map((it) => (
-            <GenerateCard
-              key={it.id}
-              item={it}
-              state={runStates.get(it.id)}
-            />
-          ))}
-        </div>
-      </ScrollArea>
-    </div>
-  );
-}
-
-function GenerateCard({
-  item,
-  state,
-}: {
-  item: ConceptArtPlanItem;
-  state: RunItemState | undefined;
-}) {
-  const status: RunItemState["status"] = state?.status ?? "pending";
-  const asset = state?.asset;
-  return (
-    <div className="rounded-lg border border-border/60 bg-card/40 overflow-hidden">
-      <div className="bg-black/40 aspect-square flex items-center justify-center overflow-hidden relative">
-        {asset && status === "success" ? (
-          <img
-            src={convertFileSrc(asset.file_path)}
-            alt={item.name}
-            className="w-full h-full object-contain"
-            style={{ imageRendering: "pixelated" }}
-          />
-        ) : status === "running" ? (
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-[10px]">
-              gerando… tentativa {state?.attempt ?? 1}
-            </span>
-          </div>
-        ) : status === "error" ? (
-          <div className="flex flex-col items-center gap-1 text-destructive p-3 text-center">
-            <AlertCircle className="h-6 w-6" />
-            <span className="text-[10px] leading-tight">
-              {truncate(state?.error ?? "erro", 80)}
-            </span>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-1 text-muted-foreground">
-            <ImageIcon className="h-6 w-6" />
-            <span className="text-[10px]">aguardando…</span>
-          </div>
-        )}
-      </div>
-      <div className="p-2 space-y-1">
-        <div className="flex items-center gap-1">
-          <StatusBadge status={status} />
-          <span className="text-[10px] font-medium truncate">{item.name}</span>
-        </div>
-        <p
-          className="text-[10px] text-muted-foreground leading-tight line-clamp-2"
-          title={item.prompt}
-        >
-          {item.prompt}
-        </p>
       </div>
     </div>
   );
-}
-
-function StatusBadge({ status }: { status: RunItemState["status"] }) {
-  const map: Record<RunItemState["status"], { label: string; variant: any }> = {
-    pending: { label: "aguard.", variant: "outline" },
-    running: { label: "gerando", variant: "secondary" },
-    success: { label: "ok", variant: "success" },
-    error: { label: "erro", variant: "destructive" },
-  };
-  const s = map[status];
-  return (
-    <Badge variant={s.variant} className="text-[9px]">
-      {s.label}
-    </Badge>
-  );
-}
-
-function DoneView({
-  items,
-  runStates,
-  onOpenGraph,
-  onReplan,
-}: {
-  items: ConceptArtPlanItem[];
-  runStates: Map<string, RunItemState>;
-  onOpenGraph: () => void;
-  onReplan: () => void;
-}) {
-  const success = items.filter(
-    (it) => runStates.get(it.id)?.status === "success"
-  ).length;
-  const errors = items.filter(
-    (it) => runStates.get(it.id)?.status === "error"
-  ).length;
-  return (
-    <ScrollArea className="h-full">
-      <div className="p-6 max-w-3xl mx-auto space-y-4">
-        <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-4 space-y-2">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-            <h3 className="text-sm font-semibold text-emerald-300">
-              Pipeline concluído
-            </h3>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {success} concept arts gerados e aprovados automaticamente.
-            {errors > 0 &&
-              ` ${errors} falhou${errors === 1 ? "" : "ram"} após ${3} tentativas.`}{" "}
-            Cada art aprovado foi ingerido no Knowledge Base — o Grafo
-            Semântico já reflete as correlações.
-          </p>
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <Button variant="glow" size="sm" onClick={onOpenGraph}>
-              <Network className="h-3 w-3" />
-              Abrir Grafo Semântico
-              <ArrowRight className="h-3 w-3" />
-            </Button>
-            <Button variant="outline" size="sm" onClick={onReplan}>
-              <Wand2 className="h-3 w-3" />
-              Novo plano
-            </Button>
-          </div>
-        </div>
-        <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          {items.map((it) => (
-            <GenerateCard
-              key={it.id}
-              item={it}
-              state={runStates.get(it.id)}
-            />
-          ))}
-        </div>
-      </div>
-    </ScrollArea>
-  );
-}
-
-function ErrorView({
-  message,
-  onReset,
-}: {
-  message: string;
-  onReset: () => void;
-}) {
-  return (
-    <div className="h-full flex items-center justify-center p-6">
-      <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 max-w-xl space-y-2">
-        <div className="flex items-center gap-2">
-          <AlertCircle className="h-4 w-4 text-destructive" />
-          <h3 className="text-sm font-semibold text-destructive">
-            Erro no pipeline
-          </h3>
-        </div>
-        <p className="text-xs text-muted-foreground font-mono whitespace-pre-wrap">
-          {message}
-        </p>
-        <Button variant="outline" size="sm" onClick={onReset}>
-          Voltar
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function StatusPill({ status }: { status: PipelineStatus }) {
-  const map: Record<
-    PipelineStatus,
-    { label: string; variant: any }
-  > = {
-    idle: { label: "pronto", variant: "outline" },
-    planning: { label: "planejando", variant: "secondary" },
-    review: { label: "revisão", variant: "secondary" },
-    generating: { label: "gerando", variant: "secondary" },
-    done: { label: "concluído", variant: "success" },
-    error: { label: "erro", variant: "destructive" },
-  };
-  const s = map[status];
-  return <Badge variant={s.variant}>{s.label}</Badge>;
 }

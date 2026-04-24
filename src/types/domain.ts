@@ -22,7 +22,7 @@ export type AssetStatus =
   | "approved"
   | "rejected"
   | "archived";
-export type Generator = "pixellab" | "elevenlabs";
+export type Generator = "pixellab" | "elevenlabs" | "openai";
 
 export type AgentType =
   | "discovery"
@@ -118,6 +118,59 @@ export interface GeneratedAsset {
   file_size_bytes: number | null;
   generation_metadata: string;
   iteration_count: number;
+}
+
+// F0 Concept Pipeline v2 ------------------------------------------------
+
+export type AssetJobTier = "high" | "medium" | "low";
+export type AssetJobStatus =
+  | "pending"
+  | "running"
+  | "generated"
+  | "approved"
+  | "failed"
+  | "skipped";
+export type AssetJobCategory =
+  | "character"
+  | "npc"
+  | "boss"
+  | "enemy"
+  | "creature"
+  | "location"
+  | "biome"
+  | "poi"
+  | "faction"
+  | "weapon"
+  | "armor"
+  | "item"
+  | "consumable"
+  | "material";
+
+export interface AssetJob {
+  id: string;
+  project_id: string;
+  canon_slug: string;
+  canon_entry_id: string;
+  kind: string;
+  tier: AssetJobTier;
+  category: AssetJobCategory;
+  prompt: string;
+  prompt_hash: string;
+  size: string;
+  status: AssetJobStatus;
+  attempts: number;
+  last_error: string | null;
+  heartbeat_at: string | null;
+  asset_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QueueSnapshot {
+  total: number;
+  byStatus: Record<AssetJobStatus, number>;
+  byTier: Record<AssetJobTier, number>;
+  currentlyRunning: string[]; // canon_slugs em execução
 }
 
 export interface KbEntry {

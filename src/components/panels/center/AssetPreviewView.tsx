@@ -29,7 +29,9 @@ export function AssetPreviewView() {
   async function refresh() {
     if (!currentProject) return;
     const all = await assetsRepo.listByProject(currentProject.id);
-    const pixellabAssets = all.filter((a) => a.generator === "pixellab");
+    const pixellabAssets = all.filter(
+      (a) => a.generator === "pixellab" || a.generator === "openai"
+    );
     setAssets(pixellabAssets);
     // Checa RN007: precisa da Etapa 9 aprovada para gerar concept arts.
     const docs = await documentsRepo.listByProject(currentProject.id);

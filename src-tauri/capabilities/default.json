@@ -64,7 +64,8 @@
       "allow": [
         { "url": "https://api.pixellab.ai/*" },
         { "url": "https://api.elevenlabs.io/*" },
-        { "url": "https://api.anthropic.com/*" }
+        { "url": "https://api.anthropic.com/*" },
+        { "url": "https://api.openai.com/*" }
       ]
     },
     "sql:default",
