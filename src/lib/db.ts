@@ -380,6 +380,13 @@ export const assetsRepo = {
     );
     return rows[0] ?? null;
   },
+  async findById(id: string): Promise<GeneratedAsset | null> {
+    const rows = await q<GeneratedAsset>(
+      "SELECT * FROM generated_assets WHERE id = ? LIMIT 1",
+      [id]
+    );
+    return rows[0] ?? null;
+  },
   async setStatus(
     id: string,
     status: GeneratedAsset["status"]

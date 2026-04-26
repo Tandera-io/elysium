@@ -217,6 +217,19 @@ const TEMPLATES: Record<
       .join(" "),
     size: "1024x1024",
   }),
+
+  mount: (e) => ({
+    prompt: [
+      `Concept art of ${e.name}, a rideable mount creature.`,
+      trimDesc(e.description, 280),
+      "Side view, standing pose showing full body including saddle/tack details if applicable.",
+      joinTags(e.tags) ? `Traits: ${joinTags(e.tags)}.` : "",
+      STYLE_SUFFIX,
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1024",
+  }),
 };
 
 // ---------- Tier map ----------

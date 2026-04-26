@@ -14,6 +14,7 @@ export type CenterTabKind =
   | "batch-producer"
   | "concept-pipeline"
   | "character-sprites-pipeline"
+  | "sprite-gallery"
   | "tilesets-pipeline"
   | "ui-hud-pipeline"
   | "vfx-items-pipeline"

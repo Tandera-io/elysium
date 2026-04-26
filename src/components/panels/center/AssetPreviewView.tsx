@@ -29,8 +29,12 @@ export function AssetPreviewView() {
   async function refresh() {
     if (!currentProject) return;
     const all = await assetsRepo.listByProject(currentProject.id);
+    // Esta aba é dedicada a Concept Arts. Sprites/tiles têm galerias próprias
+    // (Sprites Gallery, etc.) — incluí-los aqui mistura modalidades distintas.
     const pixellabAssets = all.filter(
-      (a) => a.generator === "pixellab" || a.generator === "openai"
+      (a) =>
+        a.asset_type === "concept_art" &&
+        (a.generator === "pixellab" || a.generator === "openai")
     );
     setAssets(pixellabAssets);
     // Checa RN007: precisa da Etapa 9 aprovada para gerar concept arts.

@@ -9,6 +9,26 @@ mod backup;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
 pub fn run() {
+    // DIAGNÓSTICO: captura panics num arquivo já que o Tauri sobe como GUI
+    // subsystem e stdout/stderr podem sumir. Remover depois de diagnosticar.
+    let log_path = std::env::temp_dir().join("elysium-panic.log");
+    let log_path_clone = log_path.clone();
+    std::panic::set_hook(Box::new(move |info| {
+        let msg = format!(
+            "PANIC: {}\nLocation: {:?}\nBacktrace:\n{}\n\n",
+            info,
+            info.location(),
+            std::backtrace::Backtrace::force_capture()
+        );
+        let _ = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&log_path_clone)
+            .and_then(|mut f| std::io::Write::write_all(&mut f, msg.as_bytes()));
+        eprintln!("{}", msg);
+    }));
+    eprintln!("[elysium] step 1: run() start — log path: {}", log_path.display());
+
     let migrations = vec![
         Migration {
             version: 1,
@@ -34,7 +54,15 @@ pub fn run() {
             sql: include_str!("../migrations/004_asset_jobs.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 5,
+            description: "multi-domain asset_jobs (F1 sprites, F2 tiles, F3-F6, F8.5, F9, F14)",
+            sql: include_str!("../migrations/005_multi_domain_jobs.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
+
+    eprintln!("[elysium] step 2: migrations vec built ({} entries)", migrations.len());
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -47,8 +75,11 @@ pub fn run() {
                 .build(),
         )
         .setup(|app| {
+            eprintln!("[elysium] step 3: setup() ensuring app dirs");
             projects::ensure_app_dirs(app.handle())?;
+            eprintln!("[elysium] step 4: copying aseprite scripts");
             let _ = aseprite::copy_aseprite_scripts(app.handle());
+            eprintln!("[elysium] step 5: setup() done");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -64,6 +95,7 @@ pub fn run() {
             assets::download_asset_to_project,
             assets::compute_prompt_hash,
             assets::save_binary_asset,
+            assets::delete_project_file,
             game_project::game_dir_for,
             game_project::scaffold_godot_csharp,
             game_project::copy_approved_assets_to_game,
@@ -87,4 +119,5 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+    eprintln!("[elysium] step 6: .run() returned normally (app window closed)");
 }

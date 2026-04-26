@@ -20,6 +20,7 @@ import {
 import { createAssetPhase, type BasePlanItem } from "../assetPhase";
 import { CHARACTER_SPRITE_PROMPT } from "@/prompts/character_sprite";
 import type { GeneratedAsset } from "@/types/domain";
+import { assetsRepo, uid } from "../db";
 
 export interface AnimationSpec {
   action: SkeletonAction;
@@ -99,6 +100,22 @@ async function runOneCharacter(
           },
         });
         extraAssetIds.push(r.asset.id);
+
+        // Passo 2b: fatia o sheet horizontal em frames individuais via Aseprite.
+        // Sem isso, o F7 packCharacterSheets recebe 1 sheet como 1 frame só → atlas fica "vazio".
+        const sheetMeta = safeJsonParse(r.asset.generation_metadata);
+        if (sheetMeta?.sheet === true && r.frameCount > 1) {
+          const frameIds = await sliceSheetToFrames({
+            projectId,
+            sheetAsset: r.asset,
+            anim,
+            slug,
+            characterName: item.name,
+            characterRole: item.role,
+            size: item.size,
+          });
+          extraAssetIds.push(...frameIds);
+        }
       } catch (e) {
         console.warn(
           `[characterSprites] animate falhou p/ ${item.name}/${anim.action}:`,
@@ -151,6 +168,121 @@ function deriveRelativePath(
   const idxUnix = filePath.lastIndexOf(markerUnix);
   if (idxUnix >= 0) return filePath.slice(idxUnix + markerUnix.length);
   return null;
+}
+
+function safeJsonParse(raw: string | undefined | null): Record<string, unknown> | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+interface SliceSheetOpts {
+  projectId: string;
+  sheetAsset: GeneratedAsset;
+  anim: AnimationSpec;
+  slug: string;
+  characterName: string;
+  characterRole: string;
+  size: number;
+}
+
+/**
+ * Fatia um sprite sheet horizontal (PNG gerado por /animate-with-skeleton) em
+ * N frames individuais via Aseprite `slice_frames.lua` e registra cada um no
+ * DB como asset independente. Sem isso, o F7 packCharacterSheets recebe o
+ * sheet como 1 único frame e os atlases de personagem ficam vazios.
+ *
+ * Convenção de naming: `{slug}_{action}_{direction}_{NN}.png` em subfolder
+ * `sprite/{slug}_{action}_{direction}_frames/`.
+ */
+async function sliceSheetToFrames(opts: SliceSheetOpts): Promise<string[]> {
+  const { projectId, sheetAsset, anim, slug, characterName, characterRole, size } = opts;
+
+  const projectsDir = await invoke<string>("get_projects_dir");
+  const subDirRel = `assets/sprite/${slug}_${anim.action}_${anim.direction}_frames`;
+  const outDir = `${projectsDir}/${projectId}/${subDirRel}`.replace(/\\/g, "/");
+  const prefix = `${slug}_${anim.action}_${anim.direction}`;
+
+  let result: { success: boolean; stderr: string; stdout: string };
+  try {
+    result = await invoke<typeof result>("aseprite_run_script", {
+      args: {
+        script: "slice_frames",
+        params: [
+          ["input", sheetAsset.file_path],
+          ["out_dir", outDir],
+          ["frames", String(anim.frames)],
+          ["prefix", prefix],
+        ],
+      },
+    });
+  } catch (e) {
+    console.warn(
+      `[characterSprites] slice_frames invocação falhou (${slug}/${anim.action}/${anim.direction}):`,
+      e
+    );
+    return [];
+  }
+
+  if (!result.success) {
+    console.warn(
+      `[characterSprites] slice_frames não retornou sucesso (${slug}/${anim.action}/${anim.direction}):`,
+      result.stderr
+    );
+    return [];
+  }
+
+  const frameIds: string[] = [];
+  for (let i = 1; i <= anim.frames; i++) {
+    const frameName = `${prefix}_${String(i).padStart(2, "0")}.png`;
+    const framePath = `${outDir}/${frameName}`;
+    try {
+      const promptKey = `frame|${slug}|${anim.action}|${anim.direction}|${i}/${anim.frames}|${size}`;
+      const hash = await invoke<string>("compute_prompt_hash", {
+        prompt: promptKey,
+        generator: "pixellab",
+        kind: "sprite",
+      });
+      const frameId = uid();
+      const asset = await assetsRepo.create({
+        id: frameId,
+        project_id: projectId,
+        asset_type: "sprite",
+        file_path: framePath,
+        file_name: frameName,
+        prompt: `${characterName} — ${anim.action}/${anim.direction} frame ${i}/${anim.frames}`,
+        prompt_hash: hash,
+        generator: "pixellab",
+        status: "generated",
+        file_size_bytes: null,
+        generation_metadata: JSON.stringify({
+          kind: "animation-frame",
+          action: anim.action,
+          direction: anim.direction,
+          frame_index: i,
+          total_frames: anim.frames,
+          size,
+          sheet_asset_id: sheetAsset.id,
+          character_name: slug,
+          character_display_name: characterName,
+          character_role: characterRole,
+          frame_role: "animation_frame",
+        }),
+        iteration_count: 1,
+      });
+      frameIds.push(asset.id);
+    } catch (e) {
+      console.warn(
+        `[characterSprites] falha ao registrar frame ${i} (${slug}/${anim.action}/${anim.direction}):`,
+        e
+      );
+    }
+  }
+
+  return frameIds;
 }
 
 export const characterSpritePhase = createAssetPhase<CharacterSpriteItem>({

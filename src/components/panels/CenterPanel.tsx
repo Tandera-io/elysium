@@ -15,6 +15,7 @@ import { SettingsExportView } from "./center/SettingsExportView";
 import { BatchProducerView } from "./center/BatchProducerView";
 import { ConceptArtPipelineView } from "./center/ConceptArtPipelineView";
 import { CharacterSpritePipelineView } from "./center/CharacterSpritePipelineView";
+import { SpriteGalleryView } from "./center/SpriteGalleryView";
 import { TilesetPipelineView } from "./center/TilesetPipelineView";
 import { UiHudPipelineView } from "./center/UiHudPipelineView";
 import { VfxItemsPipelineView } from "./center/VfxItemsPipelineView";
@@ -109,6 +110,8 @@ function TabRenderer({ tabId }: { tabId: string }) {
       return <ConceptArtPipelineView />;
     case "character-sprites-pipeline":
       return <CharacterSpritePipelineView />;
+    case "sprite-gallery":
+      return <SpriteGalleryView />;
     case "tilesets-pipeline":
       return <TilesetPipelineView />;
     case "ui-hud-pipeline":

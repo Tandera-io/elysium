@@ -120,7 +120,7 @@ export interface GeneratedAsset {
   iteration_count: number;
 }
 
-// F0 Concept Pipeline v2 ------------------------------------------------
+// F0 Concept Pipeline v2 + multi-domain (F1 sprites, F2 tiles, ...) --------
 
 export type AssetJobTier = "high" | "medium" | "low";
 export type AssetJobStatus =
@@ -144,11 +144,25 @@ export type AssetJobCategory =
   | "armor"
   | "item"
   | "consumable"
-  | "material";
+  | "material"
+  | "mount";
+export type AssetJobDomain =
+  | "concept_art"
+  | "character_sprite"
+  | "tileset"
+  | "ui_icon"
+  | "vfx_item"
+  | "audio_sfx"
+  | "audio_music"
+  | "scene_build"
+  | "code_gen"
+  | "smoke_test"
+  | "assembly_link";
 
 export interface AssetJob {
   id: string;
   project_id: string;
+  domain: AssetJobDomain;
   canon_slug: string;
   canon_entry_id: string;
   kind: string;

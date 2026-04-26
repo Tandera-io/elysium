@@ -6,11 +6,25 @@ import Database from "@tauri-apps/plugin-sql";
 import { getDb, uid } from "./db";
 import type {
   AssetJob,
+  AssetJobDomain,
   AssetJobStatus,
   AssetJobTier,
   QueueSnapshot,
 } from "@/types/domain";
 import type { PlanItemV2 } from "./conceptPlannerV2";
+
+// ---------- Shape mínima que syncPlan aceita (domain-agnóstico) ----------
+
+export interface GenericPlanItem {
+  canonSlug: string;
+  canonEntryId: string;
+  kind: string;
+  tier: AssetJobTier;
+  category: string;
+  prompt: string;
+  promptHash: string;
+  size: string;
+}
 
 async function db(): Promise<Database> {
   return getDb();
@@ -36,16 +50,20 @@ export interface SyncResult {
 }
 
 /**
- * Upsert idempotente de jobs a partir de PlanItemV2.
+ * Upsert idempotente de jobs a partir de itens de plano (genérico por domain).
  * Mantém jobs já existentes (preserva status/attempts); só atualiza campos
  * derivados do plano (prompt, size, tier, category) se mudarem.
+ *
+ * `domain` identifica o pipeline (concept_art, character_sprite, tileset, …).
+ * Omitir = 'concept_art' (compat).
  */
 export async function syncPlan(
   projectId: string,
-  items: PlanItemV2[],
-  canonAssetsBySlug: Map<string, string> // slug -> assetId já aprovado no canon
+  items: (PlanItemV2 | GenericPlanItem)[],
+  canonAssetsBySlug: Map<string, string>,
+  domain: AssetJobDomain = "concept_art"
 ): Promise<SyncResult> {
-  const existing = await listByProject(projectId);
+  const existing = await listByProject(projectId, { domain: [domain] });
   const bySlug = new Map(existing.map((j) => [j.canon_slug, j]));
   let inserted = 0;
   let updated = 0;
@@ -57,16 +75,16 @@ export async function syncPlan(
 
     if (!prev) {
       const id = uid();
-      // Se canon já tem conceptAssetId, o job nasce aprovado.
       const status: AssetJobStatus = existingAssetId ? "approved" : "pending";
       await exec(
         `INSERT INTO asset_jobs
-          (id, project_id, canon_slug, canon_entry_id, kind, tier, category,
+          (id, project_id, domain, canon_slug, canon_entry_id, kind, tier, category,
            prompt, prompt_hash, size, status, asset_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           id,
           projectId,
+          domain,
           item.canonSlug,
           item.canonEntryId,
           item.kind,
@@ -84,8 +102,6 @@ export async function syncPlan(
       continue;
     }
 
-    // Atualiza metadados do plano se prompt/size/tier mudaram, mas só se status
-    // permite re-execução (não mexe em approved/generated).
     const needsUpdate =
       prev.prompt !== item.prompt ||
       prev.tier !== item.tier ||
@@ -102,7 +118,6 @@ export async function syncPlan(
       updated++;
     }
 
-    // Herda asset_id do canon se ainda não tem
     if (!prev.asset_id && existingAssetId && prev.status !== "approved") {
       await exec(
         `UPDATE asset_jobs
@@ -122,6 +137,7 @@ export async function syncPlan(
 export async function listByProject(
   projectId: string,
   filters?: {
+    domain?: AssetJobDomain[];
     status?: AssetJobStatus[];
     tier?: AssetJobTier[];
     search?: string;
@@ -130,6 +146,10 @@ export async function listByProject(
   const where: string[] = ["project_id = ?"];
   const params: unknown[] = [projectId];
 
+  if (filters?.domain?.length) {
+    where.push(`domain IN (${filters.domain.map(() => "?").join(",")})`);
+    params.push(...filters.domain);
+  }
   if (filters?.status?.length) {
     where.push(`status IN (${filters.status.map(() => "?").join(",")})`);
     params.push(...filters.status);
@@ -160,16 +180,20 @@ export async function listByProject(
   );
 }
 
-export async function snapshot(projectId: string): Promise<QueueSnapshot> {
+export async function snapshot(
+  projectId: string,
+  domain: AssetJobDomain = "concept_art"
+): Promise<QueueSnapshot> {
   const rows = await q<{ status: AssetJobStatus; tier: AssetJobTier; count: number }>(
     `SELECT status, tier, COUNT(*) as count FROM asset_jobs
-     WHERE project_id = ? GROUP BY status, tier`,
-    [projectId]
+     WHERE project_id = ? AND domain = ? GROUP BY status, tier`,
+    [projectId, domain]
   );
 
   const running = await q<{ canon_slug: string }>(
-    `SELECT canon_slug FROM asset_jobs WHERE project_id = ? AND status = 'running'`,
-    [projectId]
+    `SELECT canon_slug FROM asset_jobs
+     WHERE project_id = ? AND domain = ? AND status = 'running'`,
+    [projectId, domain]
   );
 
   const byStatus: QueueSnapshot["byStatus"] = {
@@ -202,30 +226,41 @@ export async function snapshot(projectId: string): Promise<QueueSnapshot> {
 export async function claimNext(
   projectId: string,
   opts?: {
+    domain?: AssetJobDomain;
     tierFilter?: AssetJobTier[];
+    allowedJobIds?: string[];
     workerId?: string;
   }
 ): Promise<AssetJob | null> {
+  const domain = opts?.domain ?? "concept_art";
   const tierWhere =
     opts?.tierFilter?.length
       ? `AND tier IN (${opts.tierFilter.map(() => "?").join(",")})`
       : "";
   const tierParams = opts?.tierFilter ?? [];
 
-  // Pega candidato
+  const allowed = opts?.allowedJobIds;
+  if (allowed !== undefined && allowed.length === 0) {
+    // Chamador passou lista vazia explicitamente = sem candidatos permitidos.
+    return null;
+  }
+  const allowedWhere = allowed?.length
+    ? `AND id IN (${allowed.map(() => "?").join(",")})`
+    : "";
+  const allowedParams = allowed ?? [];
+
   const candidates = await q<AssetJob>(
     `SELECT * FROM asset_jobs
-     WHERE project_id = ? AND status = 'pending' ${tierWhere}
+     WHERE project_id = ? AND domain = ? AND status = 'pending' ${tierWhere} ${allowedWhere}
      ORDER BY
        CASE tier WHEN 'low' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END,
        canon_slug ASC
      LIMIT 1`,
-    [projectId, ...tierParams]
+    [projectId, domain, ...tierParams, ...allowedParams]
   );
   if (candidates.length === 0) return null;
   const pick = candidates[0];
 
-  // Tenta marcar como running (se outro worker levou, retorna 0 rows)
   const d = await db();
   const result = (await d.execute(
     `UPDATE asset_jobs
@@ -236,10 +271,8 @@ export async function claimNext(
   )) as { rowsAffected?: number };
 
   if ((result?.rowsAffected ?? 0) === 0) {
-    // Concorrência: outro worker pegou
     return claimNext(projectId, opts);
   }
-  // Retorna versão atualizada
   const [updated] = await q<AssetJob>(`SELECT * FROM asset_jobs WHERE id = ?`, [pick.id]);
   return updated ?? null;
 }
@@ -285,27 +318,31 @@ export async function requeue(jobId: string, error?: string): Promise<void> {
  */
 export async function requeueStale(
   projectId: string,
-  maxAgeSec = 300
+  maxAgeSec = 300,
+  domain: AssetJobDomain = "concept_art"
 ): Promise<number> {
   const d = await db();
   const result = (await d.execute(
     `UPDATE asset_jobs
      SET status = 'pending', heartbeat_at = NULL, updated_at = datetime('now'),
          last_error = 'recovered from stale heartbeat'
-     WHERE project_id = ? AND status = 'running'
+     WHERE project_id = ? AND domain = ? AND status = 'running'
        AND (heartbeat_at IS NULL OR heartbeat_at < datetime('now', ?))`,
-    [projectId, `-${maxAgeSec} seconds`]
+    [projectId, domain, `-${maxAgeSec} seconds`]
   )) as { rowsAffected?: number };
   return result?.rowsAffected ?? 0;
 }
 
-export async function retryFailed(projectId: string): Promise<number> {
+export async function retryFailed(
+  projectId: string,
+  domain: AssetJobDomain = "concept_art"
+): Promise<number> {
   const d = await db();
   const result = (await d.execute(
     `UPDATE asset_jobs
      SET status = 'pending', last_error = NULL, updated_at = datetime('now')
-     WHERE project_id = ? AND status = 'failed'`,
-    [projectId]
+     WHERE project_id = ? AND domain = ? AND status = 'failed'`,
+    [projectId, domain]
   )) as { rowsAffected?: number };
   return result?.rowsAffected ?? 0;
 }
@@ -394,16 +431,17 @@ export async function getById(jobId: string): Promise<AssetJob | null> {
 
 export async function countPending(
   projectId: string,
-  tierFilter?: AssetJobTier[]
+  tierFilter?: AssetJobTier[],
+  domain: AssetJobDomain = "concept_art"
 ): Promise<number> {
   const tierWhere =
     tierFilter?.length
       ? `AND tier IN (${tierFilter.map(() => "?").join(",")})`
       : "";
-  const params: unknown[] = [projectId];
+  const params: unknown[] = [projectId, domain];
   if (tierFilter) params.push(...tierFilter);
   const rows = await q<{ c: number }>(
-    `SELECT COUNT(*) as c FROM asset_jobs WHERE project_id = ? AND status = 'pending' ${tierWhere}`,
+    `SELECT COUNT(*) as c FROM asset_jobs WHERE project_id = ? AND domain = ? AND status = 'pending' ${tierWhere}`,
     params
   );
   return rows[0]?.c ?? 0;

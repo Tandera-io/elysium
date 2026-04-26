@@ -12,6 +12,7 @@
 
 import { invoke } from "@tauri-apps/api/core";
 import { assetsRepo } from "./db";
+import { loadCanon, findBySlug } from "./canon";
 import type { GeneratedAsset } from "@/types/domain";
 
 interface CacheEntry {
@@ -80,8 +81,40 @@ export async function getStyleRef(
   }
 
   const assets = await assetsRepo.listByProject(projectId);
-  const chosen = pickStyleAsset(assets);
-  if (!chosen) return null;
+  let chosen = pickStyleAsset(assets);
+
+  // Fallback: se DB sem approved mas canon tem conceptAssetIds populados
+  // (ex: DB resetado mas canon.json preservado), resolve direto pelo canon.
+  if (!chosen) {
+    try {
+      const canon = await loadCanon(projectId);
+      const preferKinds = ["character", "npc", "boss"] as const;
+      const candidate =
+        canon.entries.find(
+          (e) =>
+            preferKinds.includes(e.kind as (typeof preferKinds)[number]) &&
+            e.conceptAssetIds &&
+            e.conceptAssetIds.length > 0
+        ) ??
+        canon.entries.find(
+          (e) => e.conceptAssetIds && e.conceptAssetIds.length > 0
+        );
+      if (candidate?.conceptAssetIds?.[0]) {
+        const viaCanon = await assetsRepo.findById(candidate.conceptAssetIds[0]);
+        if (viaCanon) chosen = viaCanon;
+      }
+    } catch (e) {
+      console.warn(`[styleRef] canon fallback falhou:`, e);
+    }
+  }
+
+  if (!chosen) {
+    console.warn(
+      `[styleRef] nenhum concept approved encontrado para ${projectId} — ` +
+        `sprites/tiles serão gerados SEM lock visual (drift de paleta/estilo esperado)`
+    );
+    return null;
+  }
 
   const rel = toRelative(chosen.file_path, projectId);
   if (!rel) return null;
@@ -106,6 +139,59 @@ export async function getStyleRef(
 export function invalidateStyleRef(projectId?: string): void {
   if (projectId) cache.delete(projectId);
   else cache.clear();
+}
+
+// Cache secundário: concept por canon_slug (TTL curto — muitos slugs).
+const slugCache = new Map<string, { assetId: string; base64: string; loadedAt: number }>();
+const SLUG_TTL_MS = 3 * 60 * 1000;
+
+/**
+ * Retorna base64 do concept art específico daquele canon_slug (para sprite/
+ * tile do personagem/item herdar visual fiel). Fallback para getStyleRef
+ * global se entry não tem conceptAssetIds ou asset não está acessível.
+ */
+export async function getStyleRefForSlug(
+  projectId: string,
+  slug: string
+): Promise<string | null> {
+  const key = `${projectId}:${slug}`;
+  const cached = slugCache.get(key);
+  if (cached && Date.now() - cached.loadedAt < SLUG_TTL_MS) {
+    return cached.base64;
+  }
+
+  try {
+    const entry = await findBySlug(projectId, slug);
+    const conceptId = entry?.conceptAssetIds?.[0];
+    if (conceptId) {
+      const asset = await assetsRepo.findById(conceptId);
+      if (asset) {
+        const rel = toRelative(asset.file_path, projectId);
+        if (rel) {
+          const base64 = await invoke<string>("read_binary_asset", {
+            projectId,
+            relative: rel,
+          });
+          slugCache.set(key, { assetId: asset.id, base64, loadedAt: Date.now() });
+          return base64;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn(`[styleRef] slug-specific falhou (${slug}), caindo pra global:`, e);
+  }
+
+  // Fallback: styleRef global do projeto
+  return getStyleRef(projectId);
+}
+
+export function invalidateSlugStyleRef(projectId?: string, slug?: string): void {
+  if (projectId && slug) slugCache.delete(`${projectId}:${slug}`);
+  else if (projectId) {
+    for (const k of Array.from(slugCache.keys())) {
+      if (k.startsWith(`${projectId}:`)) slugCache.delete(k);
+    }
+  } else slugCache.clear();
 }
 
 /**

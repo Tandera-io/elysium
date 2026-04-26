@@ -221,6 +221,17 @@ export function SidebarPanel() {
               }
             />
             <SideTool
+              icon={<ImageIcon className="h-3 w-3" />}
+              label="Sprites Gallery"
+              onClick={() =>
+                openTab({
+                  id: "panel:sprite-gallery",
+                  kind: "sprite-gallery",
+                  title: "Sprites Gallery",
+                })
+              }
+            />
+            <SideTool
               icon={<Grid3X3 className="h-3 w-3" />}
               label="F2 — Tilesets"
               onClick={() =>

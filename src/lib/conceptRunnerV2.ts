@@ -45,11 +45,11 @@ export async function runAssetQueue(opts: RunnerOptions): Promise<{
 }> {
   const concurrency = Math.min(Math.max(opts.concurrency ?? 4, 1), 8);
 
-  // Recovery: jobs running abandonados → pending
-  await jobs.requeueStale(opts.projectId, 300);
+  // Recovery: jobs running abandonados → pending (domínio concept_art explícito)
+  await jobs.requeueStale(opts.projectId, 300, "concept_art");
 
   const emit = (e: RunnerEvent) => opts.onEvent?.(e);
-  const emitSnapshot = async () => emit({ kind: "snapshot", snapshot: await jobs.snapshot(opts.projectId) });
+  const emitSnapshot = async () => emit({ kind: "snapshot", snapshot: await jobs.snapshot(opts.projectId, "concept_art") });
   await emitSnapshot();
 
   let generated = 0;
@@ -69,7 +69,7 @@ export async function runAssetQueue(opts: RunnerOptions): Promise<{
         continue;
       }
 
-      const job = await jobs.claimNext(opts.projectId, { tierFilter: opts.tierFilter });
+      const job = await jobs.claimNext(opts.projectId, { domain: "concept_art", tierFilter: opts.tierFilter });
       if (!job) {
         // Fila vazia para este worker; sai.
         return;
