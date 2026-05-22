@@ -21,8 +21,9 @@
     "format:check": "prettier --check .",
     "test": "pnpm -r --no-bail test",
     "test:e2e": "echo 'e2e suite added in later phase'",
-    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm audit:economy && pnpm build",
     "asset:generate": "tsx scripts/generate-asset.ts",
+    "audit:economy": "tsx scripts/audit-economy.ts",
     "prepare": "husky"
   },
   "devDependencies": {
