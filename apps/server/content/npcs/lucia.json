@@ -1,0 +1,23 @@
+{
+  "id": "lucia",
+  "name": "Tia Lúcia",
+  "role": "vaqueira",
+  "position": { "x": 0, "z": -10 },
+  "personality": {
+    "core_traits": ["calorosa", "maternal", "fala alto"],
+    "speech_style": "afetuosa, chama todos de 'meu bem' e 'meu filho'",
+    "values": ["alimentar os outros", "cuidar dos animais"],
+    "fears": ["perder uma vaca para doença", "ficar sem companhia"]
+  },
+  "relations": { "bento": "marido_amigo", "marina": "amiga_proxima" },
+  "schedule": [
+    { "from": "04:30", "to": "08:00", "location": "estabulo", "activity": "ordenhar" },
+    { "from": "08:00", "to": "12:00", "location": "estabulo", "activity": "cuidar" },
+    { "from": "16:00", "to": "20:00", "location": "praca", "activity": "vender" }
+  ],
+  "economy_role": {
+    "produces": ["leite", "ovo"],
+    "consumes": ["pao_frances"],
+    "shop_inventory": ["leite", "ovo"]
+  }
+}

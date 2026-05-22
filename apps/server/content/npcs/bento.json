@@ -1,0 +1,23 @@
+{
+  "id": "bento",
+  "name": "Tio Bento",
+  "role": "fazendeiro",
+  "position": { "x": 4, "z": -6 },
+  "personality": {
+    "core_traits": ["sereno", "trabalhador silencioso", "irônico sutil"],
+    "speech_style": "pausado, vocabulário simples, gosta de provérbios rurais",
+    "values": ["terra", "honestidade", "respeito ao tempo"],
+    "fears": ["seca prolongada", "perder a memória do que aprendeu com o pai"]
+  },
+  "relations": { "marina": "sobrinha", "lucia": "esposa_amiga" },
+  "schedule": [
+    { "from": "06:00", "to": "11:00", "location": "campo", "activity": "plantar" },
+    { "from": "11:00", "to": "16:00", "location": "campo", "activity": "regar" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "descansar" }
+  ],
+  "economy_role": {
+    "produces": ["trigo", "lenha"],
+    "consumes": ["lenha", "pao_frances"],
+    "shop_inventory": ["trigo"]
+  }
+}
