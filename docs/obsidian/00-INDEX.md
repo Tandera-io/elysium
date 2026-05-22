@@ -17,8 +17,8 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 | 4    | Loop de fazenda mínimo          | 🟢 concluída    |
 | 5    | Inventário + UI                 | 🟢 concluída    |
 | 6    | Ciclo de tempo                  | 🟢 concluída    |
-| 7    | NPCs + diálogo LLM              | 🟡 em progresso |
-| 8    | Economia circular               | ⚪ pendente     |
+| 7    | NPCs + diálogo LLM              | 🟢 concluída    |
+| 8    | Economia circular               | 🟡 em progresso |
 | 9    | Quest emergente                 | ⚪ pendente     |
 | 10   | Save/Load (IndexedDB)           | ⚪ pendente     |
 | 11   | Conteúdo das 3 zonas (Meshy)    | ⚪ pendente     |

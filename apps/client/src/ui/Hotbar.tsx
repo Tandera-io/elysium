@@ -27,7 +27,9 @@ export function Hotbar() {
   const slots = useInventoryStore((s) => s.slots);
   const day = useFarmStore((s) => s.day);
   const advanceDay = useFarmStore((s) => s.advanceDay);
-  const time = useTimeStore();
+  const hour = useTimeStore((s) => s.hour);
+  const dayInSeason = useTimeStore((s) => s.dayInSeason);
+  const seasonIndex = useTimeStore((s) => s.seasonIndex);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -74,9 +76,10 @@ export function Hotbar() {
         })}
       </div>
       <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 text-slate-200 text-sm font-mono flex flex-col items-end gap-0.5">
-        <div className="text-amber-300">{formatClock(time.hour)}</div>
+        <div className="text-amber-300">{formatClock(hour)}</div>
         <div className="text-xs">
-          {SEASON_LABEL[currentSeason(time)]} · dia {time.dayInSeason}
+          {SEASON_LABEL[currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0])]} ·
+          dia {dayInSeason}
         </div>
         <button
           onClick={advanceDay}

@@ -1,0 +1,27 @@
+{
+  "id": "marina",
+  "name": "Marina",
+  "role": "padeira",
+  "asset": "assets/cache/marina.glb",
+  "position": { "x": -8, "z": -4 },
+  "personality": {
+    "core_traits": ["acolhedora", "fofoqueira leve", "perfeccionista com pão"],
+    "speech_style": "informal, usa expressões caseiras, fala em português brasileiro coloquial",
+    "values": ["família", "tradição", "qualidade do ingrediente"],
+    "fears": ["padaria falir", "ficar sozinha na velhice"]
+  },
+  "relations": {
+    "tio_bento": "tia",
+    "lucas": "vizinho_chato"
+  },
+  "schedule": [
+    { "from": "05:00", "to": "11:00", "location": "padaria", "activity": "assar" },
+    { "from": "11:00", "to": "14:00", "location": "padaria", "activity": "atender" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": ["pao_frances", "bolo_fuba"],
+    "consumes": ["trigo", "leite", "ovo", "lenha"],
+    "shop_inventory": ["pao_frances", "bolo_fuba"]
+  }
+}
