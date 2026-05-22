@@ -23,7 +23,7 @@ const TOOLS: readonly ToolButton[] = [
 export function Hotbar() {
   const current = useToolStore((s) => s.current);
   const setTool = useToolStore((s) => s.set);
-  const items = useInventoryStore((s) => s.items);
+  const slots = useInventoryStore((s) => s.slots);
   const day = useFarmStore((s) => s.day);
   const advanceDay = useFarmStore((s) => s.advanceDay);
 
@@ -45,7 +45,10 @@ export function Hotbar() {
       <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 flex gap-1">
         {TOOLS.map((tool) => {
           const isActive = current === tool.id;
-          const count = tool.countOf !== undefined ? (items[tool.countOf] ?? 0) : null;
+          const count =
+            tool.countOf !== undefined
+              ? slots.reduce((acc, s) => (s && s.id === tool.countOf ? acc + s.qty : acc), 0)
+              : null;
           return (
             <button
               key={tool.id}

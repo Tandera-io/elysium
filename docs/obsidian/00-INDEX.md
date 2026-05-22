@@ -15,8 +15,8 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 | 2    | Player controller               | 🟢 concluída    |
 | 3    | Pipeline Meshy                  | 🟢 concluída    |
 | 4    | Loop de fazenda mínimo          | 🟢 concluída    |
-| 5    | Inventário + UI                 | 🟡 em progresso |
-| 6    | Ciclo de tempo                  | ⚪ pendente     |
+| 5    | Inventário + UI                 | 🟢 concluída    |
+| 6    | Ciclo de tempo                  | 🟡 em progresso |
 | 7    | NPCs + diálogo LLM              | ⚪ pendente     |
 | 8    | Economia circular               | ⚪ pendente     |
 | 9    | Quest emergente                 | ⚪ pendente     |

@@ -3,38 +3,100 @@ import type { CropId } from '../farming/CropDefs';
 
 export type ItemId = CropId | 'seed_wheat' | 'seed_tomato';
 
+export interface SlotItem {
+  id: ItemId;
+  qty: number;
+}
+
+export const INVENTORY_SIZE = 12;
+const STACK_MAX = 99;
+
 export interface InventoryState {
-  items: Partial<Record<ItemId, number>>;
+  slots: (SlotItem | null)[];
 }
 
 export interface InventoryActions {
-  add: (id: ItemId, qty: number) => void;
+  /** Stacks into existing slots of same id; spills into first empty. Returns true if all fit. */
+  add: (id: ItemId, qty: number) => boolean;
+  /** Removes qty across stacks. Returns true if removal succeeded fully. */
   remove: (id: ItemId, qty: number) => boolean;
   count: (id: ItemId) => number;
+  swap: (a: number, b: number) => void;
   reset: () => void;
 }
 
-const INITIAL_BAG: InventoryState = {
-  // Player starts with a few seeds so Phase 4 can run start-to-finish
-  items: { seed_wheat: 6, seed_tomato: 4 },
-};
+function makeInitial(): InventoryState {
+  const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
+  slots[0] = { id: 'seed_wheat', qty: 6 };
+  slots[1] = { id: 'seed_tomato', qty: 4 };
+  return { slots };
+}
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
-  ...INITIAL_BAG,
-  add: (id, qty) =>
-    set((s) => ({
-      items: { ...s.items, [id]: (s.items[id] ?? 0) + qty },
-    })),
+  ...makeInitial(),
+  add: (id, qty) => {
+    if (qty <= 0) return true;
+    const slots = [...get().slots];
+    let remaining = qty;
+    // 1) fill existing stacks first
+    for (let i = 0; i < slots.length && remaining > 0; i++) {
+      const s = slots[i];
+      if (s && s.id === id && s.qty < STACK_MAX) {
+        const room = STACK_MAX - s.qty;
+        const drop = Math.min(remaining, room);
+        slots[i] = { ...s, qty: s.qty + drop };
+        remaining -= drop;
+      }
+    }
+    // 2) place in first empty
+    for (let i = 0; i < slots.length && remaining > 0; i++) {
+      if (slots[i] === null) {
+        const drop = Math.min(remaining, STACK_MAX);
+        slots[i] = { id, qty: drop };
+        remaining -= drop;
+      }
+    }
+    set({ slots });
+    return remaining === 0;
+  },
   remove: (id, qty) => {
-    const have = get().items[id] ?? 0;
+    if (qty <= 0) return true;
+    const have = get().count(id);
     if (have < qty) return false;
-    set((s) => ({
-      items: { ...s.items, [id]: have - qty },
-    }));
+    const slots = [...get().slots];
+    let remaining = qty;
+    for (let i = 0; i < slots.length && remaining > 0; i++) {
+      const s = slots[i];
+      if (s && s.id === id) {
+        const take = Math.min(s.qty, remaining);
+        const left = s.qty - take;
+        slots[i] = left === 0 ? null : { ...s, qty: left };
+        remaining -= take;
+      }
+    }
+    set({ slots });
     return true;
   },
-  count: (id) => get().items[id] ?? 0,
-  reset: () => set(INITIAL_BAG),
+  count: (id) => get().slots.reduce((acc, s) => (s && s.id === id ? acc + s.qty : acc), 0),
+  swap: (a, b) => {
+    if (a === b) return;
+    const slots = [...get().slots];
+    if (a < 0 || b < 0 || a >= slots.length || b >= slots.length) return;
+    const sa = slots[a] ?? null;
+    const sb = slots[b] ?? null;
+    if (sa && sb && sa.id === sb.id && sa.qty < STACK_MAX) {
+      const room = STACK_MAX - sa.qty;
+      const drop = Math.min(sb.qty, room);
+      slots[a] = { ...sa, qty: sa.qty + drop };
+      const remB = sb.qty - drop;
+      slots[b] = remB === 0 ? null : { ...sb, qty: remB };
+    } else {
+      slots[a] = sb;
+      slots[b] = sa;
+    }
+    set({ slots });
+  },
+  reset: () => set(makeInitial()),
 }));
 
 if (import.meta.env.DEV) {
