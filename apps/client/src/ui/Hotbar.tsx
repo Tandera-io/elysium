@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useFarmStore } from '../systems/farming/farmStore';
 import { useInventoryStore, type ItemId } from '../systems/inventory/inventoryStore';
 import { useToolStore, type ToolId } from '../store/toolStore';
+import { SEASON_LABEL, currentSeason, formatClock, useTimeStore } from '../systems/time/timeStore';
 
 interface ToolButton {
   id: ToolId;
@@ -26,6 +27,7 @@ export function Hotbar() {
   const slots = useInventoryStore((s) => s.slots);
   const day = useFarmStore((s) => s.day);
   const advanceDay = useFarmStore((s) => s.advanceDay);
+  const time = useTimeStore();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -71,13 +73,19 @@ export function Hotbar() {
           );
         })}
       </div>
-      <button
-        onClick={advanceDay}
-        className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 text-slate-200 text-sm font-mono hover:bg-slate-800"
-        title="Skip 1 day (Alt+T)"
-      >
-        ⏩ dia {day}
-      </button>
+      <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 text-slate-200 text-sm font-mono flex flex-col items-end gap-0.5">
+        <div className="text-amber-300">{formatClock(time.hour)}</div>
+        <div className="text-xs">
+          {SEASON_LABEL[currentSeason(time)]} · dia {time.dayInSeason}
+        </div>
+        <button
+          onClick={advanceDay}
+          className="text-[10px] text-slate-400 hover:text-slate-200"
+          title="Skip 1 farm day (Alt+T) — does not advance clock"
+        >
+          ⏩ skip farm-day {day}
+        </button>
+      </div>
     </div>
   );
 }

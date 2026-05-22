@@ -4,15 +4,10 @@ import { PlayerController } from '../player/PlayerController';
 import { FarmField } from '../world/FarmField';
 import { Floor } from '../world/Floor';
 import { TileMap } from '../world/TileMap';
+import { Daylight } from './Daylight';
+import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 
-interface SceneProps {
-  /** Optional ambient light intensity (0–1). */
-  ambient?: number;
-  /** Optional sun intensity. */
-  sun?: number;
-}
-
-export function Scene({ ambient = 0.6, sun = 1.1 }: SceneProps) {
+export function Scene() {
   return (
     <Canvas
       shadows
@@ -23,20 +18,8 @@ export function Scene({ ambient = 0.6, sun = 1.1 }: SceneProps) {
       <color attach="background" args={['#7fbfe6']} />
       <fog attach="fog" args={['#7fbfe6', 80, 160]} />
       <IsometricCamera />
-      <ambientLight intensity={ambient} />
-      <directionalLight
-        position={[20, 40, 10]}
-        intensity={sun}
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-left={-30}
-        shadow-camera-right={30}
-        shadow-camera-top={30}
-        shadow-camera-bottom={-30}
-        shadow-camera-near={1}
-        shadow-camera-far={120}
-      />
+      <Daylight />
+      <TimeAdvancer />
       <TileMap />
       <FarmField />
       <Floor />
