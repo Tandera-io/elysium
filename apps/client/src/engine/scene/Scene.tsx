@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { IsometricCamera } from '../camera/IsometricCamera';
 import { PlayerController } from '../player/PlayerController';
+import { FarmField } from '../world/FarmField';
 import { Floor } from '../world/Floor';
 import { TileMap } from '../world/TileMap';
 
@@ -37,6 +38,7 @@ export function Scene({ ambient = 0.6, sun = 1.1 }: SceneProps) {
         shadow-camera-far={120}
       />
       <TileMap />
+      <FarmField />
       <Floor />
       <PlayerController />
     </Canvas>

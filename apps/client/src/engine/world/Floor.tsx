@@ -1,5 +1,8 @@
 import { type ThreeEvent } from '@react-three/fiber';
 import { usePlayerStore } from '../../store/playerStore';
+import { useToolStore } from '../../store/toolStore';
+import { useFarmStore } from '../../systems/farming/farmStore';
+import { useInventoryStore } from '../../systems/inventory/inventoryStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
 
@@ -8,8 +11,9 @@ interface FloorProps {
 }
 
 /**
- * An invisible interaction plane that captures clicks for click-to-move.
- * Visible ground rendering is handled by <TileMap />.
+ * Invisible interaction plane. Routes pointerdown to either:
+ *   - 'move': click-to-move pathfinding
+ *   - 'hoe' | 'water' | 'seed_*' | 'harvest': apply farm action on clicked tile
  */
 export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
   const width = grid.width * grid.tileSize;
@@ -17,12 +21,36 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    const { position, setPath } = usePlayerStore.getState();
-    const start = worldToTile({ x: position.x, z: position.z }, grid);
+    const tool = useToolStore.getState().current;
     const goal = worldToTile({ x: e.point.x, z: e.point.z }, grid);
-    const path = findPath(start, goal, { grid });
-    // Skip the start tile (we're already on it) and head straight for the rest.
-    setPath(path.slice(1));
+
+    if (tool === 'move') {
+      const { position, setPath } = usePlayerStore.getState();
+      const start = worldToTile({ x: position.x, z: position.z }, grid);
+      const path = findPath(start, goal, { grid });
+      setPath(path.slice(1));
+      return;
+    }
+
+    const farm = useFarmStore.getState();
+    const inv = useInventoryStore.getState();
+
+    if (tool === 'hoe') {
+      farm.till(goal);
+    } else if (tool === 'water') {
+      farm.water(goal);
+    } else if (tool === 'seed_wheat') {
+      if (inv.count('seed_wheat') > 0 && farm.plant(goal, 'wheat')) {
+        inv.remove('seed_wheat', 1);
+      }
+    } else if (tool === 'seed_tomato') {
+      if (inv.count('seed_tomato') > 0 && farm.plant(goal, 'tomato')) {
+        inv.remove('seed_tomato', 1);
+      }
+    } else if (tool === 'harvest') {
+      const yieldVal = farm.harvest(goal);
+      if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+    }
   };
 
   return (
