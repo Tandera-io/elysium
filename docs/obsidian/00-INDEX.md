@@ -10,9 +10,9 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 
 | Fase | Tema                            | Status          |
 | ---- | ------------------------------- | --------------- |
-| 0    | Bootstrap & Segurança           | 🟡 em progresso |
-| 1    | Mundo vazio + câmera isométrica | ⚪ pendente     |
-| 2    | Player controller               | ⚪ pendente     |
+| 0    | Bootstrap & Segurança           | 🟢 concluída    |
+| 1    | Mundo vazio + câmera isométrica | 🟢 concluída    |
+| 2    | Player controller               | 🟡 em progresso |
 | 3    | Pipeline Meshy                  | ⚪ pendente     |
 | 4    | Loop de fazenda mínimo          | ⚪ pendente     |
 | 5    | Inventário + UI                 | ⚪ pendente     |

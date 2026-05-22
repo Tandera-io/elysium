@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { HealthResponse } from '@elysium/shared';
+import { Scene } from './engine/scene/Scene';
 
 type FetchState =
   | { kind: 'loading' }
@@ -31,47 +32,26 @@ export function App() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center p-8">
-      <div className="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl p-8 space-y-4">
-        <header>
-          <h1 className="text-3xl font-bold tracking-tight">Elysium</h1>
-          <p className="text-slate-400 text-sm mt-1">Bootstrap — Fase 0</p>
-        </header>
-        <section className="space-y-2 pt-4 border-t border-slate-700">
-          <h2 className="text-sm font-semibold text-slate-300">Server proxy check</h2>
-          {state.kind === 'loading' && <p className="text-slate-500 text-sm">Conectando…</p>}
-          {state.kind === 'error' && (
-            <p className="text-rose-400 text-sm" data-testid="health-error">
-              Erro: {state.message}
-            </p>
-          )}
-          {state.kind === 'ok' && (
-            <ul className="text-sm text-slate-300 space-y-1" data-testid="health-ok">
-              <li>
-                <span className="text-slate-500">status:</span>{' '}
-                <span className="text-emerald-400">{state.data.status}</span>
-              </li>
-              <li>
-                <span className="text-slate-500">service:</span> {state.data.service}
-              </li>
-              <li>
-                <span className="text-slate-500">version:</span> {state.data.version}
-              </li>
-              <li>
-                <span className="text-slate-500">Meshy key:</span>{' '}
-                {state.data.hasMeshyKey ? '✓' : '✗'}
-              </li>
-              <li>
-                <span className="text-slate-500">Anthropic key:</span>{' '}
-                {state.data.hasAnthropicKey ? '✓' : '✗'}
-              </li>
-              <li>
-                <span className="text-slate-500">NPC model:</span> {state.data.npcModel}
-              </li>
-            </ul>
-          )}
-        </section>
-      </div>
+    <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
+      <Scene />
+      <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
+        <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
+        <p className="text-slate-300 text-xs">Fase 1 · câmera isométrica</p>
+      </header>
+      <aside
+        className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
+        data-testid="health-panel"
+      >
+        {state.kind === 'loading' && <span>conectando…</span>}
+        {state.kind === 'error' && <span className="text-rose-400">erro: {state.message}</span>}
+        {state.kind === 'ok' && (
+          <span>
+            <span className="text-emerald-400">●</span> server {state.data.version} ·{' '}
+            <span title="MESHY_API_KEY">M:{state.data.hasMeshyKey ? '✓' : '✗'}</span> ·{' '}
+            <span title="ANTHROPIC_API_KEY">A:{state.data.hasAnthropicKey ? '✓' : '✗'}</span>
+          </span>
+        )}
+      </aside>
     </main>
   );
 }
