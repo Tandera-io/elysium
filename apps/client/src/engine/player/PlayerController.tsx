@@ -1,17 +1,36 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { Suspense, useMemo, useRef } from 'react';
 import type { Group } from 'three';
 import { Vector3 } from 'three';
 import { useInputRef } from '../input/useInput';
 import { usePlayerStore } from '../../store/playerStore';
 import { tileToWorld } from '../world/WorldGrid';
+import { useAsset } from '../loader/GltfLoader';
+import { ASSETS } from '../../content/assets';
 
 const Y_GROUND = 0.5;
 
-/**
- * Reads store state imperatively inside useFrame (no React subscription) and
- * pushes the mesh transform via a ref, keeping re-render count flat.
- */
+/** Fallback capsule used while the GLB streams in (or if it's missing). */
+function PlayerCapsule() {
+  return (
+    <>
+      <mesh castShadow>
+        <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
+        <meshStandardMaterial color="#e9c46a" />
+      </mesh>
+      <mesh position={[0, 0.55, 0]}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+    </>
+  );
+}
+
+function PlayerModel() {
+  const { scene } = useAsset(ASSETS.player);
+  return <primitive object={scene} scale={1} />;
+}
+
 export function PlayerController() {
   const inputRef = useInputRef();
   const groupRef = useRef<Group>(null);
@@ -35,7 +54,6 @@ export function PlayerController() {
     let next = position;
 
     if (wasdActive) {
-      // Rotate input 45° so WASD aligns with iso view
       const cos45 = Math.SQRT1_2;
       const sin45 = Math.SQRT1_2;
       const rdx = dx * cos45 - dz * sin45;
@@ -81,14 +99,9 @@ export function PlayerController() {
 
   return (
     <group ref={groupRef} position={[0, Y_GROUND, 0]}>
-      <mesh castShadow>
-        <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
-        <meshStandardMaterial color="#e9c46a" />
-      </mesh>
-      <mesh position={[0, 0.55, 0]}>
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
+      <Suspense fallback={<PlayerCapsule />}>
+        <PlayerModel />
+      </Suspense>
     </group>
   );
 }

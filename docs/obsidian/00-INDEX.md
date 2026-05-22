@@ -13,8 +13,8 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 | 0    | Bootstrap & Segurança           | 🟢 concluída    |
 | 1    | Mundo vazio + câmera isométrica | 🟢 concluída    |
 | 2    | Player controller               | 🟢 concluída    |
-| 3    | Pipeline Meshy                  | 🟡 em progresso |
-| 4    | Loop de fazenda mínimo          | ⚪ pendente     |
+| 3    | Pipeline Meshy                  | 🟢 concluída    |
+| 4    | Loop de fazenda mínimo          | 🟡 em progresso |
 | 5    | Inventário + UI                 | ⚪ pendente     |
 | 6    | Ciclo de tempo                  | ⚪ pendente     |
 | 7    | NPCs + diálogo LLM              | ⚪ pendente     |
@@ -44,3 +44,9 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 
 - [[ADR-0001-stack]] — stack escolhida (Vite + R3F + Hono + pnpm)
 - [[ADR-0002-env-resolution]] — fallback para `.env` raiz de NGS 2.0
+- [[ADR-0003-meshy-pipeline]] — pipeline Meshy com cache content-addressed
+
+## Pipelines
+
+- [[meshy-asset-pipeline]] — visão geral
+- [[meshy-prompt-templates]] — templates de prompt

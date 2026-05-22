@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import type { HealthResponse } from '@elysium/shared';
 import { env } from './lib/env.js';
+import { buildMeshyRoutes } from './routes/meshy.js';
 
 const app = new Hono();
 
@@ -15,6 +16,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.route('/api/meshy', buildMeshyRoutes());
 
 app.get('/api/health', (c) => {
   const body: HealthResponse = {

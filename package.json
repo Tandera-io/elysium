@@ -22,6 +22,7 @@
     "test": "pnpm -r --no-bail test",
     "test:e2e": "echo 'e2e suite added in later phase'",
     "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "asset:generate": "tsx scripts/generate-asset.ts",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0"
   },
