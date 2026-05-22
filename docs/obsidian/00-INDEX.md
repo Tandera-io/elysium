@@ -19,9 +19,9 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 | 6    | Ciclo de tempo                  | 🟢 concluída    |
 | 7    | NPCs + diálogo LLM              | 🟢 concluída    |
 | 8    | Economia circular               | 🟢 concluída    |
-| 9    | Quest emergente                 | 🟡 em progresso |
-| 10   | Save/Load (IndexedDB)           | ⚪ pendente     |
-| 11   | Conteúdo das 3 zonas (Meshy)    | ⚪ pendente     |
+| 9    | Quest emergente                 | 🟢 concluída    |
+| 10   | Save/Load (IndexedDB)           | 🟢 concluída    |
+| 11   | Conteúdo das 3 zonas (Meshy)    | 🟡 em progresso |
 | 12   | Polish, tutorial, build final   | ⚪ pendente     |
 
 ## Architecture

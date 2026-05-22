@@ -5,6 +5,7 @@ import { Hotbar } from './ui/Hotbar';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
+import { SaveMenu } from './ui/SaveMenu';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 
 type FetchState =
@@ -14,6 +15,7 @@ type FetchState =
 
 export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
+  const [saveOpen, setSaveOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,12 +38,29 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.code === 'KeyS') {
+        e.preventDefault();
+        setSaveOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
       <Scene />
       <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
-        <p className="text-slate-300 text-xs">Fase 9 · quests emergentes</p>
+        <p className="text-slate-300 text-xs">Fase 10 · save/load</p>
+        <button
+          onClick={() => setSaveOpen(true)}
+          className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
+        >
+          📁 menu (Ctrl+S)
+        </button>
       </header>
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
@@ -62,6 +81,7 @@ export function App() {
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
+      <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
     </main>
   );
 }
