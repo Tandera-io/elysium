@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDialogueStore } from '../systems/dialogue/dialogueStore';
 import { useNpcStore } from '../systems/npc/npcStore';
 import { currentSeason, useTimeStore } from '../systems/time/timeStore';
+import { useQuestStore } from '../systems/quest/questStore';
+import { useInventoryStore } from '../systems/inventory/inventoryStore';
+import { proposeQuestFor } from '../systems/quest/generator';
+import { makeSeedMarket } from '../systems/economy/seed';
+import { ITEMS } from '../systems/economy/itemDefs';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -42,9 +47,35 @@ export function DialogueBox() {
     return () => window.removeEventListener('keydown', onKey);
   }, [npcId, close]);
 
+  // Quest state (recomputed cheaply when dialogue opens)
+  const acceptQuest = useQuestStore((s) => s.accept);
+  const turnInQuest = useQuestStore((s) => s.turnIn);
+  const activeQuest = useQuestStore((s) =>
+    npcId ? (Object.values(s.active).find((q) => q.giverNpcId === npcId) ?? null) : null,
+  );
+  const invSlots = useInventoryStore((s) => s.slots);
+
+  // Generate a candidate quest from the static seed market (Phase 11 will
+  // wire this to a live economy state).
+  const offered = useMemo(() => {
+    if (!npcId) return null;
+    const seed = makeSeedMarket();
+    const actor = seed.actors[npcId];
+    if (!actor) return null;
+    return proposeQuestFor(actor, dayInSeason);
+  }, [npcId, dayInSeason]);
+
   if (!npcId) return null;
   const npc = npcs[npcId];
   if (!npc) return null;
+
+  const haveForActive = activeQuest
+    ? invSlots.reduce(
+        (acc, s) => (s?.id === (activeQuest.item as unknown as string) ? acc + s.qty : acc),
+        0,
+      )
+    : 0;
+  const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +129,41 @@ export function DialogueBox() {
         {pending && <p className="text-slate-500 italic">…pensando</p>}
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
+      {activeQuest && (
+        <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
+          <span>
+            Quest ativa: entregar {activeQuest.quantity}× {ITEMS[activeQuest.item].name} (
+            {haveForActive}/{activeQuest.quantity})
+          </span>
+          {canTurnIn && (
+            <button
+              onClick={() => {
+                const removed = useInventoryStore
+                  .getState()
+                  .remove(activeQuest.item as unknown as never, activeQuest.quantity);
+                if (removed) turnInQuest(activeQuest.id);
+              }}
+              className="bg-emerald-500 text-slate-900 px-2 py-1 rounded font-semibold"
+            >
+              Entregar
+            </button>
+          )}
+        </div>
+      )}
+      {!activeQuest && offered && (
+        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
+          <span>
+            {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
+            {offered.rewardCash} +{offered.rewardReputation} rep.
+          </span>
+          <button
+            onClick={() => acceptQuest(offered)}
+            className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold"
+          >
+            Aceitar
+          </button>
+        </div>
+      )}
       <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
         <input
           ref={inputRef}
