@@ -1,0 +1,53 @@
+{
+  "name": "elysium",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Elysium — 3D isometric farming RPG with LLM-driven NPCs",
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"pnpm --filter @elysium/server dev\" \"pnpm --filter @elysium/client dev\"",
+    "dev:server": "pnpm --filter @elysium/server dev",
+    "dev:client": "pnpm --filter @elysium/client dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r --no-bail test",
+    "test:e2e": "echo 'e2e suite added in later phase'",
+    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "@types/node": "^22.10.2",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

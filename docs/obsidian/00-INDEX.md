@@ -1,0 +1,46 @@
+---
+tags: [index]
+---
+
+# Elysium — Documentation Vault
+
+This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to get backlinks and graph view.
+
+## Phase status
+
+| Fase | Tema                            | Status          |
+| ---- | ------------------------------- | --------------- |
+| 0    | Bootstrap & Segurança           | 🟡 em progresso |
+| 1    | Mundo vazio + câmera isométrica | ⚪ pendente     |
+| 2    | Player controller               | ⚪ pendente     |
+| 3    | Pipeline Meshy                  | ⚪ pendente     |
+| 4    | Loop de fazenda mínimo          | ⚪ pendente     |
+| 5    | Inventário + UI                 | ⚪ pendente     |
+| 6    | Ciclo de tempo                  | ⚪ pendente     |
+| 7    | NPCs + diálogo LLM              | ⚪ pendente     |
+| 8    | Economia circular               | ⚪ pendente     |
+| 9    | Quest emergente                 | ⚪ pendente     |
+| 10   | Save/Load (IndexedDB)           | ⚪ pendente     |
+| 11   | Conteúdo das 3 zonas (Meshy)    | ⚪ pendente     |
+| 12   | Polish, tutorial, build final   | ⚪ pendente     |
+
+## Architecture
+
+- [[overview]]
+
+## Systems
+
+(none yet — added from Fase 4 onwards)
+
+## Content
+
+(none yet — added from Fase 7 onwards)
+
+## Pipelines
+
+(none yet — added in Fase 3)
+
+## Decisions (ADRs)
+
+- [[ADR-0001-stack]] — stack escolhida (Vite + R3F + Hono + pnpm)
+- [[ADR-0002-env-resolution]] — fallback para `.env` raiz de NGS 2.0

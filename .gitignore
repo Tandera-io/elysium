@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage/
+playwright-report/
+test-results/
+.turbo/
+*.tsbuildinfo
+
+# Generated assets (Meshy cache)
+apps/client/public/assets/cache/
+
+# Local save data
+apps/client/.elysium-saves/
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Vitest
+.vitest-cache/
