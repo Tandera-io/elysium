@@ -6,7 +6,9 @@ import { InventoryPanel } from './ui/InventoryPanel';
 import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
+import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
+import { useTimeStore } from './systems/time/timeStore';
 
 type FetchState =
   | { kind: 'loading' }
@@ -15,6 +17,7 @@ type FetchState =
 
 export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
+  const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
 
   useEffect(() => {
@@ -39,27 +42,36 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    // Pause the in-game clock while the title screen is up so the first day
+    // doesn't auto-roll while the player is still on the menu.
+    useTimeStore.getState().setPaused(titleOpen);
+  }, [titleOpen]);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.code === 'KeyS') {
         e.preventDefault();
         setSaveOpen(true);
       }
+      if (e.code === 'Escape' && !titleOpen && !saveOpen) {
+        setSaveOpen(true);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [titleOpen, saveOpen]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
       <Scene />
       <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
-        <p className="text-slate-300 text-xs">Fase 10 · save/load</p>
+        <p className="text-slate-300 text-xs">Fase 12 · polish</p>
         <button
           onClick={() => setSaveOpen(true)}
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
         >
-          📁 menu (Ctrl+S)
+          📁 menu (Esc · Ctrl+S)
         </button>
       </header>
       <aside
@@ -82,6 +94,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
+      {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
   );
 }

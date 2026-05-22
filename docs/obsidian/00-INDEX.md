@@ -8,21 +8,21 @@ This is an [Obsidian](https://obsidian.md/) vault. Open the folder as a vault to
 
 ## Phase status
 
-| Fase | Tema                            | Status          |
-| ---- | ------------------------------- | --------------- |
-| 0    | Bootstrap & Segurança           | 🟢 concluída    |
-| 1    | Mundo vazio + câmera isométrica | 🟢 concluída    |
-| 2    | Player controller               | 🟢 concluída    |
-| 3    | Pipeline Meshy                  | 🟢 concluída    |
-| 4    | Loop de fazenda mínimo          | 🟢 concluída    |
-| 5    | Inventário + UI                 | 🟢 concluída    |
-| 6    | Ciclo de tempo                  | 🟢 concluída    |
-| 7    | NPCs + diálogo LLM              | 🟢 concluída    |
-| 8    | Economia circular               | 🟢 concluída    |
-| 9    | Quest emergente                 | 🟢 concluída    |
-| 10   | Save/Load (IndexedDB)           | 🟢 concluída    |
-| 11   | Conteúdo das 3 zonas (Meshy)    | 🟡 em progresso |
-| 12   | Polish, tutorial, build final   | ⚪ pendente     |
+| Fase | Tema                            | Status                                       |
+| ---- | ------------------------------- | -------------------------------------------- |
+| 0    | Bootstrap & Segurança           | 🟢 concluída                                 |
+| 1    | Mundo vazio + câmera isométrica | 🟢 concluída                                 |
+| 2    | Player controller               | 🟢 concluída                                 |
+| 3    | Pipeline Meshy                  | 🟢 concluída                                 |
+| 4    | Loop de fazenda mínimo          | 🟢 concluída                                 |
+| 5    | Inventário + UI                 | 🟢 concluída                                 |
+| 6    | Ciclo de tempo                  | 🟢 concluída                                 |
+| 7    | NPCs + diálogo LLM              | 🟢 concluída                                 |
+| 8    | Economia circular               | 🟢 concluída                                 |
+| 9    | Quest emergente                 | 🟢 concluída                                 |
+| 10   | Save/Load (IndexedDB)           | 🟢 concluída                                 |
+| 11   | Conteúdo das 3 zonas (Meshy)    | 🟢 infra ok · ⏸ lote Meshy aguarda aprovação |
+| 12   | Polish, tutorial, build final   | 🟢 concluída                                 |
 
 ## Architecture
 
