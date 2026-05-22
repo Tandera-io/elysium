@@ -36,7 +36,7 @@ export function App() {
       <Scene />
       <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
-        <p className="text-slate-300 text-xs">Fase 1 · câmera isométrica</p>
+        <p className="text-slate-300 text-xs">Fase 2 · player controller</p>
       </header>
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
