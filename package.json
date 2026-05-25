@@ -23,6 +23,7 @@
     "test:e2e": "echo 'e2e suite added in later phase'",
     "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm audit:economy && pnpm build",
     "asset:generate": "tsx scripts/generate-asset.ts",
+    "sprite:generate": "tsx scripts/generate-sprite.ts",
     "audit:economy": "tsx scripts/audit-economy.ts",
     "prepare": "husky"
   },

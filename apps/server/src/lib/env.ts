@@ -50,6 +50,7 @@ function num(value: string | undefined, fallback: number): number {
 export const env = {
   MESHY_API_KEY: process.env.MESHY_API_KEY ?? '',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ?? '',
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? '',
   NPC_LLM_MODEL: process.env.NPC_LLM_MODEL ?? 'claude-haiku-4-5-20251001',
   NPC_LLM_MODEL_PREMIUM: process.env.NPC_LLM_MODEL_PREMIUM ?? 'claude-sonnet-4-6',
   PORT: num(process.env.PORT, 3001),

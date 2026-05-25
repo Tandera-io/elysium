@@ -1,29 +1,49 @@
+import { Suspense } from 'react';
+import { BillboardSprite } from '../../engine/loader/BillboardSprite';
 import { useNpcStore } from './npcStore';
+import { SPRITES, type SpriteSlot } from '../../content/assets';
 
-const Y_GROUND = 0.5;
+/** Cápsula vermelha while sprite streams in (or if it's missing entirely). */
+function NpcCapsuleFallback() {
+  return (
+    <>
+      <mesh castShadow position={[0, 0.5, 0]}>
+        <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
+        <meshStandardMaterial color="#d35a5a" />
+      </mesh>
+      <mesh position={[0, 1.05, 0]}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+    </>
+  );
+}
 
-/** Renders each NPC as a tagged capsule placeholder (will swap to GLB in Fase 11). */
+function spriteFor(npcId: string): string | null {
+  // Lookup is intentionally lenient — if no entry, return null and use capsule.
+  const key = npcId as SpriteSlot;
+  return SPRITES[key] ?? null;
+}
+
+/** Renders each NPC as a billboarded sprite if a sprite is registered for them. */
 export function NpcView() {
   const npcs = useNpcStore((s) => s.npcs);
   return (
     <group>
-      {Object.values(npcs).map(({ def, worldPos }) => (
-        <group key={def.id} position={[worldPos.x, Y_GROUND, worldPos.z]}>
-          <mesh castShadow>
-            <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
-            <meshStandardMaterial color="#d35a5a" />
-          </mesh>
-          <mesh position={[0, 0.55, 0]}>
-            <sphereGeometry args={[0.08, 8, 8]} />
-            <meshStandardMaterial color="#1a1a1a" />
-          </mesh>
-          {/* Floating name tag */}
-          <mesh position={[0, 1.2, 0]} rotation={[0, -Math.PI / 4, 0]}>
-            <planeGeometry args={[1.5, 0.3]} />
-            <meshBasicMaterial color="#0f172a" transparent opacity={0.7} />
-          </mesh>
-        </group>
-      ))}
+      {Object.values(npcs).map(({ def, worldPos }) => {
+        const spritePath = spriteFor(def.id);
+        return (
+          <group key={def.id} position={[worldPos.x, 0, worldPos.z]}>
+            {spritePath ? (
+              <Suspense fallback={<NpcCapsuleFallback />}>
+                <BillboardSprite path={spritePath} height={1.6} />
+              </Suspense>
+            ) : (
+              <NpcCapsuleFallback />
+            )}
+          </group>
+        );
+      })}
     </group>
   );
 }

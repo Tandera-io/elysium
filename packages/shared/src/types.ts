@@ -10,6 +10,7 @@ export interface HealthResponse {
   timestamp: string;
   hasMeshyKey: boolean;
   hasAnthropicKey: boolean;
+  hasOpenAIKey: boolean;
   npcModel: string;
 }
 

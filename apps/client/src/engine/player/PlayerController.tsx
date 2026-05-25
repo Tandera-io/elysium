@@ -5,20 +5,20 @@ import { Vector3 } from 'three';
 import { useInputRef } from '../input/useInput';
 import { usePlayerStore } from '../../store/playerStore';
 import { tileToWorld } from '../world/WorldGrid';
-import { useAsset } from '../loader/GltfLoader';
-import { ASSETS } from '../../content/assets';
+import { BillboardSprite } from '../loader/BillboardSprite';
+import { SPRITES } from '../../content/assets';
 
-const Y_GROUND = 0.5;
+const Y_GROUND = 0; // sprite plane sits flat on the ground (BillboardSprite handles Y offset)
 
-/** Fallback capsule used while the GLB streams in (or if it's missing). */
-function PlayerCapsule() {
+/** Plain capsule shown while the sprite texture streams in. */
+function PlayerCapsuleFallback() {
   return (
     <>
-      <mesh castShadow>
+      <mesh castShadow position={[0, 0.5, 0]}>
         <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
         <meshStandardMaterial color="#e9c46a" />
       </mesh>
-      <mesh position={[0, 0.55, 0]}>
+      <mesh position={[0, 1.05, 0]}>
         <sphereGeometry args={[0.08, 8, 8]} />
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
@@ -26,9 +26,8 @@ function PlayerCapsule() {
   );
 }
 
-function PlayerModel() {
-  const { scene } = useAsset(ASSETS.player);
-  return <primitive object={scene} scale={1} />;
+function PlayerSprite() {
+  return <BillboardSprite path={SPRITES.player} height={1.6} />;
 }
 
 export function PlayerController() {
@@ -99,8 +98,8 @@ export function PlayerController() {
 
   return (
     <group ref={groupRef} position={[0, Y_GROUND, 0]}>
-      <Suspense fallback={<PlayerCapsule />}>
-        <PlayerModel />
+      <Suspense fallback={<PlayerCapsuleFallback />}>
+        <PlayerSprite />
       </Suspense>
     </group>
   );

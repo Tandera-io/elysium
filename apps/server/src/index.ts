@@ -6,6 +6,7 @@ import type { HealthResponse } from '@elysium/shared';
 import { env } from './lib/env.js';
 import { buildDialogueRoutes } from './routes/dialogue.js';
 import { buildMeshyRoutes } from './routes/meshy.js';
+import { buildSpriteRoutes } from './routes/sprite.js';
 
 const app = new Hono();
 
@@ -19,6 +20,7 @@ app.use(
 );
 
 app.route('/api/meshy', buildMeshyRoutes());
+app.route('/api/sprite', buildSpriteRoutes());
 app.route('/api', buildDialogueRoutes());
 
 app.get('/api/health', (c) => {
@@ -29,6 +31,7 @@ app.get('/api/health', (c) => {
     timestamp: new Date().toISOString(),
     hasMeshyKey: env.MESHY_API_KEY.length > 0,
     hasAnthropicKey: env.ANTHROPIC_API_KEY.length > 0,
+    hasOpenAIKey: env.OPENAI_API_KEY.length > 0,
     npcModel: env.NPC_LLM_MODEL,
   };
   return c.json(body);
