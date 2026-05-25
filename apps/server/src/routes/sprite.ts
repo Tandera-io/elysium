@@ -1,11 +1,16 @@
 import { Hono } from 'hono';
 import { env } from '../lib/env.js';
-import { OpenAIImageClient, type ImageSize } from '../lib/openai-image-client.js';
+import {
+  OpenAIImageClient,
+  type ImageBackground,
+  type ImageSize,
+} from '../lib/openai-image-client.js';
 import { SpriteCache, type SpriteManifest } from '../lib/sprite-cache.js';
 
 interface GenerateBody {
   prompt: string;
   size?: ImageSize;
+  background?: ImageBackground;
 }
 
 export function buildSpriteRoutes(
@@ -26,7 +31,11 @@ export function buildSpriteRoutes(
       return c.json({ error: 'prompt is required (min 4 chars)' }, 400);
     }
 
-    const key = { prompt: body.prompt, size: body.size ?? '1024x1024' };
+    const key = {
+      prompt: body.prompt,
+      size: body.size ?? '1024x1024',
+      background: body.background ?? 'transparent',
+    };
     const cached = await cache.read(key);
     if (cached) {
       return c.json({ cached: true, manifest: cached });
@@ -35,11 +44,15 @@ export function buildSpriteRoutes(
     try {
       const { png, pngRel } = cache.paths(key);
       await cache.ensureDir();
-      await client.generateImageToFile({ prompt: body.prompt, size: body.size }, png);
+      await client.generateImageToFile(
+        { prompt: body.prompt, size: body.size, background: body.background },
+        png,
+      );
       const manifest: SpriteManifest = {
         id: SpriteCache.hashKey(key),
         prompt: body.prompt,
         size: body.size ?? '1024x1024',
+        background: body.background ?? 'transparent',
         png_path: pngRel,
         created_at: new Date().toISOString(),
       };

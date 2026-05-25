@@ -15,12 +15,14 @@ const DEFAULT_CACHE_DIR = resolve(here, '../../../../apps/client/public/sprites/
 export interface SpriteCacheKey {
   prompt: string;
   size?: string;
+  background?: string;
 }
 
 export interface SpriteManifest {
   id: string;
   prompt: string;
   size: string;
+  background: string;
   png_path: string;
   created_at: string;
 }
@@ -32,7 +34,7 @@ export class SpriteCache {
   }
 
   static hashKey(key: SpriteCacheKey): string {
-    const normalized = `${key.prompt.trim().toLowerCase()}|${key.size ?? '1024x1024'}`;
+    const normalized = `${key.prompt.trim().toLowerCase()}|${key.size ?? '1024x1024'}|${key.background ?? 'transparent'}`;
     return createHash('sha256').update(normalized).digest('hex').slice(0, 16);
   }
 

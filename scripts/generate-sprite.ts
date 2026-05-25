@@ -11,6 +11,7 @@ interface Args {
   prompt: string;
   name?: string;
   size?: string;
+  background?: 'transparent' | 'opaque' | 'auto';
   host?: string;
 }
 
@@ -43,7 +44,11 @@ async function main(): Promise<void> {
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt: args.prompt, size: args.size }),
+    body: JSON.stringify({
+      prompt: args.prompt,
+      size: args.size,
+      background: args.background,
+    }),
   });
   const dt = ((Date.now() - t0) / 1000).toFixed(1);
 
