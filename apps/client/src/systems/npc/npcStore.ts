@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { NpcDef } from '@elysium/shared';
 import marinaJson from '../../content/npcs/marina.json';
+import bentoJson from '../../content/npcs/bento.json';
+import luciaJson from '../../content/npcs/lucia.json';
 
 export interface NpcStateEntry {
   def: NpcDef;
@@ -18,7 +20,7 @@ export interface NpcActions {
 
 function loadBootstrap(): NpcState {
   const npcs: Record<string, NpcStateEntry> = {};
-  const defs = [marinaJson as NpcDef];
+  const defs = [marinaJson as NpcDef, bentoJson as NpcDef, luciaJson as NpcDef];
   for (const def of defs) {
     const pos = def.position ?? { x: 0, z: 0 };
     npcs[def.id] = { def, worldPos: { x: pos.x, z: pos.z } };
