@@ -1,16 +1,17 @@
 import { useFrame } from '@react-three/fiber';
-import { Suspense, useMemo, useRef } from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
 import type { Group } from 'three';
 import { Vector3 } from 'three';
 import { useInputRef } from '../input/useInput';
 import { usePlayerStore } from '../../store/playerStore';
 import { tileToWorld } from '../world/WorldGrid';
 import { BillboardSprite } from '../loader/BillboardSprite';
-import { SPRITES } from '../../content/assets';
+import { SpriteAnimator } from '../loader/SpriteAnimator';
+import { SPRITES, WALK_CYCLES } from '../../content/assets';
 
-const Y_GROUND = 0; // sprite plane sits flat on the ground (BillboardSprite handles Y offset)
+const Y_GROUND = 0;
 
-/** Plain capsule shown while the sprite texture streams in. */
+/** Plain capsule shown while the sprite textures stream in. */
 function PlayerCapsuleFallback() {
   return (
     <>
@@ -26,7 +27,11 @@ function PlayerCapsuleFallback() {
   );
 }
 
-function PlayerSprite() {
+function PlayerSprite({ moving }: { moving: boolean }) {
+  const cycle = WALK_CYCLES.player;
+  if (cycle && cycle.length > 1) {
+    return <SpriteAnimator frames={cycle} fps={6} playing={moving} height={1.6} />;
+  }
   return <BillboardSprite path={SPRITES.player} height={1.6} />;
 }
 
@@ -35,6 +40,10 @@ export function PlayerController() {
   const groupRef = useRef<Group>(null);
   const tmp = useMemo(() => new Vector3(), []);
   const cur = useMemo(() => new Vector3(), []);
+  // Track whether the player is currently moving so we can toggle the walk
+  // animation. React state is updated only on transitions, never every frame.
+  const [moving, setMoving] = useState(false);
+  const movingRef = useRef(false);
 
   useFrame((_, deltaRaw) => {
     const delta = Math.min(deltaRaw, 0.1);
@@ -90,7 +99,13 @@ export function PlayerController() {
       }
     }
 
-    if (next !== position) state.setPosition(next);
+    const isMovingNow = next !== position;
+    if (isMovingNow !== movingRef.current) {
+      movingRef.current = isMovingNow;
+      setMoving(isMovingNow);
+    }
+
+    if (isMovingNow) state.setPosition(next);
     if (groupRef.current) {
       groupRef.current.position.set(next.x, Y_GROUND, next.z);
     }
@@ -99,7 +114,7 @@ export function PlayerController() {
   return (
     <group ref={groupRef} position={[0, Y_GROUND, 0]}>
       <Suspense fallback={<PlayerCapsuleFallback />}>
-        <PlayerSprite />
+        <PlayerSprite moving={moving} />
       </Suspense>
     </group>
   );

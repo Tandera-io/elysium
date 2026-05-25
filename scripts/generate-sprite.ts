@@ -12,6 +12,8 @@ interface Args {
   name?: string;
   size?: string;
   background?: 'transparent' | 'opaque' | 'auto';
+  /** PNG path relative to apps/client/public/ to use as the edit reference. */
+  base?: string;
   host?: string;
 }
 
@@ -48,6 +50,7 @@ async function main(): Promise<void> {
       prompt: args.prompt,
       size: args.size,
       background: args.background,
+      base: args.base,
     }),
   });
   const dt = ((Date.now() - t0) / 1000).toFixed(1);

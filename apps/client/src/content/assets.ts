@@ -17,6 +17,18 @@ export const SPRITES = {
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
 } as const;
 
+/** Walk animation frames — generated via /images/edits using the idle sprite
+ *  as reference. Element 0 must be the idle sprite (same as SPRITES.<id>).
+ *  Animator alternates through these while the character is in motion. */
+export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
+  player: [
+    'sprites/cache/9374eeeb0b8fce10.png', // idle (frame 0)
+    'sprites/cache/8d66aff919a59d28.png', // walk 1 (left leg forward)
+    'sprites/cache/9374eeeb0b8fce10.png', // idle (frame 2 = sandwich)
+    'sprites/cache/368ae9f815b40a8a.png', // walk 2 (right leg forward)
+  ],
+};
+
 /** Ripe crop sprites — used by FarmField when a planted tile reaches mature. */
 export const CROP_SPRITES = {
   wheat: 'sprites/cache/8dcc7821fa994510.png',
