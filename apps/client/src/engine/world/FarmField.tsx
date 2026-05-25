@@ -81,7 +81,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
             )}
             {/* Mature plant sprite */}
             {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={0.8} />
+              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
             )}
           </group>
         );
