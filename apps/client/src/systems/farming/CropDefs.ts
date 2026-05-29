@@ -3,6 +3,8 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
+import type { Season } from '../time/timeStore';
+
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
@@ -20,6 +22,7 @@ export interface CropDef {
   readonly stages: readonly CropStage[];
   readonly daysToMature: number;
   readonly yieldQuantity: number;
+  readonly seasonGrowthRates: Partial<Record<Season, number>>;
 }
 
 export const CROPS: Record<CropId, CropDef> = {
@@ -34,6 +37,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 4,
     yieldQuantity: 2,
+    seasonGrowthRates: { spring: 1.2, summer: 1.2, autumn: 0.9, winter: 0.75 },
   },
   tomato: {
     id: 'tomato',
@@ -47,6 +51,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 5,
     yieldQuantity: 3,
+    seasonGrowthRates: { spring: 0.85, summer: 1.35, autumn: 0.8, winter: 0.6 },
   },
   pumpkin: {
     id: 'pumpkin',
@@ -59,6 +64,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 7,
     yieldQuantity: 1,
+    seasonGrowthRates: { spring: 0.7, summer: 0.85, autumn: 1.4, winter: 0.65 },
   },
   corn: {
     id: 'corn',
@@ -71,6 +77,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 6,
     yieldQuantity: 3,
+    seasonGrowthRates: { spring: 0.9, summer: 1.25, autumn: 1.0, winter: 0.7 },
   },
   strawberry: {
     id: 'strawberry',
@@ -82,6 +89,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 3,
     yieldQuantity: 4,
+    seasonGrowthRates: { spring: 1.5, summer: 0.9, autumn: 0.7, winter: 0.5 },
   },
 };
 
@@ -98,4 +106,13 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
+}
+
+export function effectiveDaysToMature(crop: CropDef, season: Season): number {
+  const rate = crop.seasonGrowthRates[season] ?? 1.0;
+  return Math.max(1, Math.round(crop.daysToMature / rate));
+}
+
+export function isMatureInSeason(crop: CropDef, daysSincePlanted: number, season: Season): boolean {
+  return daysSincePlanted >= effectiveDaysToMature(crop, season);
 }
