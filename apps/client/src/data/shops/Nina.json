@@ -1,0 +1,20 @@
+{
+  "shopId": "nina",
+  "shopName": "Ferragem da Nina",
+  "tools": [
+    { "id": "watering_can", "name": "Regador", "icon": "🪣", "price": 150, "stock": 5 },
+    { "id": "hoe", "name": "Enxada", "icon": "⛏️", "price": 120, "stock": 5 },
+    { "id": "fertilizer", "name": "Adubo", "icon": "🌿", "price": 40, "stock": 99 },
+    { "id": "basket", "name": "Cesto de Colheita", "icon": "🧺", "price": 60, "stock": 10 }
+  ],
+  "seeds": [
+    { "id": "seed_pumpkin", "name": "Sementes de Abóbora", "icon": "🎃", "price": 18, "stock": 99 },
+    {
+      "id": "seed_strawberry",
+      "name": "Sementes de Morango",
+      "icon": "🍓",
+      "price": 20,
+      "stock": 99
+    }
+  ]
+}
