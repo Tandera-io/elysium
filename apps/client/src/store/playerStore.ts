@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import type { TileCoord } from '../engine/world/WorldGrid';
 
+/**
+ * Player starting position on the fazenda (farm).
+ * Placed a few tiles south-west of Dorinha's shop stall so the player
+ * spawns within easy walking distance of the NPC interaction zone.
+ */
+export const FAZENDA_SPAWN = { x: 3, y: 0, z: 6 } as const;
+
 export interface PlayerState {
   /** World-space position (continuous, not tile-snapped). */
   position: { x: number; y: number; z: number };
@@ -18,7 +25,7 @@ export interface PlayerActions {
 }
 
 export const usePlayerStore = create<PlayerState & PlayerActions>((set) => ({
-  position: { x: 0, y: 0, z: 0 },
+  position: { ...FAZENDA_SPAWN },
   path: [],
   speed: 4,
   setPosition: (position) => set({ position }),

@@ -29,9 +29,9 @@ export const ZONES: Record<ZoneId, ZoneDef> = {
     id: 'fazenda',
     name: 'Fazenda',
     description: 'A fazenda do jogador. Tile-grid arável, vista isométrica.',
-    playerSpawn: { x: 0, z: 0 },
+    playerSpawn: { x: 3, z: 6 },
     portals: [{ to: 'vilarejo', at: { x: 12, z: 12 }, label: 'Vilarejo →' }],
-    residentNpcIds: [],
+    residentNpcIds: ['dorinha'],
     groundColor: '#6f9a4a',
   },
   vilarejo: {
