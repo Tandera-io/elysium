@@ -1,0 +1,31 @@
+{
+  "id": "padre-pedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "asset": "sprites/cache/5ed772a074b5f542.png",
+  "position": { "x": -6, "z": 6 },
+  "personality": {
+    "core_traits": ["compassivo", "sábio", "levemente ingênuo sobre o mundo moderno"],
+    "speech_style": "solene mas caloroso, usa bênçãos e provérbios bíblicos adaptados ao cotidiano rural",
+    "values": ["fé", "comunidade", "perdão", "simplicidade"],
+    "fears": ["conflito entre os moradores", "abandono da fé pelas novas gerações"]
+  },
+  "relations": {
+    "marina": "fiel_devota",
+    "bento": "confidente",
+    "nina": "aluna_catequese"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "missa_matinal" },
+    { "from": "08:00", "to": "12:00", "location": "igreja", "activity": "aberto_oracao" },
+    { "from": "12:00", "to": "14:00", "location": "casa_paroquial", "activity": "almocar" },
+    { "from": "14:00", "to": "17:00", "location": "vilarejo", "activity": "visitar_moradores" },
+    { "from": "17:00", "to": "19:00", "location": "praca", "activity": "conversar" },
+    { "from": "19:00", "to": "21:00", "location": "igreja", "activity": "missa_vespertina" }
+  ],
+  "economy_role": {
+    "produces": ["bencao"],
+    "consumes": ["pao_frances", "vela"],
+    "shop_inventory": []
+  }
+}
