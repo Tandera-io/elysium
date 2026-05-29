@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { BillboardSprite } from '../../engine/loader/BillboardSprite';
 import { useNpcStore } from './npcStore';
 import { SPRITES, type SpriteSlot } from '../../content/assets';
+import { Dorinha } from '../../components/NPCs/Dorinha';
 
 /** Cápsula vermelha while sprite streams in (or if it's missing entirely). */
 function NpcCapsuleFallback() {
@@ -34,7 +35,9 @@ export function NpcView() {
         const spritePath = spriteFor(def.id);
         return (
           <group key={def.id} position={[worldPos.x, 0, worldPos.z]}>
-            {spritePath ? (
+            {def.id === 'dorinha' ? (
+              <Dorinha moving={false} />
+            ) : spritePath ? (
               <Suspense fallback={<NpcCapsuleFallback />}>
                 <BillboardSprite path={spritePath} height={1.6} />
               </Suspense>
