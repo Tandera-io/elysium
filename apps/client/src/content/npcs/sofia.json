@@ -1,0 +1,29 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "professora",
+  "position": { "x": -10, "z": 2 },
+  "personality": {
+    "core_traits": ["inteligente", "curiosa", "entusiasta"],
+    "speech_style": "educada e precisa, explica as coisas com detalhes, usa perguntas para guiar o raciocínio",
+    "values": ["educação", "igualdade", "progresso", "história local"],
+    "fears": ["ignorância", "crianças sem acesso à escola"]
+  },
+  "relations": {
+    "nina": "amiga_proxima",
+    "padre-pedro": "colaboradora_festas",
+    "romeu": "aluno_favorito"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "escola", "activity": "dar_aulas" },
+    { "from": "12:00", "to": "14:00", "location": "casa_sofia", "activity": "almocar" },
+    { "from": "14:00", "to": "17:00", "location": "escola", "activity": "preparar_aulas" },
+    { "from": "17:00", "to": "19:00", "location": "biblioteca", "activity": "pesquisar" },
+    { "from": "19:00", "to": "21:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": ["conhecimento", "livro_ensinamentos"],
+    "consumes": ["papel", "tinta", "livros"],
+    "shop_inventory": ["livro_ensinamentos", "mapa_regiao"]
+  }
+}

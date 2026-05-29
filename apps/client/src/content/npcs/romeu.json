@@ -1,0 +1,25 @@
+{
+  "id": "romeu",
+  "name": "Romeu",
+  "role": "jovem_aprendiz",
+  "position": { "x": 2, "z": -4 },
+  "personality": {
+    "core_traits": ["impulsivo", "leal", "sonhador"],
+    "speech_style": "rápido e entusiasmado, usa gírias jovens, interrompe às vezes por animação",
+    "values": ["amizade", "aventura", "provar seu valor"],
+    "fears": ["decepcionar quem acredita nele", "ficar preso na cidade para sempre"]
+  },
+  "relations": { "arnaldo": "tio", "sofia": "professora_admirada", "nina": "interesse_romantico" },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "escola", "activity": "estudar" },
+    { "from": "12:00", "to": "14:00", "location": "praca", "activity": "almocar_amigos" },
+    { "from": "14:00", "to": "17:00", "location": "ferraria", "activity": "aprender_oficio" },
+    { "from": "17:00", "to": "19:00", "location": "rio", "activity": "pescar_com_tio" },
+    { "from": "19:00", "to": "22:00", "location": "praca", "activity": "jogar_bola" }
+  ],
+  "economy_role": {
+    "produces": ["servico_entrega", "ajuda_colheita"],
+    "consumes": ["lanche", "ferramentas_pequenas"],
+    "shop_inventory": []
+  }
+}

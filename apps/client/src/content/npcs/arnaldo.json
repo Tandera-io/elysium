@@ -1,0 +1,25 @@
+{
+  "id": "arnaldo",
+  "name": "Seu Arnaldo",
+  "role": "pescador",
+  "position": { "x": 10, "z": 4 },
+  "personality": {
+    "core_traits": ["calmo", "contador de histórias", "paciente"],
+    "speech_style": "lento e contemplativo, cheio de metáforas do mar e do rio, gosta de pausas longas",
+    "values": ["paciência", "respeito à natureza", "tradição da pesca"],
+    "fears": ["rios poluídos", "pesca predatória acabar com os peixes"]
+  },
+  "relations": { "padre-pedro": "amigo_antigo", "bento": "parceiro_troca", "romeu": "sobrinho" },
+  "schedule": [
+    { "from": "04:00", "to": "09:00", "location": "rio", "activity": "pescar" },
+    { "from": "09:00", "to": "11:00", "location": "cais", "activity": "limpar_peixes" },
+    { "from": "11:00", "to": "14:00", "location": "mercado", "activity": "vender_peixe" },
+    { "from": "14:00", "to": "17:00", "location": "cais", "activity": "consertar_redes" },
+    { "from": "17:00", "to": "21:00", "location": "praca", "activity": "contar_historias" }
+  ],
+  "economy_role": {
+    "produces": ["peixe_fresco", "camarao", "ostra"],
+    "consumes": ["isca", "sal"],
+    "shop_inventory": ["peixe_fresco", "camarao", "vara_pesca"]
+  }
+}

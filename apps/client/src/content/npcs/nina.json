@@ -1,0 +1,25 @@
+{
+  "id": "nina",
+  "name": "Nina",
+  "role": "herborista",
+  "position": { "x": -6, "z": 6 },
+  "personality": {
+    "core_traits": ["misteriosa", "sábia", "introvertida"],
+    "speech_style": "fala devagar e escolhe as palavras com cuidado, conhece ervas e remédios naturais",
+    "values": ["natureza", "cura", "equilíbrio", "sabedoria ancestral"],
+    "fears": ["desmatamento", "perder o conhecimento das ervas da avó"]
+  },
+  "relations": { "padre-pedro": "respeito_mutuo", "sofia": "amiga_proxima", "marina": "cliente" },
+  "schedule": [
+    { "from": "05:00", "to": "08:00", "location": "floresta", "activity": "colher_ervas" },
+    { "from": "08:00", "to": "12:00", "location": "botica", "activity": "preparar_remedios" },
+    { "from": "12:00", "to": "14:00", "location": "botica", "activity": "atender" },
+    { "from": "14:00", "to": "17:00", "location": "botica", "activity": "preparar_remedios" },
+    { "from": "17:00", "to": "20:00", "location": "casa_nina", "activity": "estudar_ervas" }
+  ],
+  "economy_role": {
+    "produces": ["cha_calmante", "ungento_cura", "sementes_raras"],
+    "consumes": ["ervas_silvestres", "flores_raras"],
+    "shop_inventory": ["cha_calmante", "ungento_cura", "sementes_raras", "antidoto"]
+  }
+}

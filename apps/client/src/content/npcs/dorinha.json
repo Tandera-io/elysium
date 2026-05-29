@@ -1,0 +1,24 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "vendedora",
+  "position": { "x": 6, "z": -8 },
+  "personality": {
+    "core_traits": ["animada", "negociante nata", "curiosa"],
+    "speech_style": "rápida, usa diminutivos, sempre tentando fechar um negócio",
+    "values": ["comércio justo", "variedade de produtos", "satisfação do cliente"],
+    "fears": ["estoque zerado", "preços caindo demais"]
+  },
+  "relations": { "bento": "cliente_fiel", "marina": "parceira_comercial" },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "mercado", "activity": "vender" },
+    { "from": "12:00", "to": "14:00", "location": "praca", "activity": "almocar" },
+    { "from": "14:00", "to": "19:00", "location": "mercado", "activity": "vender" },
+    { "from": "19:00", "to": "21:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": ["sementes", "ferramentas_basicas"],
+    "consumes": ["plantacoes", "frutas"],
+    "shop_inventory": ["sementes", "adubo", "ferramentas_basicas"]
+  }
+}
