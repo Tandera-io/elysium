@@ -1,0 +1,84 @@
+{
+  "id": "padrePedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "position": { "x": 3, "z": -5 },
+  "personality": {
+    "core_traits": ["bondoso", "devoto", "sábio", "acolhedor"],
+    "speech_style": "formal mas caloroso, usa expressões religiosas e provérbios, fala em português brasileiro clássico",
+    "values": ["fé", "comunidade", "gratidão pela terra", "bênçãos da colheita"],
+    "fears": ["comunidade se afastando da fé", "colheita fracassando por falta de gratidão"]
+  },
+  "relations": {
+    "marina": "paroquiana_fiel",
+    "bento": "amigo_antigo",
+    "dorinha": "paroquiana"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "chapel", "activity": "missa_matinal" },
+    { "from": "08:00", "to": "12:00", "location": "farm", "activity": "abençoar_colheita" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "18:00", "location": "praca", "activity": "conversar_fieis" },
+    { "from": "18:00", "to": "20:00", "location": "chapel", "activity": "vesperas" }
+  ],
+  "economy_role": {
+    "produces": ["blessing_crop", "blessing_tool"],
+    "consumes": [],
+    "shop_inventory": []
+  },
+  "mock_dialogues": [
+    {
+      "id": "greeting",
+      "text": "Que Deus o abençoe, meu filho! Que bom que vieste visitar o velho padre. A colheita está bela este ano, não está?",
+      "choices": [
+        { "id": "c1", "text": "Pode me dar uma bênção, Padre?", "next": "blessing" },
+        { "id": "c2", "text": "Como vai, Padre Pedro?", "next": "wellbeing" },
+        { "id": "c3", "text": "Até logo, Padre.", "next": "farewell" }
+      ]
+    },
+    {
+      "id": "blessing",
+      "text": "Com todo prazer, meu filho! Que esta terra fértil produza com abundância. Que cada semente que plantes seja abençoada pelos céus. Amém!",
+      "choices": [
+        { "id": "c1", "text": "Obrigado, Padre!", "next": "farewell" },
+        { "id": "c2", "text": "Pode abençoar minhas ferramentas também?", "next": "tool_blessing" }
+      ]
+    },
+    {
+      "id": "tool_blessing",
+      "text": "Claro! Ferramentas abençoadas rendem mais no trabalho. São instrumentos de Deus para cultivar Sua terra. Que durem muitos anos e trabalhem bem!",
+      "choices": [{ "id": "c1", "text": "Que bom, Padre! Obrigado!", "next": "farewell" }]
+    },
+    {
+      "id": "wellbeing",
+      "text": "Vou bem, louvado seja! Toda manhã acordo agradecido pela beleza desta fazenda. Quando vejo o sol nascer sobre os campos, meu coração se enche de gratidão.",
+      "choices": [
+        { "id": "c1", "text": "É mesmo muito bonito aqui.", "next": "farm_beauty" },
+        { "id": "c2", "text": "Até logo, Padre.", "next": "farewell" }
+      ]
+    },
+    {
+      "id": "farm_beauty",
+      "text": "Sim! A terra é um presente divino. Quem cuida bem dela com trabalho e dedicação recebe em dobro. Você tem cuidado bem da sua lavoura, meu filho?",
+      "choices": [
+        { "id": "c1", "text": "Tenho tentado fazer o meu melhor.", "next": "encouragement" },
+        { "id": "c2", "text": "Não tanto quanto gostaria...", "next": "advice" }
+      ]
+    },
+    {
+      "id": "encouragement",
+      "text": "Isso basta! Deus vê o esforço do coração, não apenas o resultado. Continue assim e a colheita certamente será farta. Conte sempre comigo!",
+      "choices": [{ "id": "c1", "text": "Obrigado, Padre Pedro!", "next": "farewell" }]
+    },
+    {
+      "id": "advice",
+      "text": "Não se desanime! Todo santo dia é uma nova chance. Comece amanhã cedo, agua com carinho, e ore antes de plantar. Deus ajuda a quem se ajuda!",
+      "choices": [{ "id": "c1", "text": "Vou seguir seu conselho, Padre.", "next": "farewell" }]
+    },
+    {
+      "id": "farewell",
+      "text": "Que Deus te guie e abençoe seus passos! Volte sempre que precisar, as portas da paróquia estão sempre abertas. Paz e bem!",
+      "choices": []
+    }
+  ]
+}
