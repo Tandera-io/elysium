@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDialogueStore } from '../dialogue/dialogueStore';
+import { useChoiceDialogueStore } from '../../stores/dialogueStore';
+import type { DialogueTree } from '../../stores/dialogueStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
 import { useNPCShopStore, DORINHA_SHOP_ID } from './NPCShop';
+import dorinhaTreeRaw from '../../assets/dialogue/dorinha.json';
+
+const DORINHA_ID = DORINHA_SHOP_ID;
+const dorinhaTree = dorinhaTreeRaw as DialogueTree;
 
 const SHOP_NPCS = new Set([DORINHA_SHOP_ID]);
 
@@ -38,8 +44,13 @@ export function InteractPrompt() {
       if (!t) return;
 
       if (e.code === 'KeyE') {
-        if (useDialogueStore.getState().npcId) return; // already open
-        useDialogueStore.getState().open(t.def.id);
+        if (useDialogueStore.getState().npcId) return; // AI chat open
+        if (useChoiceDialogueStore.getState().npcId) return; // choice dialogue open
+        if (t.def.id === DORINHA_ID) {
+          useChoiceDialogueStore.getState().open(DORINHA_ID, dorinhaTree);
+        } else {
+          useDialogueStore.getState().open(t.def.id);
+        }
       }
 
       if (e.code === 'KeyG') {
