@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato';
+export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
 
 export interface SlotItem {
   id: ItemId;
@@ -13,6 +13,7 @@ const STACK_MAX = 99;
 
 export interface InventoryState {
   slots: (SlotItem | null)[];
+  gold: number;
 }
 
 export interface InventoryActions {
@@ -23,13 +24,16 @@ export interface InventoryActions {
   count: (id: ItemId) => number;
   swap: (a: number, b: number) => void;
   reset: () => void;
+  addGold: (amount: number) => void;
+  /** Returns false if player has insufficient gold. */
+  removeGold: (amount: number) => boolean;
 }
 
 function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
   slots[0] = { id: 'seed_wheat', qty: 6 };
   slots[1] = { id: 'seed_tomato', qty: 4 };
-  return { slots };
+  return { slots, gold: 500 };
 }
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
@@ -97,6 +101,12 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     set({ slots });
   },
   reset: () => set(makeInitial()),
+  addGold: (amount) => set((s) => ({ gold: s.gold + amount })),
+  removeGold: (amount) => {
+    if (get().gold < amount) return false;
+    set((s) => ({ gold: s.gold - amount }));
+    return true;
+  },
 }));
 
 if (import.meta.env.DEV) {

@@ -3,10 +3,13 @@ import { useDialogueStore } from '../dialogue/dialogueStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
+import { useNPCShopStore, DORINHA_SHOP_ID } from './NPCShop';
+
+const SHOP_NPCS = new Set([DORINHA_SHOP_ID]);
 
 /**
- * Watches player position vs NPCs and shows a small "Press E to talk"
- * prompt when in range. Also wires the E key to open the dialogue.
+ * Watches player position vs NPCs and shows a small "Press E to talk / G for shop"
+ * prompt when in range. Also wires the E key to open dialogue and G to open shop.
  */
 export function InteractPrompt() {
   const npcs = useNpcStore((s) => s.npcs);
@@ -30,21 +33,45 @@ export function InteractPrompt() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'KeyE') return;
-      if (useDialogueStore.getState().npcId) return; // already open
       const pos = usePlayerStore.getState().position;
       const t = findInteractTarget({ x: pos.x, z: pos.z }, useNpcStore.getState().npcs);
-      if (t) useDialogueStore.getState().open(t.def.id);
+      if (!t) return;
+
+      if (e.code === 'KeyE') {
+        if (useDialogueStore.getState().npcId) return; // already open
+        useDialogueStore.getState().open(t.def.id);
+      }
+
+      if (e.code === 'KeyG') {
+        if (!SHOP_NPCS.has(t.def.id)) return;
+        const shopStore = useNPCShopStore.getState();
+        if (shopStore.openShopId) {
+          shopStore.closeShop();
+        } else {
+          shopStore.openShop(t.def.id);
+        }
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   if (!target) return null;
+
+  const isShopkeeper = SHOP_NPCS.has(target.id);
+
   return (
-    <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-16 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-1.5 text-sm text-slate-100">
-      <kbd className="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">E</kbd> conversar com{' '}
-      <span className="font-semibold">{target.name}</span>
+    <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-16 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-1.5 text-sm text-slate-100 flex flex-col items-center gap-0.5">
+      <div>
+        <kbd className="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">E</kbd> conversar com{' '}
+        <span className="font-semibold">{target.name}</span>
+      </div>
+      {isShopkeeper && (
+        <div>
+          <kbd className="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">G</kbd>{' '}
+          <span className="text-amber-300">abrir loja</span>
+        </div>
+      )}
     </div>
   );
 }

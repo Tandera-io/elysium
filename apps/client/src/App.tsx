@@ -8,7 +8,9 @@ import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
+import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
+import { useInventoryStore } from './systems/inventory/inventoryStore';
 
 type FetchState =
   | { kind: 'loading' }
@@ -19,6 +21,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
     let cancelled = false;
@@ -67,6 +70,7 @@ export function App() {
       <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
+        <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
         <button
           onClick={() => setSaveOpen(true)}
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
@@ -93,6 +97,7 @@ export function App() {
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
+      <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
