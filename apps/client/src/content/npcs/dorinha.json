@@ -21,5 +21,20 @@
     "produces": ["trigo", "tomate", "milho"],
     "consumes": ["seed_wheat", "seed_tomato", "seed_corn"],
     "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  },
+  "animations": {
+    "idle": {
+      "frames": ["sprites/cache/86c32aed8fdfe173.png"],
+      "fps": 0
+    },
+    "walk": {
+      "frames": [
+        "sprites/cache/86c32aed8fdfe173.png",
+        "sprites/cache/c2daeecd8b188ac4.png",
+        "sprites/cache/86c32aed8fdfe173.png",
+        "sprites/cache/7ca40c4410ad1460.png"
+      ],
+      "fps": 6
+    }
   }
 }
