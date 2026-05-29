@@ -7,10 +7,12 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { FishingPanel } from './ui/FishingPanel';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { useFishingStore } from './systems/fishing/fishingStore';
 
 type FetchState =
   | { kind: 'loading' }
@@ -22,6 +24,7 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+  const isFishing = useFishingStore((s) => s.isFishing);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,8 +48,6 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    // Pause the in-game clock while the title screen is up so the first day
-    // doesn't auto-roll while the player is still on the menu.
     useTimeStore.getState().setPaused(titleOpen);
   }, [titleOpen]);
 
@@ -55,9 +56,41 @@ export function App() {
       if (e.ctrlKey && e.code === 'KeyS') {
         e.preventDefault();
         setSaveOpen(true);
+        return;
       }
-      if (e.code === 'Escape' && !titleOpen && !saveOpen) {
-        setSaveOpen(true);
+
+      const {
+        isFishing: fishing,
+        phase,
+        startFishing,
+        cancelFishing,
+        catchFish,
+      } = useFishingStore.getState();
+
+      // F key: start fishing (only when not already fishing and no modal open)
+      if (e.code === 'KeyF' && !fishing && !titleOpen && !saveOpen) {
+        startFishing();
+        return;
+      }
+
+      // Space: catch fish during bite window
+      if (e.code === 'Space' && fishing && phase === 'bite') {
+        e.preventDefault();
+        catchFish();
+        useInventoryStore.getState().addFish();
+        useInventoryStore.getState().addGold(10);
+        return;
+      }
+
+      // Escape: cancel fishing first, then open save menu
+      if (e.code === 'Escape') {
+        if (fishing) {
+          cancelFishing();
+          return;
+        }
+        if (!titleOpen && !saveOpen) {
+          setSaveOpen(true);
+        }
       }
     };
     window.addEventListener('keydown', onKey);
@@ -77,6 +110,7 @@ export function App() {
         >
           📁 menu (Esc · Ctrl+S)
         </button>
+        {!isFishing && <p className="mt-0.5 text-[10px] text-blue-300">🎣 F para pescar</p>}
       </header>
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
@@ -98,6 +132,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
+      <FishingPanel />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
