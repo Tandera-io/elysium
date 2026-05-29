@@ -13,10 +13,13 @@ export interface NpcStateEntry {
 
 export interface NpcState {
   npcs: Record<string, NpcStateEntry>;
+  /** Tracks which NPCs are currently walking toward a target. */
+  movingNpcs: Record<string, boolean>;
 }
 
 export interface NpcActions {
   setPosition: (id: string, pos: { x: number; z: number }) => void;
+  setMoving: (id: string, moving: boolean) => void;
 }
 
 function loadBootstrap(): NpcState {
@@ -31,7 +34,7 @@ function loadBootstrap(): NpcState {
     const pos = def.position ?? { x: 0, z: 0 };
     npcs[def.id] = { def, worldPos: { x: pos.x, z: pos.z } };
   }
-  return { npcs };
+  return { npcs, movingNpcs: {} };
 }
 
 export const useNpcStore = create<NpcState & NpcActions>((set) => ({
@@ -41,6 +44,11 @@ export const useNpcStore = create<NpcState & NpcActions>((set) => ({
       const cur = s.npcs[id];
       if (!cur) return s;
       return { npcs: { ...s.npcs, [id]: { ...cur, worldPos: pos } } };
+    }),
+  setMoving: (id, moving) =>
+    set((s) => {
+      if (s.movingNpcs[id] === moving) return s;
+      return { movingNpcs: { ...s.movingNpcs, [id]: moving } };
     }),
 }));
 
