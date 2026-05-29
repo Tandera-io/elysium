@@ -1,0 +1,31 @@
+{
+  "id": "dorinha",
+  "fps": 6,
+  "directions": {
+    "down": [
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png",
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png"
+    ],
+    "up": [
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png",
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png"
+    ],
+    "left": [
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png",
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png"
+    ],
+    "right": [
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png",
+      "sprites/cache/7ca40c4410ad1460.png",
+      "sprites/cache/c2daeecd8b188ac4.png"
+    ]
+  },
+  "idle": "sprites/cache/7ca40c4410ad1460.png"
+}
