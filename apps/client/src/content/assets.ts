@@ -4,6 +4,7 @@
  *
  * Update entries here after running `pnpm asset:generate` or `pnpm sprite:generate`.
  */
+import dorinhaPortrait from '../assets/dialogue/dorinha.png';
 
 export const ASSETS = {
   player_glb: 'assets/cache/edd51f8ab91d0ebf.glb',
@@ -15,6 +16,7 @@ export const SPRITES = {
   marina: 'sprites/cache/8db8c640fad3595a.png',
   bento: 'sprites/cache/c8ceff3648e5624c.png',
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
+  dorinha: 'sprites/cache/86c32aed8fdfe173.png',
 } as const;
 
 /** Walk animation frames — generated via /images/edits using the idle sprite
@@ -26,6 +28,12 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
     'sprites/cache/8d66aff919a59d28.png', // walk 1 (left leg forward)
     'sprites/cache/9374eeeb0b8fce10.png', // idle (frame 2 = sandwich)
     'sprites/cache/368ae9f815b40a8a.png', // walk 2 (right leg forward)
+  ],
+  dorinha: [
+    'sprites/cache/86c32aed8fdfe173.png', // idle (frame 0)
+    'sprites/cache/c2daeecd8b188ac4.png', // walk 1 (left leg forward)
+    'sprites/cache/86c32aed8fdfe173.png', // idle (frame 2 = sandwich)
+    'sprites/cache/7ca40c4410ad1460.png', // walk 2 (right leg forward)
   ],
 };
 
@@ -49,6 +57,11 @@ export const TILE_TEXTURES = {
 export const DECOR_SPRITES = {
   grass_tuft: 'sprites/cache/0bc489cf949e3dc3.png',
 } as const;
+
+/** NPC portrait images shown in the dialogue box header. */
+export const DIALOGUE_PORTRAITS: Partial<Record<string, string>> = {
+  dorinha: dorinhaPortrait,
+};
 
 export type AssetSlot = keyof typeof ASSETS;
 export type SpriteSlot = keyof typeof SPRITES;
