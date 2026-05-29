@@ -36,7 +36,7 @@ export function NpcView() {
         return (
           <group key={def.id} position={[worldPos.x, 0, worldPos.z]}>
             {def.id === 'dorinha' ? (
-              <Dorinha moving={false} />
+              <Dorinha moving={true} />
             ) : spritePath ? (
               <Suspense fallback={<NpcCapsuleFallback />}>
                 <BillboardSprite path={spritePath} height={1.6} />
