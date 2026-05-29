@@ -1,0 +1,29 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "vendedora de sementes",
+  "position": { "x": -6, "z": -8 },
+  "personality": {
+    "core_traits": ["animada", "conhecedora de plantas", "negociante"],
+    "speech_style": "informal, entusiasmada, usa termos de jardinagem",
+    "values": ["natureza", "colheita abundante", "troca justa"],
+    "fears": ["seca", "pragas"]
+  },
+  "relations": {
+    "marina": "cliente_fiel",
+    "bento": "parceiro_de_negocios"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "07:00", "location": "casa_dorinha", "activity": "acordar" },
+    { "from": "07:00", "to": "12:00", "location": "loja_sementes", "activity": "vender" },
+    { "from": "12:00", "to": "14:00", "location": "praca", "activity": "almoco" },
+    { "from": "14:00", "to": "18:00", "location": "loja_sementes", "activity": "atender" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "socializar" },
+    { "from": "20:00", "to": "22:00", "location": "casa_dorinha", "activity": "descanso" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["trigo", "tomate"],
+    "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  }
+}
