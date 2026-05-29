@@ -15,6 +15,7 @@ export const SPRITES = {
   marina: 'sprites/cache/8db8c640fad3595a.png',
   bento: 'sprites/cache/c8ceff3648e5624c.png',
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
+  dorinha: 'sprites/cache/076b890491bbb273.png',
 } as const;
 
 /** Walk animation frames — generated via /images/edits using the idle sprite
