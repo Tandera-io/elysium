@@ -11,6 +11,8 @@ import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+// @ts-expect-error -- Farm.jsx is plain JS, excluded from tsc (allowJs:false)
+import { Farm } from './components/Farm';
 
 type FetchState =
   | { kind: 'loading' }
@@ -95,6 +97,7 @@ export function App() {
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
+      <Farm />
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
