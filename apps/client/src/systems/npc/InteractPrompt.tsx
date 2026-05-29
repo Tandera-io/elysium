@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDialogueStore } from '../dialogue/dialogueStore';
+import { useChoiceDialogueStore } from '../dialogue/choiceDialogueStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
 import { useNPCShopStore, DORINHA_SHOP_ID } from './NPCShop';
+import { dorinhaDialogue } from '../../dialogue/DorinhaDialogue.js';
 
+const DORINHA_ID = 'dorinha';
 const SHOP_NPCS = new Set([DORINHA_SHOP_ID]);
 
 /**
@@ -39,7 +42,12 @@ export function InteractPrompt() {
 
       if (e.code === 'KeyE') {
         if (useDialogueStore.getState().npcId) return; // already open
-        useDialogueStore.getState().open(t.def.id);
+        if (useChoiceDialogueStore.getState().npcId) return; // already open
+        if (t.def.id === DORINHA_ID) {
+          useChoiceDialogueStore.getState().openDialogue(t.def.id, t.def.name, dorinhaDialogue);
+        } else {
+          useDialogueStore.getState().open(t.def.id);
+        }
       }
 
       if (e.code === 'KeyG') {
