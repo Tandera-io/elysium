@@ -7,6 +7,12 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import dorinhaPortrait from '../assets/dialogue/dorinha.png';
+
+/** Map of NPC id → portrait image URL. Add entries as new portraits are created. */
+const NPC_PORTRAITS: Record<string, string> = {
+  dorinha: dorinhaPortrait,
+};
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -88,12 +94,23 @@ export function DialogueBox() {
     setDraft('');
   };
 
+  const portrait = NPC_PORTRAITS[npc.def.id];
+
   return (
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
       <header className="flex items-center justify-between px-4 py-2 border-b border-slate-700">
-        <div>
-          <h2 className="text-lg font-bold">{npc.def.name}</h2>
-          <p className="text-xs text-slate-400">{npc.def.role}</p>
+        <div className="flex items-center gap-3">
+          {portrait && (
+            <img
+              src={portrait}
+              alt={npc.def.name}
+              className="w-12 h-12 rounded-full object-cover border-2 border-amber-500"
+            />
+          )}
+          <div>
+            <h2 className="text-lg font-bold">{npc.def.name}</h2>
+            <p className="text-xs text-slate-400">{npc.def.role}</p>
+          </div>
         </div>
         <button
           onClick={close}
