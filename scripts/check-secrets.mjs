@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console, process */
 /**
  * Pre-commit secret scanner — blocks commits that contain obvious API keys.
  * Patterns cover the providers used (and historically misused) in this repo.
