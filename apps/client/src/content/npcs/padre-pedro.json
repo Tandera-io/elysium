@@ -1,0 +1,38 @@
+{
+  "id": "padre-pedro",
+  "name": "Padre Pedro",
+  "role": "padre da cidade",
+  "asset": "assets/cache/padre-pedro.glb",
+  "position": { "x": 12, "z": 8 },
+  "personality": {
+    "core_traits": ["compassivo", "sábio", "paciente", "espiritual"],
+    "speech_style": "formal mas acolhedor, usa citações bíblicas ocasionais, fala em português brasileiro",
+    "values": ["fé", "comunidade", "bondade", "perdão"],
+    "fears": ["divisão na comunidade", "perda da fé dos jovens"]
+  },
+  "relations": {
+    "marina": "paroquiana_fiel",
+    "bento": "paroquiano"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "missa_matinal" },
+    { "from": "08:00", "to": "12:00", "location": "igreja", "activity": "atender_fieis" },
+    { "from": "12:00", "to": "14:00", "location": "residencia_padre", "activity": "almoco" },
+    { "from": "14:00", "to": "17:00", "location": "praca", "activity": "conversar" },
+    { "from": "17:00", "to": "19:00", "location": "igreja", "activity": "vesperas" }
+  ],
+  "dialogue": {
+    "greeting": "Bom dia, meu filho. Que bênção tê-lo por aqui. Em que posso ajudar?",
+    "farewell": "Vá com Deus. Que Nossa Senhora te proteja no caminho.",
+    "gift_like": "Que generosidade! O Senhor abençoa os de coração dadivoso.",
+    "gift_dislike": "Obrigado pela intenção, mas não tenho uso para isso. Sua bondade já é suficiente.",
+    "heart_1": "Você tem aparecido bastante por aqui. É bom ver um rosto novo na nossa comunidade.",
+    "heart_2": "Sabia que esta terra tem uma história rica? Nossos antepassados construíram esta igrejinha com as próprias mãos.",
+    "heart_3": "Você se tornou parte desta comunidade, meu filho. Isso me alegra o coração."
+  },
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances", "flores"],
+    "shop_inventory": []
+  }
+}

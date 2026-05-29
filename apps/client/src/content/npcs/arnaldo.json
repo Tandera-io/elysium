@@ -1,0 +1,43 @@
+{
+  "id": "arnaldo",
+  "name": "Seu Arnaldo",
+  "role": "comerciante e fazendeiro",
+  "asset": "assets/cache/arnaldo.glb",
+  "position": { "x": 22, "z": 16 },
+  "personality": {
+    "core_traits": [
+      "esperto nos negócios",
+      "contador de histórias",
+      "nostálgico",
+      "generoso com amigos"
+    ],
+    "speech_style": "animado, usa expressões do campo, conta causos, fala em português brasileiro caipira",
+    "values": ["trabalho duro", "lealdade", "lucro honesto", "tradição rural"],
+    "fears": ["colheita ruim", "ser enganado num negócio", "ver a cidade modernizar demais"]
+  },
+  "relations": {
+    "bento": "compadre",
+    "dorinha": "parceira_comercial"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "fazenda", "activity": "trabalhar_na_roca" },
+    { "from": "09:00", "to": "13:00", "location": "mercado", "activity": "vender_produtos" },
+    { "from": "13:00", "to": "15:00", "location": "venda", "activity": "almoco_e_conversa" },
+    { "from": "15:00", "to": "18:00", "location": "mercado", "activity": "negociar" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "bater_papo" }
+  ],
+  "dialogue": {
+    "greeting": "Ô, chegou o moço! Tá precisando de alguma coisa? Tenho produto bom aqui, pode crer!",
+    "farewell": "Vai com Deus, visse! Qualquer precisão, é só aparecer!",
+    "gift_like": "Puxa, que coisa boa! Isso me lembrou o tempo que eu era novo na roça. Obrigado mesmo!",
+    "gift_dislike": "Ah, obrigado... Mas não é bem o que eu uso por aqui não. Mas valeu pela lembrança!",
+    "heart_1": "Você é trabalhador, dá pra ver. Aqui no campo é assim: quem trabalha, colhe. Pode contar comigo.",
+    "heart_2": "Já faz trinta anos que trabalho nessa terra. Meu pai me ensinou que o solo é sagrado. Cuide bem da sua lavoura.",
+    "heart_3": "Sabia que você me lembra um pouco de mim quando era novo? Cheio de garra. Você vai longe, meu amigo."
+  },
+  "economy_role": {
+    "produces": ["trigo", "milho", "feijao"],
+    "consumes": ["seed_wheat", "seed_corn", "seed_tomato"],
+    "shop_inventory": ["trigo", "milho", "feijao"]
+  }
+}
