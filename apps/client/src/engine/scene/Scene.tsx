@@ -7,7 +7,7 @@ import { StaticProps } from '../world/StaticProps';
 import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
-import { NpcView } from '../../systems/npc/NpcView';
+import { AnimatedNpcView } from '../../components/Npc';
 
 export function Scene() {
   return (
@@ -25,7 +25,7 @@ export function Scene() {
       <TileMap />
       <FarmField />
       <StaticProps />
-      <NpcView />
+      <AnimatedNpcView />
       <Floor />
       <PlayerController />
     </Canvas>
