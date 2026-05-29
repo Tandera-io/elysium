@@ -1,0 +1,15 @@
+{
+  "locations": {
+    "padaria": { "x": -8, "z": -4 },
+    "fazenda": { "x": 4, "z": -6 },
+    "curral": { "x": 0, "z": -10 },
+    "praca": { "x": 0, "z": 0 },
+    "mercado": { "x": 6, "z": 2 },
+    "estalagem": { "x": -4, "z": 4 },
+    "quitanda": { "x": 6, "z": 4 },
+    "casa": { "x": 9, "z": 6 },
+    "casa_marina": { "x": -10, "z": -6 },
+    "casa_bento": { "x": 6, "z": -4 },
+    "casa_lucia": { "x": 2, "z": -12 }
+  }
+}
