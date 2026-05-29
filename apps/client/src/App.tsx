@@ -4,6 +4,7 @@ import { Scene } from './engine/scene/Scene';
 import { Hotbar } from './ui/Hotbar';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { DialogueBox } from './ui/DialogueBox';
+import { ChoiceDialogueBox } from './ui/ChoiceDialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
@@ -97,6 +98,7 @@ export function App() {
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
+      <ChoiceDialogueBox />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
