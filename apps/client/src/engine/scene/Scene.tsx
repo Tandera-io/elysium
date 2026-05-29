@@ -5,6 +5,7 @@ import { FarmField } from '../world/FarmField';
 import { Floor } from '../world/Floor';
 import { StaticProps } from '../world/StaticProps';
 import { TileMap } from '../world/TileMap';
+import { ForageItems } from '../world/ForageItems';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
@@ -26,6 +27,7 @@ export function Scene() {
       <FarmField />
       <StaticProps />
       <NpcView />
+      <ForageItems />
       <Floor />
       <PlayerController />
     </Canvas>

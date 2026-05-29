@@ -8,6 +8,7 @@ import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
+import { ForageInteract } from './systems/foraging/ForageInteract';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
@@ -96,6 +97,7 @@ export function App() {
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
+      <ForageInteract />
       <DialogueBox />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
