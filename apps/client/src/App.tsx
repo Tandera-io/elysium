@@ -7,6 +7,7 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { FarmPanel } from './components/Farm';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
@@ -98,6 +99,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
+      <FarmPanel />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
