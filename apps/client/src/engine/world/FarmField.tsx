@@ -7,13 +7,11 @@ import { useInventoryStore } from '../../systems/inventory/inventoryStore';
 import { useToolStore } from '../../store/toolStore';
 import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
 import { BillboardSprite } from '../loader/BillboardSprite';
-import { tileKey, type PathfindOptions } from './pathfinding';
+import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID, type TileCoord } from './WorldGrid';
 
+// Keep the re-export to avoid breaking any downstream that imported this symbol.
 export { tileKey as _tileKey };
-// Suppress unused import warning for PathfindOptions used only via type
-const _unused: PathfindOptions = {};
-void _unused;
 
 const TILE_HEIGHT = 0.01;
 
