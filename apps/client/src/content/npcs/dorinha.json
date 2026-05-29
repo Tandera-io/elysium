@@ -1,0 +1,22 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "enfermeira",
+  "asset": "sprites/cache/86c32aed8fdfe173.png",
+  "position": { "x": 4, "z": -8 },
+  "personality": {
+    "core_traits": ["cuidadosa", "pragmática", "discreta"],
+    "speech_style": "formal mas gentil, fala pouco mas diz muito",
+    "values": ["saúde", "comunidade", "honestidade"],
+    "fears": ["perder um paciente", "remédios em falta"]
+  },
+  "relations": {},
+  "schedule": [
+    { "from": "08:00", "to": "18:00", "location": "posto_saude", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": ["erva_medicinal"],
+    "consumes": ["ervas"],
+    "shop_inventory": ["erva_medicinal", "bandagem"]
+  }
+}
