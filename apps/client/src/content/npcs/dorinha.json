@@ -1,0 +1,18 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "comerciante",
+  "position": { "x": -4, "z": -8 },
+  "personality": {
+    "core_traits": ["animada", "negociante", "curiosa"],
+    "speech_style": "rápido, usa gírias do comércio, gosta de pechinchar",
+    "values": ["lucro justo", "variedade", "clientes satisfeitos"],
+    "fears": ["estoque vazio", "concorrência desleal"]
+  },
+  "relations": { "marina": "cliente_frequente", "bento": "fornecedor" },
+  "economy_role": {
+    "produces": ["sementes", "ferramentas"],
+    "consumes": ["trigo", "tomate"],
+    "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  }
+}
