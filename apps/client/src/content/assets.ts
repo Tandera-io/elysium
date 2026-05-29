@@ -28,9 +28,12 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
     'sprites/cache/9374eeeb0b8fce10.png', // idle (frame 2 = sandwich)
     'sprites/cache/368ae9f815b40a8a.png', // walk 2 (right leg forward)
   ],
-  // Dorinha's walk cycle — run `pnpm sprite:generate` to add dedicated walk frames.
+  // Dorinha's walk cycle — 4-frame alternating left/right leg animation.
   dorinha: [
-    'sprites/cache/86c32aed8fdfe173.png', // idle / walk (single frame)
+    'sprites/cache/86c32aed8fdfe173.png', // frame 0: idle
+    'sprites/cache/c2daeecd8b188ac4.png', // frame 1: left leg forward
+    'sprites/cache/86c32aed8fdfe173.png', // frame 2: idle (sandwich)
+    'sprites/cache/7ca40c4410ad1460.png', // frame 3: right leg forward
   ],
 };
 
