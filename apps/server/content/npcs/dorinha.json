@@ -1,0 +1,55 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "vendedora de sementes",
+  "asset": "assets/cache/dorinha.glb",
+  "position": { "x": 6, "z": -8 },
+  "personality": {
+    "core_traits": ["animada", "conhecedora de plantas", "negociante"],
+    "speech_style": "informal, entusiasmada, usa termos de jardinagem",
+    "values": ["natureza", "colheita abundante", "troca justa"],
+    "fears": ["seca", "pragas"]
+  },
+  "relations": {},
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "loja_sementes", "activity": "vender" },
+    { "from": "14:00", "to": "18:00", "location": "loja_sementes", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["trigo", "tomate"],
+    "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  },
+  "mock_responses": [
+    {
+      "npcReply": "Oi, bem-vindo! Tenho as melhores sementes da região. Quer dar uma olhada no que tenho hoje?",
+      "emotion": "happy",
+      "memorySummary": "Dorinha cumprimentou o jogador e ofereceu sementes.",
+      "actionHint": "open_shop"
+    },
+    {
+      "npcReply": "Essa época é ótima pra plantar tomate! As chuvas estão favoráveis. Me diz se precisar de sementes.",
+      "emotion": "excited",
+      "memorySummary": "Dorinha deu uma dica de plantio de tomate.",
+      "actionHint": null
+    },
+    {
+      "npcReply": "Cuidado com as pragas, hein! Sempre vistorio meu estoque antes de vender. Qualidade garantida!",
+      "emotion": "neutral",
+      "memorySummary": "Dorinha falou sobre qualidade das sementes e pragas.",
+      "actionHint": null
+    },
+    {
+      "npcReply": "Se você plantar trigo agora, em uns dias já tem colheita boa. Tenho semente de trigo fresquinha aqui.",
+      "emotion": "happy",
+      "memorySummary": "Dorinha recomendou plantar trigo e ofereceu sementes.",
+      "actionHint": "open_shop"
+    },
+    {
+      "npcReply": "Ah, a seca tá me preocupando... mas minhas sementes aguenta! São resistentes, pode confiar.",
+      "emotion": "sad",
+      "memorySummary": "Dorinha expressou preocupação com a seca mas garantiu qualidade das sementes.",
+      "actionHint": null
+    }
+  ]
+}

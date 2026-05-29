@@ -18,6 +18,26 @@ const FAKE_NPC = {
   },
 };
 
+const DORINHA_NPC = {
+  id: 'dorinha',
+  name: 'Dorinha',
+  role: 'vendedora de sementes',
+  personality: {
+    core_traits: ['animada', 'conhecedora de plantas'],
+    speech_style: 'informal, entusiasmada',
+    values: ['natureza', 'colheita abundante'],
+    fears: ['seca', 'pragas'],
+  },
+  mock_responses: [
+    {
+      npcReply: 'Oi, bem-vindo! Tenho as melhores sementes da região.',
+      emotion: 'happy',
+      memorySummary: 'Dorinha cumprimentou o jogador.',
+      actionHint: 'open_shop',
+    },
+  ],
+};
+
 function mockLoaderReturning(def = FAKE_NPC): NpcLoader {
   const loader = new NpcLoader('/tmp/none');
   // Override list/load on the instance
@@ -172,5 +192,51 @@ describe('dialogue routes', () => {
     const secondCall = (llm.generate as ReturnType<typeof vi.fn>).mock.calls[1]?.[0];
     expect(firstCall.system).toContain('sem memórias anteriores');
     expect(secondCall.system).toContain('primeiro encontro com player');
+  });
+});
+
+describe('Dorinha dialogue — mock fallback', () => {
+  it('returns a mock response when no LLM is configured', async () => {
+    const loader = new NpcLoader('/tmp/none');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn(loader, 'load').mockResolvedValue(DORINHA_NPC as any);
+    // llm: null forces the mock-fallback code path (undefined would check env)
+    const app = buildDialogueRoutes({ loader, llm: null });
+    const res = await app.request('/dialogue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        npcId: 'dorinha',
+        playerInput: 'Oi, Dorinha!',
+        worldContext: { hour: 10, dayInSeason: 1, season: 'spring', year: 1 },
+      }),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { npcReply: string; cached: boolean };
+    expect(typeof body.npcReply).toBe('string');
+    expect(body.npcReply.length).toBeGreaterThan(0);
+    expect(body.cached).toBe(true);
+  });
+
+  it('returns 503 for NPC without mock_responses when no LLM', async () => {
+    const loader = new NpcLoader('/tmp/none');
+    vi.spyOn(loader, 'load').mockResolvedValue({
+      id: 'ghost',
+      name: 'Ghost',
+      role: 'unknown',
+      personality: { core_traits: [], speech_style: '', values: [], fears: [] },
+    });
+    // llm: null forces the mock-fallback code path
+    const app = buildDialogueRoutes({ loader, llm: null });
+    const res = await app.request('/dialogue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        npcId: 'ghost',
+        playerInput: 'hello',
+        worldContext: { hour: 10, dayInSeason: 1, season: 'spring', year: 1 },
+      }),
+    });
+    expect(res.status).toBe(503);
   });
 });

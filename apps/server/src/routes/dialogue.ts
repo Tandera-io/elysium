@@ -45,7 +45,7 @@ function makeRealLlm(apiKey: string): DialogueLlm {
 interface RoutesDeps {
   loader?: NpcLoader;
   memory?: NpcMemory;
-  llm?: DialogueLlm;
+  llm?: DialogueLlm | null;
   /** Skip persistence (used by tests). */
   noPersist?: boolean;
 }
@@ -54,7 +54,13 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
   const app = new Hono();
   const loader = deps.loader ?? new NpcLoader();
   const memory = deps.memory ?? new NpcMemory();
-  const llm = deps.llm ?? (env.ANTHROPIC_API_KEY ? makeRealLlm(env.ANTHROPIC_API_KEY) : null);
+  // deps.llm=null → no LLM (mock mode); deps.llm=undefined → check env
+  const llm =
+    deps.llm !== undefined
+      ? deps.llm
+      : env.ANTHROPIC_API_KEY
+        ? makeRealLlm(env.ANTHROPIC_API_KEY)
+        : null;
 
   app.get('/npcs', async (c) => {
     const npcs = await loader.list();
@@ -62,9 +68,6 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
   });
 
   app.post('/dialogue', async (c) => {
-    if (!llm) {
-      return c.json({ error: 'ANTHROPIC_API_KEY not configured' }, 503);
-    }
     let body: DialogueRequest;
     try {
       body = (await c.req.json()) as DialogueRequest;
@@ -77,6 +80,25 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
 
     const npc = await loader.load(body.npcId);
     if (!npc) return c.json({ error: `unknown npc: ${body.npcId}` }, 404);
+
+    // If no LLM is configured, try mock responses from the NPC definition.
+    if (!llm) {
+      const mockResponses = (npc as NpcDef & { mock_responses?: DialogueResponse[] })
+        .mock_responses;
+      if (mockResponses && mockResponses.length > 0) {
+        // Pick a response pseudo-randomly based on player input hash for variety.
+        const hash = Array.from(body.playerInput).reduce(
+          (acc, ch) => (acc * 31 + ch.charCodeAt(0)) & 0xffff,
+          0,
+        );
+        const mock = mockResponses[hash % mockResponses.length] as DialogueResponse;
+        return c.json({ ...mock, cached: true });
+      }
+      return c.json(
+        { error: 'ANTHROPIC_API_KEY not configured and no mock_responses defined' },
+        503,
+      );
+    }
 
     const recent = await memory.readRecent(body.npcId, 20);
     const systemPrompt = buildSystemPrompt(npc, recent, body.worldContext);

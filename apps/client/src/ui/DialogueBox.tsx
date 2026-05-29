@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { isDorinha, DORINHA_DIALOGUE_OPTIONS } from '../components/NPCs/Dorinha.js';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -77,15 +78,21 @@ export function DialogueBox() {
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
+  const world = {
+    hour,
+    dayInSeason,
+    season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
+    year,
+  };
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void send(draft, {
-      hour,
-      dayInSeason,
-      season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
-      year,
-    });
+    void send(draft, world);
     setDraft('');
+  };
+
+  const onQuickOption = (text: string) => {
+    void send(text, world);
   };
 
   return (
@@ -129,6 +136,20 @@ export function DialogueBox() {
         {pending && <p className="text-slate-500 italic">…pensando</p>}
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
+      {isDorinha(npcId) && history.length === 0 && !pending && (
+        <div className="px-4 py-2 border-t border-slate-700 flex flex-wrap gap-1.5">
+          {DORINHA_DIALOGUE_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() => onQuickOption(opt.text)}
+              disabled={pending}
+              className="bg-green-700 hover:bg-green-600 text-white text-xs px-2.5 py-1 rounded-full disabled:opacity-50 transition-colors"
+            >
+              {opt.text}
+            </button>
+          ))}
+        </div>
+      )}
       {activeQuest && (
         <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
           <span>
