@@ -1,0 +1,42 @@
+{
+  "npcId": "dorinha",
+  "tree": {
+    "start": {
+      "text": "Oi sumido! Bem-vindo à Quitanda da Dorinha! O que você tá precisando hoje?",
+      "emotion": "happy",
+      "choices": [
+        { "id": "buy_seeds", "text": "Quero comprar sementes", "next": "buy_seeds" },
+        { "id": "sell_crops", "text": "Vim vender minha colheita", "next": "sell_crops" },
+        { "id": "just_talk", "text": "Só queria bater um papo", "next": "chat" },
+        { "id": "goodbye", "text": "Tchau, Dorinha!", "next": "end" }
+      ]
+    },
+    "buy_seeds": {
+      "text": "Boa escolha! Tenho sementes fresquinhas hoje: Trigo por 10 moedas, Tomate por 15, e Milho por 12. Vou abrir a loja pra você!",
+      "emotion": "excited",
+      "action": "open_shop",
+      "choices": [
+        { "id": "back", "text": "Obrigado, Dorinha!", "next": "start" },
+        { "id": "goodbye", "text": "Valeu, tchau!", "next": "end" }
+      ]
+    },
+    "sell_crops": {
+      "text": "Trago boa notícia! Pago bem pela sua colheita: Trigo 50 moedas, Tomate 70, Milho 60. Vou abrir a loja pra você vender!",
+      "emotion": "happy",
+      "action": "open_shop",
+      "choices": [
+        { "id": "back", "text": "Perfeito, obrigado!", "next": "start" },
+        { "id": "goodbye", "text": "Até mais!", "next": "end" }
+      ]
+    },
+    "chat": {
+      "text": "Claro, meu bem! Tô sempre aqui. A colheita tá boa esse ano? Eu tô comprando tudo que o povo traz — trigo, tomate, milho. Cuida bem da roça!",
+      "emotion": "neutral",
+      "choices": [
+        { "id": "buy_seeds", "text": "Falando nisso, quero comprar sementes", "next": "buy_seeds" },
+        { "id": "sell_crops", "text": "Posso te vender minha colheita?", "next": "sell_crops" },
+        { "id": "goodbye", "text": "Tá bom, até logo!", "next": "end" }
+      ]
+    }
+  }
+}

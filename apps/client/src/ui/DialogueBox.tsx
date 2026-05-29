@@ -8,6 +8,7 @@ import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
 import { useNPCShopStore, DORINHA_SHOP_ID } from '../systems/npc/NPCShop';
+import { DialogueTree, hasDialogueTree } from '../components/DialogueTree';
 
 interface QuickChoice {
   label: string;
@@ -134,6 +135,7 @@ export function DialogueBox() {
   };
 
   const quickChoices = NPC_CHOICES[npcId] ?? null;
+  const useTree = hasDialogueTree(npcId);
 
   return (
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
@@ -177,8 +179,11 @@ export function DialogueBox() {
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
 
-      {/* Quick-choice buttons (shown when there is no pending request) */}
-      {quickChoices && !pending && (
+      {/* Dialogue tree (static choices) shown when NPC has a defined tree */}
+      {useTree && <DialogueTree npcId={npcId} />}
+
+      {/* Quick-choice buttons (shown for other NPCs without a tree) */}
+      {!useTree && quickChoices && !pending && (
         <div className="px-4 py-2 border-t border-slate-700/60 flex flex-wrap gap-2">
           {quickChoices.map((choice: QuickChoice) => (
             <button
