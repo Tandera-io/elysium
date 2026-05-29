@@ -1,0 +1,11 @@
+{
+  "id": "dorinha-walk",
+  "fps": 6,
+  "loop": true,
+  "frames": [
+    "sprites/cache/50abe456f7d3f935.png",
+    "sprites/cache/7ca40c4410ad1460.png",
+    "sprites/cache/50abe456f7d3f935.png",
+    "sprites/cache/c2daeecd8b188ac4.png"
+  ]
+}
