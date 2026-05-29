@@ -10,6 +10,14 @@
     "fears": ["seca prolongada", "perder a memória do que aprendeu com o pai"]
   },
   "relations": { "marina": "sobrinha", "lucia": "esposa_amiga" },
+  "schedule": [
+    { "from": "05:00", "to": "07:00", "location": "casa_bento", "activity": "acordar" },
+    { "from": "07:00", "to": "12:00", "location": "fazenda", "activity": "lavrar" },
+    { "from": "12:00", "to": "13:30", "location": "estalagem", "activity": "almoco" },
+    { "from": "13:30", "to": "17:00", "location": "fazenda", "activity": "colher" },
+    { "from": "17:00", "to": "19:00", "location": "praca", "activity": "descanso" },
+    { "from": "19:00", "to": "21:00", "location": "casa_bento", "activity": "jantar" }
+  ],
   "economy_role": {
     "produces": ["trigo", "lenha"],
     "consumes": ["lenha", "pao_frances"],

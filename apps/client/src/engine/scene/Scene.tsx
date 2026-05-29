@@ -8,6 +8,7 @@ import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
+import { NpcScheduler } from '../../systems/npc/NpcScheduler';
 
 export function Scene() {
   return (
@@ -26,6 +27,7 @@ export function Scene() {
       <FarmField />
       <StaticProps />
       <NpcView />
+      <NpcScheduler />
       <Floor />
       <PlayerController />
     </Canvas>

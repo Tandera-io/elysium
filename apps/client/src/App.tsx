@@ -7,6 +7,7 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { FarmPanel } from './ui/FarmPanel';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
@@ -21,6 +22,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [farmOpen, setFarmOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -57,12 +59,19 @@ export function App() {
         setSaveOpen(true);
       }
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
-        setSaveOpen(true);
+        if (farmOpen) {
+          setFarmOpen(false);
+        } else {
+          setSaveOpen(true);
+        }
+      }
+      if (e.code === 'KeyB' && !titleOpen && !saveOpen && !farmOpen) {
+        setFarmOpen(true);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [titleOpen, saveOpen]);
+  }, [titleOpen, saveOpen, farmOpen]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
@@ -73,9 +82,15 @@ export function App() {
         <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
         <button
           onClick={() => setSaveOpen(true)}
-          className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
+          className="mt-1 text-[10px] text-slate-400 hover:text-slate-200 block"
         >
           📁 menu (Esc · Ctrl+S)
+        </button>
+        <button
+          onClick={() => setFarmOpen(true)}
+          className="mt-0.5 text-[10px] text-green-400 hover:text-green-200"
+        >
+          🌱 fazenda (B)
         </button>
       </header>
       <aside
@@ -98,6 +113,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
+      <FarmPanel open={farmOpen} onClose={() => setFarmOpen(false)} />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>

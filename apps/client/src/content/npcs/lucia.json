@@ -10,6 +10,15 @@
     "fears": ["perder uma vaca para doença", "ficar sem companhia"]
   },
   "relations": { "bento": "marido_amigo", "marina": "amiga_proxima" },
+  "schedule": [
+    { "from": "04:30", "to": "06:00", "location": "curral", "activity": "ordenhar" },
+    { "from": "06:00", "to": "08:00", "location": "casa_lucia", "activity": "cafe_manha" },
+    { "from": "08:00", "to": "11:00", "location": "curral", "activity": "cuidar_animais" },
+    { "from": "11:00", "to": "13:00", "location": "praca", "activity": "socializar" },
+    { "from": "13:00", "to": "16:00", "location": "curral", "activity": "cuidar_animais" },
+    { "from": "16:00", "to": "18:00", "location": "mercado", "activity": "compras" },
+    { "from": "18:00", "to": "21:00", "location": "casa_lucia", "activity": "jantar" }
+  ],
   "economy_role": {
     "produces": ["leite", "ovo"],
     "consumes": ["pao_frances"],
