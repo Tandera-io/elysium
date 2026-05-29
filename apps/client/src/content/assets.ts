@@ -15,6 +15,7 @@ export const SPRITES = {
   marina: 'sprites/cache/8db8c640fad3595a.png',
   bento: 'sprites/cache/c8ceff3648e5624c.png',
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
+  dorinha: 'sprites/cache/86c32aed8fdfe173.png',
 } as const;
 
 /** Walk animation frames — generated via /images/edits using the idle sprite
@@ -26,6 +27,26 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
     'sprites/cache/8d66aff919a59d28.png', // walk 1 (left leg forward)
     'sprites/cache/9374eeeb0b8fce10.png', // idle (frame 2 = sandwich)
     'sprites/cache/368ae9f815b40a8a.png', // walk 2 (right leg forward)
+  ],
+  // Dorinha's walk cycle — 4-frame alternating left/right leg animation.
+  dorinha: [
+    'sprites/cache/86c32aed8fdfe173.png', // frame 0: idle
+    'sprites/cache/c2daeecd8b188ac4.png', // frame 1: left leg forward
+    'sprites/cache/86c32aed8fdfe173.png', // frame 2: idle (sandwich)
+    'sprites/cache/7ca40c4410ad1460.png', // frame 3: right leg forward
+  ],
+};
+
+/** Idle animation frames — played when the NPC is stationary (subtle breathing bob).
+ *  Element 0 must be the idle sprite (same as SPRITES.<id>).
+ *  Placeholder frames can be swapped for server-generated sprites via
+ *  /api/sprite/generate when the endpoint is available. */
+export const IDLE_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
+  dorinha: [
+    'sprites/cache/86c32aed8fdfe173.png', // idle base (frame 0)
+    'sprites/cache/5adae98cd176aacd.png', // idle bob — body 1px up
+    'sprites/cache/86c32aed8fdfe173.png', // idle base (sandwich)
+    'sprites/cache/19bd4f137f870e8d.png', // idle bob — head tilt 1px right
   ],
 };
 
