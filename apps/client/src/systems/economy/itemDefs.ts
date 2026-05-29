@@ -10,7 +10,11 @@ export type EconomyItemId =
   | 'ovo'
   | 'lenha'
   | 'pao_frances'
-  | 'bolo_fuba';
+  | 'bolo_fuba'
+  | 'copper_ore'
+  | 'iron_ore'
+  | 'gold_ore'
+  | 'log';
 
 export interface ItemDef {
   id: EconomyItemId;
@@ -28,4 +32,8 @@ export const ITEMS: Record<EconomyItemId, ItemDef> = {
   lenha: { id: 'lenha', name: 'Lenha', basePrice: 5 },
   pao_frances: { id: 'pao_frances', name: 'Pão francês', basePrice: 18, perishable: true },
   bolo_fuba: { id: 'bolo_fuba', name: 'Bolo de fubá', basePrice: 28, perishable: true },
+  copper_ore: { id: 'copper_ore', name: 'Minério de Cobre', basePrice: 25 },
+  iron_ore: { id: 'iron_ore', name: 'Minério de Ferro', basePrice: 50 },
+  gold_ore: { id: 'gold_ore', name: 'Minério de Ouro', basePrice: 100 },
+  log: { id: 'log', name: 'Tronco', basePrice: 10 },
 };

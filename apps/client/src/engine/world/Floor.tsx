@@ -3,6 +3,7 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useToolStore } from '../../store/toolStore';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { useInventoryStore } from '../../systems/inventory/inventoryStore';
+import { useMiningStore } from '../../systems/mining/miningStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
 
@@ -14,6 +15,8 @@ interface FloorProps {
  * Invisible interaction plane. Routes pointerdown to either:
  *   - 'move': click-to-move pathfinding
  *   - 'hoe' | 'water' | 'seed_*' | 'harvest': apply farm action on clicked tile
+ *   - 'pickaxe': mine a rock at the clicked tile, drop ore into inventory
+ *   - 'axe': chop a tree at the clicked tile, drop a log into inventory
  */
 export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
   const width = grid.width * grid.tileSize;
@@ -50,6 +53,14 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
       if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+    } else if (tool === 'pickaxe') {
+      const mining = useMiningStore.getState();
+      const dropped = mining.mineRock(goal.x, goal.z);
+      if (dropped) inv.add(dropped, 1);
+    } else if (tool === 'axe') {
+      const mining = useMiningStore.getState();
+      const dropped = mining.chopLog(goal.x, goal.z);
+      if (dropped) inv.add(dropped, 1);
     }
   };
 
