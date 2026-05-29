@@ -1,7 +1,10 @@
 import { Suspense } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { BillboardSprite } from '../../engine/loader/BillboardSprite';
 import { useNpcStore } from './npcStore';
 import { SPRITES, type SpriteSlot } from '../../content/assets';
+import { useTimeStore } from '../time/timeStore';
+import { DORINHA_ID, DORINHA_SCHEDULE } from '../../npc/Dorinha';
 
 /** Cápsula vermelha while sprite streams in (or if it's missing entirely). */
 function NpcCapsuleFallback() {
@@ -25,11 +28,39 @@ function spriteFor(npcId: string): string | null {
   return SPRITES[key] ?? null;
 }
 
+const NPC_WALK_SPEED = 1.5; // world-units per second
+
+/** Moves Dorinha toward her current schedule waypoint each frame. */
+function DorinhaWalker() {
+  useFrame((_, deltaRaw) => {
+    const delta = Math.min(deltaRaw, 0.1);
+    const hour = useTimeStore.getState().hour;
+    const slot = DORINHA_SCHEDULE.find((s) => hour >= s.fromHour && hour < s.toHour);
+    if (!slot) return;
+    const store = useNpcStore.getState();
+    const entry = store.npcs[DORINHA_ID];
+    if (!entry) return;
+    const { x, z } = entry.worldPos;
+    const { x: tx, z: tz } = slot.pos;
+    const dx = tx - x;
+    const dz = tz - z;
+    const dist = Math.hypot(dx, dz);
+    if (dist < 0.05) return;
+    const step = Math.min(NPC_WALK_SPEED * delta, dist);
+    store.setPosition(DORINHA_ID, {
+      x: x + (dx / dist) * step,
+      z: z + (dz / dist) * step,
+    });
+  });
+  return null;
+}
+
 /** Renders each NPC as a billboarded sprite if a sprite is registered for them. */
 export function NpcView() {
   const npcs = useNpcStore((s) => s.npcs);
   return (
     <group>
+      <DorinhaWalker />
       {Object.values(npcs).map(({ def, worldPos }) => {
         const spritePath = spriteFor(def.id);
         return (
