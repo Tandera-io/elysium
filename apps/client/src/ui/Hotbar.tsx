@@ -19,6 +19,7 @@ const TOOLS: readonly ToolButton[] = [
   { id: 'seed_wheat', label: '🌾 trigo', hotkey: '4', countOf: 'seed_wheat' },
   { id: 'seed_tomato', label: '🍅 tomate', hotkey: '5', countOf: 'seed_tomato' },
   { id: 'harvest', label: '✂️ colher', hotkey: '6' },
+  { id: 'fishing_rod', label: '🎣 vara', hotkey: '7' },
 ];
 
 export function Hotbar() {

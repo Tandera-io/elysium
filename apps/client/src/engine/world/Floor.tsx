@@ -3,17 +3,34 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useToolStore } from '../../store/toolStore';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { useInventoryStore } from '../../systems/inventory/inventoryStore';
+import { useFishingStore } from '../../systems/fishing/fishingStore';
+import { useCookingStore } from '../../systems/cooking/cookingStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
 
+/** Heuristic: world-space z > 30 units from center = water zone. */
+function isWaterTile(worldZ: number): boolean {
+  return worldZ > 30;
+}
+
 interface FloorProps {
   grid?: GridConfig;
+}
+
+/** Tile coordinates that contain a fireplace. */
+const FIREPLACE_TILES: Array<{ x: number; z: number }> = [{ x: 5, z: 5 }];
+
+function isFireplaceTile(x: number, z: number): boolean {
+  return FIREPLACE_TILES.some((t) => t.x === x && t.z === z);
 }
 
 /**
  * Invisible interaction plane. Routes pointerdown to either:
  *   - 'move': click-to-move pathfinding
  *   - 'hoe' | 'water' | 'seed_*' | 'harvest': apply farm action on clicked tile
+ *   - 'pickaxe': mine a rock at the clicked tile, drop ore into inventory
+ *   - 'axe': chop a tree at the clicked tile, drop a log into inventory
+ *   - fireplace tile: toggle the CookingPanel
  */
 export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
   const width = grid.width * grid.tileSize;
@@ -25,6 +42,13 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
     const goal = worldToTile({ x: e.point.x, z: e.point.z }, grid);
 
     if (tool === 'move') {
+      // Check for fireplace tile interaction during move mode
+      if (isFireplaceTile(goal.x, goal.z)) {
+        console.info('fireplace clicked');
+        useCookingStore.getState().toggle();
+        return;
+      }
+
       const { position, setPath } = usePlayerStore.getState();
       const start = worldToTile({ x: position.x, z: position.z }, grid);
       const path = findPath(start, goal, { grid });
@@ -50,6 +74,10 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
       if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+    } else if (tool === 'fishing_rod') {
+      if (isWaterTile(e.point.z)) {
+        useFishingStore.getState().openMinigame();
+      }
     }
   };
 

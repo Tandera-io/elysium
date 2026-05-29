@@ -1,11 +1,27 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
+import type { CookedItemId } from '../cooking/recipes';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ItemId =
+  | CropId
+  | 'seed_wheat'
+  | 'seed_tomato'
+  | 'seed_corn'
+  | 'bass'
+  | 'pike'
+  | 'perch'
+  | 'copper_ore'
+  | 'iron_ore'
+  | 'gold_ore'
+  | 'log'
+  | 'mushroom'
+  | CookedItemId;
 
 export interface SlotItem {
   id: ItemId;
   qty: number;
+  /** True if this item came from a cooking recipe. */
+  cooked?: boolean;
 }
 
 export const INVENTORY_SIZE = 12;
@@ -19,8 +35,12 @@ export interface InventoryState {
 export interface InventoryActions {
   /** Stacks into existing slots of same id; spills into first empty. Returns true if all fit. */
   add: (id: ItemId, qty: number) => boolean;
+  /** Add an item with optional metadata (e.g. cooked flag). Returns true if all fit. */
+  addItem: (item: SlotItem) => boolean;
   /** Removes qty across stacks. Returns true if removal succeeded fully. */
   remove: (id: ItemId, qty: number) => boolean;
+  /** Alias for remove — removes qty of itemId. Returns true if removal succeeded fully. */
+  removeItem: (itemId: ItemId, quantity: number) => boolean;
   count: (id: ItemId) => number;
   swap: (a: number, b: number) => void;
   reset: () => void;
@@ -38,6 +58,31 @@ function makeInitial(): InventoryState {
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
   ...makeInitial(),
+  addItem: (item) => {
+    if (item.qty <= 0) return true;
+    const slots = [...get().slots];
+    let remaining = item.qty;
+    // 1) fill existing stacks of same id (only merge if cooked flag matches)
+    for (let i = 0; i < slots.length && remaining > 0; i++) {
+      const s = slots[i];
+      if (s && s.id === item.id && !!s.cooked === !!item.cooked && s.qty < STACK_MAX) {
+        const room = STACK_MAX - s.qty;
+        const drop = Math.min(remaining, room);
+        slots[i] = { ...s, qty: s.qty + drop };
+        remaining -= drop;
+      }
+    }
+    // 2) place in first empty
+    for (let i = 0; i < slots.length && remaining > 0; i++) {
+      if (slots[i] === null) {
+        const drop = Math.min(remaining, STACK_MAX);
+        slots[i] = { ...item, qty: drop };
+        remaining -= drop;
+      }
+    }
+    set({ slots });
+    return remaining === 0;
+  },
   add: (id, qty) => {
     if (qty <= 0) return true;
     const slots = [...get().slots];
@@ -81,6 +126,7 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     set({ slots });
     return true;
   },
+  removeItem: (itemId, quantity) => get().remove(itemId, quantity),
   count: (id) => get().slots.reduce((acc, s) => (s && s.id === id ? acc + s.qty : acc), 0),
   swap: (a, b) => {
     if (a === b) return;

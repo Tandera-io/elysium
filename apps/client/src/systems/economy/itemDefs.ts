@@ -10,7 +10,15 @@ export type EconomyItemId =
   | 'ovo'
   | 'lenha'
   | 'pao_frances'
-  | 'bolo_fuba';
+  | 'bolo_fuba'
+  | 'bass'
+  | 'pike'
+  | 'perch'
+  | 'copper_ore'
+  | 'iron_ore'
+  | 'gold_ore'
+  | 'log'
+  | 'mushroom_soup_cooked';
 
 export interface ItemDef {
   id: EconomyItemId;
@@ -18,6 +26,8 @@ export interface ItemDef {
   basePrice: number;
   /** True if the item degrades (e.g. bread). Used by future spoilage logic. */
   perishable?: boolean;
+  /** True if this item is the output of a cooking recipe. */
+  cooked?: boolean;
 }
 
 export const ITEMS: Record<EconomyItemId, ItemDef> = {
@@ -28,4 +38,18 @@ export const ITEMS: Record<EconomyItemId, ItemDef> = {
   lenha: { id: 'lenha', name: 'Lenha', basePrice: 5 },
   pao_frances: { id: 'pao_frances', name: 'Pão francês', basePrice: 18, perishable: true },
   bolo_fuba: { id: 'bolo_fuba', name: 'Bolo de fubá', basePrice: 28, perishable: true },
+  bass: { id: 'bass', name: 'Robalo', basePrice: 75 },
+  pike: { id: 'pike', name: 'Lúcio', basePrice: 90 },
+  perch: { id: 'perch', name: 'Perca', basePrice: 60 },
+  copper_ore: { id: 'copper_ore', name: 'Minério de Cobre', basePrice: 25 },
+  iron_ore: { id: 'iron_ore', name: 'Minério de Ferro', basePrice: 50 },
+  gold_ore: { id: 'gold_ore', name: 'Minério de Ouro', basePrice: 100 },
+  log: { id: 'log', name: 'Tronco', basePrice: 10 },
+  mushroom_soup_cooked: {
+    id: 'mushroom_soup_cooked',
+    name: 'Sopa de cogumelo',
+    basePrice: 45,
+    perishable: true,
+    cooked: true,
+  },
 };
