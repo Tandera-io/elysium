@@ -7,6 +7,7 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { CookingPanel } from './ui/CookingPanel';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
@@ -21,6 +22,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [cookingOpen, setCookingOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -59,6 +61,9 @@ export function App() {
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
         setSaveOpen(true);
       }
+      if (e.code === 'KeyC' && !titleOpen && !saveOpen && !e.ctrlKey && !e.metaKey) {
+        setCookingOpen((o) => !o);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -76,6 +81,12 @@ export function App() {
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
         >
           📁 menu (Esc · Ctrl+S)
+        </button>
+        <button
+          onClick={() => setCookingOpen((o) => !o)}
+          className="mt-1 ml-2 text-[10px] text-slate-400 hover:text-slate-200"
+        >
+          🍳 cozinha (C)
         </button>
       </header>
       <aside
@@ -98,6 +109,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
+      <CookingPanel open={cookingOpen} onClose={() => setCookingOpen(false)} />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
