@@ -4,9 +4,17 @@
  * via portal markers on the world floor.
  */
 
+import type { ForageId } from '../../systems/foraging/forageDefs';
+
 export type ZoneId = 'fazenda' | 'vilarejo' | 'floresta';
 
 export interface ZoneSpawn {
+  x: number;
+  z: number;
+}
+
+export interface ForageSiteDef {
+  itemId: ForageId;
   x: number;
   z: number;
 }
@@ -22,6 +30,8 @@ export interface ZoneDef {
   residentNpcIds: string[];
   /** Color for the ground tint in this zone. */
   groundColor: string;
+  /** Forage item spawn positions for this zone (ground-collectible items). */
+  forageSites?: ForageSiteDef[];
 }
 
 export const ZONES: Record<ZoneId, ZoneDef> = {
@@ -43,7 +53,7 @@ export const ZONES: Record<ZoneId, ZoneDef> = {
       { to: 'fazenda', at: { x: -12, z: -12 }, label: '← Fazenda' },
       { to: 'floresta', at: { x: 12, z: -12 }, label: 'Floresta →' },
     ],
-    residentNpcIds: ['marina', 'bento', 'lucia'],
+    residentNpcIds: ['marina', 'bento', 'lucia', 'nina'],
     groundColor: '#7a8a64',
   },
   floresta: {
@@ -54,5 +64,12 @@ export const ZONES: Record<ZoneId, ZoneDef> = {
     portals: [{ to: 'vilarejo', at: { x: -12, z: 12 }, label: '← Vilarejo' }],
     residentNpcIds: [],
     groundColor: '#3d6a32',
+    forageSites: [
+      { itemId: 'stick', x: -3, z: -4 },
+      { itemId: 'stone', x: 4, z: 2 },
+      { itemId: 'herb', x: -5, z: 3 },
+      { itemId: 'berry', x: 2, z: -6 },
+      { itemId: 'stick', x: 6, z: 5 },
+    ],
   },
 };
