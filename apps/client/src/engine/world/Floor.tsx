@@ -3,8 +3,14 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useToolStore } from '../../store/toolStore';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { useInventoryStore } from '../../systems/inventory/inventoryStore';
+import { useFishingStore } from '../../systems/fishing/fishingStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
+
+/** Heuristic: world-space z > 30 units from center = water zone. */
+function isWaterTile(worldZ: number): boolean {
+  return worldZ > 30;
+}
 
 interface FloorProps {
   grid?: GridConfig;
@@ -14,6 +20,7 @@ interface FloorProps {
  * Invisible interaction plane. Routes pointerdown to either:
  *   - 'move': click-to-move pathfinding
  *   - 'hoe' | 'water' | 'seed_*' | 'harvest': apply farm action on clicked tile
+ *   - 'fishing_rod': open fishing minigame when clicking water zone
  */
 export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
   const width = grid.width * grid.tileSize;
@@ -50,6 +57,10 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
       if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+    } else if (tool === 'fishing_rod') {
+      if (isWaterTile(e.point.z)) {
+        useFishingStore.getState().openMinigame();
+      }
     }
   };
 

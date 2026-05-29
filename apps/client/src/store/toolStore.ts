@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 
-export type ToolId = 'move' | 'hoe' | 'water' | 'seed_wheat' | 'seed_tomato' | 'harvest';
+export type ToolId =
+  | 'move'
+  | 'hoe'
+  | 'water'
+  | 'seed_wheat'
+  | 'seed_tomato'
+  | 'harvest'
+  | 'fishing_rod';
 
 export interface ToolState {
   current: ToolId;

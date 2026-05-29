@@ -1,7 +1,19 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ItemId =
+  | CropId
+  | 'seed_wheat'
+  | 'seed_tomato'
+  | 'seed_corn'
+  // fish items
+  | 'bass'
+  | 'pike'
+  | 'perch'
+  // forage / cooking ingredients
+  | 'mushroom'
+  // cooked items
+  | 'mushroom_soup_cooked';
 
 export interface SlotItem {
   id: ItemId;
