@@ -6,6 +6,9 @@ import { useInventoryStore } from '../../systems/inventory/inventoryStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
 
+/** Energy cost per farming action. */
+const FARMING_ENERGY_COST = 1;
+
 interface FloorProps {
   grid?: GridConfig;
 }
@@ -32,25 +35,36 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
       return;
     }
 
+    const player = usePlayerStore.getState();
+    if (player.energy <= 0) return;
+
     const farm = useFarmStore.getState();
     const inv = useInventoryStore.getState();
+    let acted = false;
 
     if (tool === 'hoe') {
-      farm.till(goal);
+      acted = farm.till(goal);
     } else if (tool === 'water') {
-      farm.water(goal);
+      acted = farm.water(goal);
     } else if (tool === 'seed_wheat') {
       if (inv.count('seed_wheat') > 0 && farm.plant(goal, 'wheat')) {
         inv.remove('seed_wheat', 1);
+        acted = true;
       }
     } else if (tool === 'seed_tomato') {
       if (inv.count('seed_tomato') > 0 && farm.plant(goal, 'tomato')) {
         inv.remove('seed_tomato', 1);
+        acted = true;
       }
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
-      if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+      if (yieldVal) {
+        inv.add(yieldVal.crop, yieldVal.quantity);
+        acted = true;
+      }
     }
+
+    if (acted) player.drainEnergy(FARMING_ENERGY_COST);
   };
 
   return (

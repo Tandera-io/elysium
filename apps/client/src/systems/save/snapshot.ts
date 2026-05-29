@@ -14,7 +14,7 @@ export function captureSnapshot(): GameSnapshot {
   const time = useTimeStore.getState();
   return {
     version: 1,
-    player: { position: { ...player.position } },
+    player: { position: { ...player.position }, energy: player.energy },
     farm: { day: farm.day, tiles: farm.tiles },
     inventory: { slots: inv.slots },
     quests: {
@@ -36,7 +36,11 @@ export function captureSnapshot(): GameSnapshot {
 /** Write a snapshot back into every store. Versions older than current are
  *  silently coerced — callers should validate first if needed. */
 export function applySnapshot(snap: GameSnapshot): void {
-  usePlayerStore.setState({ position: snap.player.position, path: [] });
+  usePlayerStore.setState({
+    position: snap.player.position,
+    path: [],
+    energy: snap.player.energy ?? 100,
+  });
   useFarmStore.setState({
     day: snap.farm.day,
     tiles: snap.farm.tiles as ReturnType<typeof useFarmStore.getState>['tiles'],

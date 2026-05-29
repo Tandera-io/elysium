@@ -11,6 +11,7 @@ export interface GameSnapshot {
   version: 1;
   player: {
     position: { x: number; y: number; z: number };
+    energy?: number;
   };
   farm: {
     day: number;
