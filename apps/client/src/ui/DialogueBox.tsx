@@ -7,6 +7,11 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { NPCDialogue } from '../components/NPCDialogue';
+import { useChoiceDialogueStore, type DialogueTree } from '../stores/dialogueStore';
+import dorinhaTree from '../assets/dialogue/dorinha.json';
+
+const DORINHA_ID = 'dorinha';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -24,13 +29,37 @@ export function DialogueBox() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const choiceOpen = useChoiceDialogueStore((s) => s.open);
+  const choiceClose = useChoiceDialogueStore((s) => s.close);
+  const choiceAdvance = useChoiceDialogueStore((s) => s.advance);
+  const choiceCurrentNodeId = useChoiceDialogueStore((s) => s.currentNodeId);
+  const choiceTree = useChoiceDialogueStore((s) => s.tree);
+
+  const isDorinha = npcId === DORINHA_ID;
+  const choiceNode =
+    isDorinha && choiceTree && choiceCurrentNodeId
+      ? (choiceTree.nodes[choiceCurrentNodeId] ?? null)
+      : null;
+
   useEffect(() => {
-    if (npcId) {
+    if (npcId === DORINHA_ID) {
+      choiceOpen(DORINHA_ID, dorinhaTree as unknown as DialogueTree);
+      return () => choiceClose();
+    }
+  }, [npcId, choiceOpen, choiceClose]);
+
+  const handleClose = () => {
+    close();
+    choiceClose();
+  };
+
+  useEffect(() => {
+    if (npcId && !isDorinha) {
       setDraft('');
       // Focus the input when dialogue opens
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [npcId]);
+  }, [npcId, isDorinha]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -41,11 +70,14 @@ export function DialogueBox() {
   useEffect(() => {
     if (!npcId) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') {
+        close();
+        choiceClose();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [npcId, close]);
+  }, [npcId, close, choiceClose]);
 
   // Quest state (recomputed cheaply when dialogue opens)
   const acceptQuest = useQuestStore((s) => s.accept);
@@ -68,6 +100,34 @@ export function DialogueBox() {
   if (!npcId) return null;
   const npc = npcs[npcId];
   if (!npc) return null;
+
+  if (isDorinha && choiceNode) {
+    return (
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
+        <header className="flex items-center justify-between px-4 py-2 border-b border-slate-700">
+          <div>
+            <h2 className="text-lg font-bold">{npc.def.name}</h2>
+            <p className="text-xs text-slate-400">{npc.def.role}</p>
+          </div>
+          <button
+            onClick={handleClose}
+            className="text-slate-400 hover:text-slate-200 text-sm"
+            title="Fechar (Esc)"
+          >
+            ✕
+          </button>
+        </header>
+        <NPCDialogue
+          npcName={npc.def.name}
+          node={choiceNode}
+          onChoice={(next) => {
+            if (next === null) handleClose();
+            else choiceAdvance(next);
+          }}
+        />
+      </div>
+    );
+  }
 
   const haveForActive = activeQuest
     ? invSlots.reduce(
@@ -96,7 +156,7 @@ export function DialogueBox() {
           <p className="text-xs text-slate-400">{npc.def.role}</p>
         </div>
         <button
-          onClick={close}
+          onClick={handleClose}
           className="text-slate-400 hover:text-slate-200 text-sm"
           title="Fechar (Esc)"
         >
