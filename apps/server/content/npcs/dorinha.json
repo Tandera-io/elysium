@@ -1,0 +1,23 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "vendedora de sementes",
+  "asset": "assets/cache/dorinha.glb",
+  "position": { "x": 6, "z": -8 },
+  "personality": {
+    "core_traits": ["animada", "conhecedora de plantas", "negociante"],
+    "speech_style": "informal, entusiasmada, usa termos de jardinagem, fala em português brasileiro coloquial",
+    "values": ["natureza", "colheita abundante", "troca justa"],
+    "fears": ["seca", "pragas"]
+  },
+  "relations": {},
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "loja_sementes", "activity": "vender" },
+    { "from": "14:00", "to": "18:00", "location": "loja_sementes", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["trigo", "tomate"],
+    "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  }
+}
