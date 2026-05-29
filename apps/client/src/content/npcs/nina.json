@@ -1,0 +1,21 @@
+{
+  "id": "nina",
+  "name": "Nina",
+  "role": "criança",
+  "asset": "sprites/cache/2a790a92cc42f6cd.png",
+  "position": { "x": 2, "z": 4 },
+  "personality": {
+    "core_traits": ["curiosa", "animada", "prestativa"],
+    "speech_style": "inocente, entusiasmada, usa diminutivos, fala em português brasileiro",
+    "values": ["aventura", "amigos", "natureza"],
+    "fears": ["escuro", "ficar sozinha"]
+  },
+  "relations": {
+    "marina": "conhecida"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "praca", "activity": "brincar" },
+    { "from": "13:00", "to": "17:00", "location": "vilarejo", "activity": "explorar" },
+    { "from": "17:00", "to": "19:00", "location": "praca", "activity": "brincar" }
+  ]
+}
