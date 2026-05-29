@@ -9,6 +9,7 @@ import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
+import { DorinhaDialogueBox } from './features/npc/dialogue/DorinhaDialogue';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 
@@ -96,6 +97,7 @@ export function App() {
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
+      <DorinhaDialogueBox />
       <DialogueBox />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />

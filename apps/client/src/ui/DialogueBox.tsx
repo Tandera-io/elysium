@@ -66,6 +66,8 @@ export function DialogueBox() {
   }, [npcId, dayInSeason]);
 
   if (!npcId) return null;
+  // DorinhaDialogueBox handles choice-driven dialogue for Dorinha.
+  if (npcId === 'dorinha') return null;
   const npc = npcs[npcId];
   if (!npc) return null;
 
