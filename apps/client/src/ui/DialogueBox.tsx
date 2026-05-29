@@ -65,7 +65,8 @@ export function DialogueBox() {
     return proposeQuestFor(actor, dayInSeason);
   }, [npcId, dayInSeason]);
 
-  if (!npcId) return null;
+  // DorinhaDialogueBox handles the 'dorinha' NPC with a choice-driven UI.
+  if (!npcId || npcId === 'dorinha') return null;
   const npc = npcs[npcId];
   if (!npc) return null;
 
