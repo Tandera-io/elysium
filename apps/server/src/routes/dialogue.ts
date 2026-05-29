@@ -75,7 +75,7 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
       return c.json({ error: 'npcId and playerInput required' }, 400);
     }
 
-    const npc = await loader.load(body.npcId);
+    const npc = (await loader.load(body.npcId)) as NpcDefExtended | null;
     if (!npc) return c.json({ error: `unknown npc: ${body.npcId}` }, 404);
 
     const recent = await memory.readRecent(body.npcId, 20);
@@ -124,8 +124,20 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
   return app;
 }
 
+/** Extended NpcDef that may carry optional dialogue_hints from JSON */
+interface NpcDefExtended extends NpcDef {
+  dialogue_hints?: {
+    greeting?: string;
+    shop_context?: string;
+    buy_seeds_hint?: string;
+    sell_crops_hint?: string;
+    farewell_hint?: string;
+    [key: string]: string | undefined;
+  };
+}
+
 function buildSystemPrompt(
-  npc: NpcDef,
+  npc: NpcDefExtended,
   recent: DialogueMemoryEntry[],
   world: { hour: number; dayInSeason: number; season: string; year: number; weather?: string },
 ): string {
@@ -136,13 +148,27 @@ function buildSystemPrompt(
           .map((m) => `- [${m.t.slice(0, 10)}] ${m.summary} (sentimento ${m.sentiment.toFixed(2)})`)
           .join('\n');
 
+  // Build optional shop/dialogue context section from dialogue_hints
+  let shopSection = '';
+  if (npc.dialogue_hints) {
+    const hints = npc.dialogue_hints;
+    const lines: string[] = [];
+    if (hints.shop_context) lines.push(`Contexto da loja: ${hints.shop_context}`);
+    if (hints.buy_seeds_hint) lines.push(`Dica (compra de sementes): ${hints.buy_seeds_hint}`);
+    if (hints.sell_crops_hint) lines.push(`Dica (venda de colheita): ${hints.sell_crops_hint}`);
+    if (hints.farewell_hint) lines.push(`Dica (despedida): ${hints.farewell_hint}`);
+    if (lines.length > 0) {
+      shopSection = `\nInformações do seu negócio:\n${lines.join('\n')}\n`;
+    }
+  }
+
   return `Você é ${npc.name}, ${npc.role}. Esta é a sua personalidade:
 
 Traços: ${npc.personality.core_traits.join(', ')}.
 Estilo de fala: ${npc.personality.speech_style}.
 Valores: ${npc.personality.values.join(', ')}.
 Medos: ${npc.personality.fears.join(', ')}.
-
+${shopSection}
 Memórias recentes desta pessoa:
 ${memorySection}
 
@@ -155,7 +181,8 @@ REGRAS DE RESPOSTA:
 2. Seja conciso: 1-3 frases curtas.
 3. Se as memórias forem relevantes, referencie-as naturalmente.
 4. Responda em português brasileiro coloquial.
-5. Retorne EXCLUSIVAMENTE um objeto JSON válido (sem markdown, sem prefixo) com este formato:
+5. Se o jogador perguntar sobre comprar sementes ou vender colheita, use actionHint "open_shop".
+6. Retorne EXCLUSIVAMENTE um objeto JSON válido (sem markdown, sem prefixo) com este formato:
 {
   "npcReply": "<a fala em pt-BR>",
   "emotion": "<neutral|happy|annoyed|sad|excited>",

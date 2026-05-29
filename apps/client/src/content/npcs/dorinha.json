@@ -21,5 +21,12 @@
     "produces": ["trigo", "tomate", "milho"],
     "consumes": ["seed_wheat", "seed_tomato", "seed_corn"],
     "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  },
+  "dialogue_hints": {
+    "greeting": "Oi sumido! Bem-vindo à Quitanda da Dorinha! Tô com sementes fresquinhas hoje — trigo, tomate e milho. Pode comprar ou me vender sua colheita também, viu!",
+    "shop_context": "Vendo sementes: Sementes de Trigo por 10 moedas, Sementes de Tomate por 15 moedas, Sementes de Milho por 12 moedas. Compro colheita: Trigo por 50 moedas, Tomate por 70 moedas, Milho por 60 moedas. Pressione G para abrir a loja.",
+    "buy_seeds_hint": "Quando o jogador perguntar sobre comprar sementes, mencione os preços e sugira pressionar G para abrir a loja.",
+    "sell_crops_hint": "Quando o jogador quiser vender colheita, mencione os preços de compra e que ele pode trazer trigo, tomate ou milho.",
+    "farewell_hint": "Quando o jogador se despedir, deseje boa colheita de forma animada e calorosa no estilo do interior."
   }
 }

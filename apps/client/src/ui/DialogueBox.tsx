@@ -7,6 +7,20 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { useNPCShopStore, DORINHA_SHOP_ID } from '../systems/npc/NPCShop';
+
+interface QuickChoice {
+  label: string;
+  text: string;
+}
+
+const NPC_CHOICES: Record<string, QuickChoice[]> = {
+  [DORINHA_SHOP_ID]: [
+    { label: 'Comprar sementes', text: 'Quero comprar sementes' },
+    { label: 'Vender colheita', text: 'Quero vender minha colheita' },
+    { label: 'Como vai?', text: 'Como você está?' },
+  ],
+};
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -77,16 +91,49 @@ export function DialogueBox() {
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
+  // World context helper
+  const worldCtx = () => ({
+    hour,
+    dayInSeason,
+    season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
+    year,
+  });
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void send(draft, {
-      hour,
-      dayInSeason,
-      season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
-      year,
-    });
+    if (!draft.trim()) return;
+    void sendText(draft);
     setDraft('');
   };
+
+  const sendText = async (text: string) => {
+    await send(text, worldCtx());
+    // After sending, check the latest NPC reply for actionHint
+    // We check the store state directly after the await resolves
+    const latestHistory = useDialogueStore.getState().history;
+    const lastNpcTurn = [...latestHistory].reverse().find((t) => t.who === 'npc');
+    // actionHint is not stored in DialogueTurn yet; open_shop hint is handled
+    // via quick-choice buttons instead (see below).
+    void lastNpcTurn; // suppress unused warning
+  };
+
+  const onQuickChoice = async (text: string) => {
+    // If this is a "buy seeds" or "sell crops" choice for a shop NPC, also open the shop
+    const isShopChoice = text.includes('sementes') || text.includes('colheita');
+    if (isShopChoice && npcId === DORINHA_SHOP_ID) {
+      // Send the dialogue message first so she can react, then open shop
+      void send(text, worldCtx());
+      // Open the shop after a brief moment so the player sees her response
+      setTimeout(() => {
+        const shopStore = useNPCShopStore.getState();
+        if (!shopStore.openShopId) shopStore.openShop(npcId);
+      }, 600);
+    } else {
+      void send(text, worldCtx());
+    }
+  };
+
+  const quickChoices = NPC_CHOICES[npcId] ?? null;
 
   return (
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
@@ -129,6 +176,23 @@ export function DialogueBox() {
         {pending && <p className="text-slate-500 italic">…pensando</p>}
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
+
+      {/* Quick-choice buttons (shown when there is no pending request) */}
+      {quickChoices && !pending && (
+        <div className="px-4 py-2 border-t border-slate-700/60 flex flex-wrap gap-2">
+          {quickChoices.map((choice: QuickChoice) => (
+            <button
+              key={choice.label}
+              onClick={() => void onQuickChoice(choice.text)}
+              disabled={pending}
+              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs rounded-full transition-colors disabled:opacity-40"
+            >
+              {choice.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {activeQuest && (
         <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
           <span>
