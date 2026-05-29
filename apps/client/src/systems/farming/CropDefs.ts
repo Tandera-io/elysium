@@ -3,9 +3,9 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
-import type { Season } from '../time/timeStore';
+export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 
-export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
+export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry' | 'lettuce';
 
 export interface CropStage {
   /** 0 = just planted, last index = mature/ready to harvest. */
@@ -64,7 +64,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 7,
     yieldQuantity: 1,
-    seasonGrowthRates: { spring: 0.7, summer: 0.85, autumn: 1.4, winter: 0.65 },
+    seasonGrowthRates: { spring: 0.7, summer: 0.85, autumn: 0.5, winter: 0.4 },
   },
   corn: {
     id: 'corn',
@@ -91,6 +91,19 @@ export const CROPS: Record<CropId, CropDef> = {
     yieldQuantity: 4,
     seasonGrowthRates: { spring: 1.5, summer: 0.9, autumn: 0.7, winter: 0.5 },
   },
+  lettuce: {
+    id: 'lettuce',
+    name: 'Alface',
+    stages: [
+      { index: 0, daysInStage: 1, color: '#5a4a2a' },
+      { index: 1, daysInStage: 1, color: '#7cbb5e' },
+      { index: 2, daysInStage: 1, color: '#5a9e40' },
+      { index: 3, daysInStage: 1, color: '#4a8e30' }, // full head
+    ],
+    daysToMature: 4,
+    yieldQuantity: 3,
+    seasonGrowthRates: { spring: 2.0, summer: 1.2, autumn: 0.8, winter: 0.5 },
+  },
 };
 
 export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropStage {
@@ -115,4 +128,9 @@ export function effectiveDaysToMature(crop: CropDef, season: Season): number {
 
 export function isMatureInSeason(crop: CropDef, daysSincePlanted: number, season: Season): boolean {
   return daysSincePlanted >= effectiveDaysToMature(crop, season);
+}
+
+/** Daily daysGrown increment for a crop in a given season (higher = grows faster). */
+export function getDailyGrowthIncrement(crop: CropDef, season: Season): number {
+  return crop.seasonGrowthRates[season] ?? 1.0;
 }

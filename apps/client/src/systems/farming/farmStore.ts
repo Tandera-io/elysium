@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CROPS, type CropId } from './CropDefs';
+import { CROPS, getDailyGrowthIncrement, type CropId, type Season } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
 
@@ -28,8 +28,8 @@ export interface FarmActions {
   plant: (t: TileCoord, crop: CropId) => boolean;
   /** Returns the yielded item id and quantity, or null if nothing to harvest. */
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
-  /** Advances day counter and progresses planted tiles by 1 day. */
-  advanceDay: () => void;
+  /** Advances day counter and progresses planted tiles by 1 day (season-adjusted). */
+  advanceDay: (season?: Season) => void;
   /** Test helpers */
   reset: () => void;
 }
@@ -92,15 +92,15 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     }));
     return { crop: cur.crop, quantity: def.yieldQuantity };
   },
-  advanceDay: () => {
+  advanceDay: (season) => {
     set((s) => {
       const nextDay = s.day + 1;
       const nextTiles: Record<string, TileState> = { ...s.tiles };
       for (const [k, t] of Object.entries(s.tiles)) {
         if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          const def = CROPS[t.crop];
+          const increment = season ? getDailyGrowthIncrement(def, season) : 1;
+          nextTiles[k] = { ...t, daysGrown: t.daysGrown + increment };
         }
       }
       return { day: nextDay, tiles: nextTiles };

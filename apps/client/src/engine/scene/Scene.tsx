@@ -4,7 +4,7 @@ import { PlayerController } from '../player/PlayerController';
 import { FarmField } from '../world/FarmField';
 import { Floor } from '../world/Floor';
 import { StaticProps } from '../world/StaticProps';
-import { TileRenderer } from '../world/TileRenderer';
+import { TileRenderer } from '../TileRenderer';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
