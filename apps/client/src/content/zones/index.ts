@@ -43,7 +43,7 @@ export const ZONES: Record<ZoneId, ZoneDef> = {
       { to: 'fazenda', at: { x: -12, z: -12 }, label: '← Fazenda' },
       { to: 'floresta', at: { x: 12, z: -12 }, label: 'Floresta →' },
     ],
-    residentNpcIds: ['marina', 'bento', 'lucia'],
+    residentNpcIds: ['marina', 'bento', 'lucia', 'dorinha'],
     groundColor: '#7a8a64',
   },
   floresta: {
