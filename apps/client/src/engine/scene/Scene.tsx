@@ -8,7 +8,6 @@ import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
-import { GameMap } from '../../components/GameMap';
 
 export function Scene() {
   return (
@@ -23,7 +22,6 @@ export function Scene() {
       <IsometricCamera />
       <Daylight />
       <TimeAdvancer />
-      <GameMap />
       <TileMap />
       <FarmField />
       <StaticProps />
