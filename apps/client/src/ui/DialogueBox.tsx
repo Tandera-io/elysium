@@ -7,10 +7,11 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
-import { DORINHA_CHOICES } from '../features/npc/dialogue/dorinha';
+import DORINHA_DIALOGUE from '../features/npc/dialogue/dorinha';
+import type { DorinhaQuickReply } from '../features/npc/dialogue/dorinha';
 
-const NPC_CHOICES: Record<string, { id: string; label: string; message: string }[]> = {
-  dorinha: DORINHA_CHOICES,
+const NPC_GREETINGS: Record<string, DorinhaQuickReply[]> = {
+  [DORINHA_DIALOGUE.npcId]: DORINHA_DIALOGUE.greetings,
 };
 
 export function DialogueBox() {
@@ -82,10 +83,10 @@ export function DialogueBox() {
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
-  const quickChoices = npcId ? (NPC_CHOICES[npcId] ?? null) : null;
+  const quickGreetings = npcId ? (NPC_GREETINGS[npcId] ?? null) : null;
 
-  const sendQuickChoice = (message: string) => {
-    void send(message, {
+  const sendQuickReply = (input: string) => {
+    void send(input, {
       hour,
       dayInSeason,
       season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
@@ -180,16 +181,16 @@ export function DialogueBox() {
           </button>
         </div>
       )}
-      {quickChoices && history.length === 0 && !pending && (
+      {quickGreetings && history.length === 0 && !pending && (
         <div className="px-3 py-2 border-t border-slate-700 flex flex-wrap gap-1.5">
-          {quickChoices.map((choice) => (
+          {quickGreetings.map((reply) => (
             <button
-              key={choice.id}
-              onClick={() => sendQuickChoice(choice.message)}
+              key={reply.label}
+              onClick={() => sendQuickReply(reply.input)}
               disabled={pending}
               className="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg disabled:opacity-50"
             >
-              {choice.label}
+              {reply.label}
             </button>
           ))}
         </div>
