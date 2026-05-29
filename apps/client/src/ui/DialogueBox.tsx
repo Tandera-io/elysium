@@ -15,6 +15,9 @@ export function DialogueBox() {
   const error = useDialogueStore((s) => s.error);
   const close = useDialogueStore((s) => s.close);
   const send = useDialogueStore((s) => s.send);
+  const choices = useDialogueStore((s) => s.choices);
+  const dialogueTree = useDialogueStore((s) => s.dialogueTree);
+  const selectChoice = useDialogueStore((s) => s.selectChoice);
   const npcs = useNpcStore((s) => s.npcs);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
@@ -24,13 +27,14 @@ export function DialogueBox() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const hasChoiceTree = dialogueTree !== null;
+
   useEffect(() => {
-    if (npcId) {
+    if (npcId && !hasChoiceTree) {
       setDraft('');
-      // Focus the input when dialogue opens
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [npcId]);
+  }, [npcId, hasChoiceTree]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -55,8 +59,6 @@ export function DialogueBox() {
   );
   const invSlots = useInventoryStore((s) => s.slots);
 
-  // Generate a candidate quest from the static seed market (Phase 11 will
-  // wire this to a live economy state).
   const offered = useMemo(() => {
     if (!npcId) return null;
     const seed = makeSeedMarket();
@@ -103,6 +105,7 @@ export function DialogueBox() {
           ✕
         </button>
       </header>
+
       <div ref={scrollRef} className="max-h-[300px] overflow-y-auto px-4 py-3 space-y-3 text-sm">
         {history.length === 0 && !pending && (
           <p className="text-slate-500 italic">Diga olá para {npc.def.name}…</p>
@@ -129,6 +132,7 @@ export function DialogueBox() {
         {pending && <p className="text-slate-500 italic">…pensando</p>}
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
+
       {activeQuest && (
         <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
           <span>
@@ -150,6 +154,7 @@ export function DialogueBox() {
           )}
         </div>
       )}
+
       {!activeQuest && offered && (
         <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
           <span>
@@ -164,23 +169,51 @@ export function DialogueBox() {
           </button>
         </div>
       )}
-      <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
-        <input
-          ref={inputRef}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="Diga algo..."
-          disabled={pending}
-          className="flex-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
-        />
-        <button
-          type="submit"
-          disabled={pending || draft.trim().length === 0}
-          className="bg-amber-500 text-slate-900 px-3 py-2 rounded text-sm font-semibold disabled:opacity-50"
-        >
-          Enviar
-        </button>
-      </form>
+
+      {/* Choice-based dialogue footer */}
+      {hasChoiceTree && (
+        <div className="px-3 py-3 border-t border-slate-700 flex flex-col gap-2">
+          {choices.length > 0 ? (
+            choices.map((choice) => (
+              <button
+                key={choice.id}
+                onClick={() => selectChoice(choice.id)}
+                className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-sm transition-colors border border-slate-700 hover:border-amber-500"
+              >
+                {choice.text}
+              </button>
+            ))
+          ) : (
+            <button
+              onClick={close}
+              className="w-full px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm transition-colors"
+            >
+              Fechar
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Free-text dialogue footer (non-choice NPCs) */}
+      {!hasChoiceTree && (
+        <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
+          <input
+            ref={inputRef}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Diga algo..."
+            disabled={pending}
+            className="flex-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
+          />
+          <button
+            type="submit"
+            disabled={pending || draft.trim().length === 0}
+            className="bg-amber-500 text-slate-900 px-3 py-2 rounded text-sm font-semibold disabled:opacity-50"
+          >
+            Enviar
+          </button>
+        </form>
+      )}
     </div>
   );
 }
