@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "schedules": {
+    "dorinha": [
+      {
+        "fromHour": 0,
+        "toHour": 6,
+        "location": "casa",
+        "activity": "dormindo",
+        "pos": { "x": 2, "z": 8 }
+      },
+      {
+        "fromHour": 6,
+        "toHour": 7,
+        "location": "casa",
+        "activity": "se preparando para abrir a quitanda",
+        "pos": { "x": 2, "z": 8 }
+      },
+      {
+        "fromHour": 7,
+        "toHour": 12,
+        "location": "quitanda",
+        "activity": "atendendo clientes (turno da manhã)",
+        "pos": { "x": 6, "z": 4 }
+      },
+      {
+        "fromHour": 12,
+        "toHour": 14,
+        "location": "casa",
+        "activity": "almoçando",
+        "pos": { "x": 2, "z": 8 }
+      },
+      {
+        "fromHour": 14,
+        "toHour": 18,
+        "location": "quitanda",
+        "activity": "atendendo clientes (turno da tarde)",
+        "pos": { "x": 6, "z": 4 }
+      },
+      {
+        "fromHour": 18,
+        "toHour": 20,
+        "location": "praca",
+        "activity": "passeando na praça após fechar a quitanda",
+        "pos": { "x": 0, "z": 2 }
+      },
+      {
+        "fromHour": 20,
+        "toHour": 22,
+        "location": "casa",
+        "activity": "jantando e descansando",
+        "pos": { "x": 2, "z": 8 }
+      },
+      {
+        "fromHour": 22,
+        "toHour": 24,
+        "location": "casa",
+        "activity": "dormindo",
+        "pos": { "x": 2, "z": 8 }
+      }
+    ]
+  }
+}
