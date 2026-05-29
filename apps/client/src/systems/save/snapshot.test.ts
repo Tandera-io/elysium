@@ -22,6 +22,7 @@ describe('snapshot round-trip', () => {
     useFarmStore.getState().plant({ x: 1, z: 1 }, 'wheat');
     useInventoryStore.getState().add('wheat', 17);
     useQuestStore.setState({ cash: 999 });
+    useInventoryStore.setState({ gold: 250 });
     useTimeStore.setState({ hour: 14.5, dayInSeason: 4, seasonIndex: 2 });
 
     const snap = captureSnapshot();
@@ -45,6 +46,7 @@ describe('snapshot round-trip', () => {
     expect(useFarmStore.getState().getTile({ x: 1, z: 1 }).kind).toBe('planted');
     expect(useInventoryStore.getState().count('wheat')).toBe(17);
     expect(useQuestStore.getState().cash).toBe(999);
+    expect(useInventoryStore.getState().gold).toBe(250);
     expect(useTimeStore.getState().hour).toBe(14.5);
     expect(useTimeStore.getState().seasonIndex).toBe(2);
   });

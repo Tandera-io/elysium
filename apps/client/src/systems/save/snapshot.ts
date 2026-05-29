@@ -16,7 +16,7 @@ export function captureSnapshot(): GameSnapshot {
     version: 1,
     player: { position: { ...player.position } },
     farm: { day: farm.day, tiles: farm.tiles },
-    inventory: { slots: inv.slots },
+    inventory: { slots: inv.slots, gold: inv.gold },
     quests: {
       active: quests.active,
       completed: quests.completed,
@@ -43,6 +43,7 @@ export function applySnapshot(snap: GameSnapshot): void {
   });
   useInventoryStore.setState({
     slots: snap.inventory.slots as ReturnType<typeof useInventoryStore.getState>['slots'],
+    gold: snap.inventory.gold ?? 500,
   });
   useQuestStore.setState({
     active: snap.quests.active as ReturnType<typeof useQuestStore.getState>['active'],

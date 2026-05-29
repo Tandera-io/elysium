@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { deleteSave, listSaves, readSave, writeSave, type SaveRow } from '../systems/save/saveDb';
 import { applySnapshot, captureSnapshot } from '../systems/save/snapshot';
+import { useSaveStore } from '../systems/save/saveStore';
 
 const SLOTS = [1, 2, 3] as const;
 
@@ -35,6 +36,7 @@ export function SaveMenu({ open, onClose }: SaveMenuProps) {
         timestamp: Date.now(),
         snapshot: snap,
       });
+      useSaveStore.getState().setLastSavedSlot(slot);
       await refresh();
     } finally {
       setBusy(null);

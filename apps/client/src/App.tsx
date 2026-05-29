@@ -11,6 +11,7 @@ import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { useSaveStore } from './systems/save/saveStore';
 
 type FetchState =
   | { kind: 'loading' }
@@ -22,6 +23,10 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+
+  useEffect(() => {
+    void useSaveStore.getState().tryAutoLoad();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
