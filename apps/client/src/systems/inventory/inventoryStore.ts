@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
+import type { FishId } from '../fishing/fishDefs';
 
 export type ItemId =
   | CropId
@@ -8,7 +9,8 @@ export type ItemId =
   | 'seed_corn'
   | 'copper_ore'
   | 'iron_ore'
-  | 'gold_ore';
+  | 'gold_ore'
+  | FishId;
 
 export interface SlotItem {
   id: ItemId;

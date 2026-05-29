@@ -7,12 +7,15 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { FishingMinigame } from './ui/FishingMinigame';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { MineCaveScene } from './components/MineCaveScene';
 import { MinePortalPrompt } from './components/MinePortalPrompt';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { useToolStore } from './store/toolStore';
+import { useFishingStore } from './systems/fishing/fishingStore';
 
 type FetchState =
   | { kind: 'loading' }
@@ -24,6 +27,9 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+  const currentTool = useToolStore((s) => s.current);
+  const fishingPhase = useFishingStore((s) => s.phase);
+  const startFishing = useFishingStore((s) => s.startFishing);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,10 +67,13 @@ export function App() {
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
         setSaveOpen(true);
       }
+      if (e.code === 'KeyF' && currentTool === 'rod' && fishingPhase === 'idle' && !titleOpen) {
+        startFishing();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [titleOpen, saveOpen]);
+  }, [titleOpen, saveOpen, currentTool, fishingPhase, startFishing]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
@@ -102,6 +111,7 @@ export function App() {
       <NPCShopModal />
       <MineCaveScene />
       <MinePortalPrompt />
+      <FishingMinigame />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>

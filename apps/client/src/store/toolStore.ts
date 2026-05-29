@@ -7,7 +7,8 @@ export type ToolId =
   | 'seed_wheat'
   | 'seed_tomato'
   | 'harvest'
-  | 'pickaxe';
+  | 'pickaxe'
+  | 'rod';
 
 export interface ToolState {
   current: ToolId;
