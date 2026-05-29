@@ -1,10 +1,11 @@
 /**
  * NPC Shop store — tracks which shop is open.
- * Dorinha is the primary shopkeeper in the village market.
+ * Dorinha (quitanda) and Nina (ferragem) are the village shopkeepers.
  */
 import { create } from 'zustand';
 
 export const DORINHA_SHOP_ID = 'dorinha';
+export const NINA_SHOP_ID = 'nina';
 
 export interface NPCShopState {
   openShopId: string | null;

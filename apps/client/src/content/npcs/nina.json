@@ -1,0 +1,34 @@
+{
+  "id": "nina",
+  "name": "Nina",
+  "role": "ferramenteira",
+  "position": { "x": -4, "z": 6 },
+  "personality": {
+    "core_traits": ["prática", "direta ao ponto", "orgulhosa de seu ofício"],
+    "speech_style": "objetiva, usa termos técnicos do campo, fala em português brasileiro coloquial",
+    "values": ["qualidade das ferramentas", "trabalho bem feito", "durabilidade"],
+    "fears": ["clientes comprando ferramenta ruim", "ficar sem estoque na época de plantio"]
+  },
+  "relations": {
+    "bento": "cliente_fiel",
+    "dorinha": "vizinha"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "ferragem", "activity": "atender" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "ferragem", "activity": "atender" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "conversar" }
+  ],
+  "economy_role": {
+    "produces": ["watering_can", "hoe", "fertilizer"],
+    "consumes": ["lenha", "ferro"],
+    "shop_inventory": [
+      "watering_can",
+      "hoe",
+      "fertilizer",
+      "seed_pumpkin",
+      "seed_strawberry",
+      "basket"
+    ]
+  }
+}
