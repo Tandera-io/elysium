@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { FERRAZ_NPC_ID } from '../npc-dialogue-pipeline/FerrazDialogue';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -66,6 +67,7 @@ export function DialogueBox() {
   }, [npcId, dayInSeason]);
 
   if (!npcId) return null;
+  if (npcId === FERRAZ_NPC_ID) return null; // Ferraz has his own dialogue panel
   const npc = npcs[npcId];
   if (!npc) return null;
 

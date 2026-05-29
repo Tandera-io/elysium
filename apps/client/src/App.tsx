@@ -9,6 +9,7 @@ import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
+import { FerrazDialogue } from './npc-dialogue-pipeline/FerrazDialogue';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 
@@ -97,6 +98,7 @@ export function App() {
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
+      <FerrazDialogue />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
