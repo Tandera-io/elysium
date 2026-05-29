@@ -9,6 +9,8 @@ export interface NpcStateEntry {
   def: NpcDef;
   /** Live world-space position; may differ from def.position once schedules run (Phase 11). */
   worldPos: { x: number; z: number };
+  /** True while the NPC is actively walking (drives walk animation). */
+  isWalking?: boolean;
 }
 
 export interface NpcState {
@@ -17,6 +19,7 @@ export interface NpcState {
 
 export interface NpcActions {
   setPosition: (id: string, pos: { x: number; z: number }) => void;
+  setWalking: (id: string, walking: boolean) => void;
 }
 
 function loadBootstrap(): NpcState {
@@ -41,6 +44,12 @@ export const useNpcStore = create<NpcState & NpcActions>((set) => ({
       const cur = s.npcs[id];
       if (!cur) return s;
       return { npcs: { ...s.npcs, [id]: { ...cur, worldPos: pos } } };
+    }),
+  setWalking: (id, walking) =>
+    set((s) => {
+      const cur = s.npcs[id];
+      if (!cur) return s;
+      return { npcs: { ...s.npcs, [id]: { ...cur, isWalking: walking } } };
     }),
 }));
 
