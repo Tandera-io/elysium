@@ -25,7 +25,6 @@
  *   once per approach (player must leave range and return to trigger again).
  */
 
-/* global requestAnimationFrame, cancelAnimationFrame */
 import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '../store/playerStore';
 import { useNpcStore } from '../systems/npc/npcStore';
