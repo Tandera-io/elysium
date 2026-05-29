@@ -8,6 +8,7 @@ import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { FarmPanel } from './components/Farm';
+import { NPCDialogues } from './components/NPCDialogues';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
@@ -97,6 +98,7 @@ export function App() {
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
+      <NPCDialogues />
       <DialogueBox />
       <NPCShopModal />
       <FarmPanel />
