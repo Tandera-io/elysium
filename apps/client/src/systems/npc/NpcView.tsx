@@ -1,7 +1,10 @@
-import { Suspense } from 'react';
+import { Suspense, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { BillboardSprite } from '../../engine/loader/BillboardSprite';
+import { SpriteAnimator } from '../../engine/loader/SpriteAnimator';
 import { useNpcStore } from './npcStore';
-import { SPRITES, type SpriteSlot } from '../../content/assets';
+import { SPRITES, WALK_CYCLES, type SpriteSlot } from '../../content/assets';
+import { NPC_ANIM_FPS, NPC_MOVE_THRESHOLD } from '../../animation/NPCAnimations';
 
 /** Cápsula vermelha while sprite streams in (or if it's missing entirely). */
 function NpcCapsuleFallback() {
@@ -20,9 +23,48 @@ function NpcCapsuleFallback() {
 }
 
 function spriteFor(npcId: string): string | null {
-  // Lookup is intentionally lenient — if no entry, return null and use capsule.
   const key = npcId as SpriteSlot;
   return SPRITES[key] ?? null;
+}
+
+interface NpcEntityProps {
+  id: string;
+  spritePath: string;
+}
+
+/** Single NPC — picks animated or static sprite, detects motion each frame. */
+function NpcEntity({ id, spritePath }: NpcEntityProps) {
+  const cycle = WALK_CYCLES[id as SpriteSlot];
+  const [moving, setMoving] = useState(false);
+  const movingRef = useRef(false);
+  const prevPos = useRef<{ x: number; z: number } | null>(null);
+
+  useFrame(() => {
+    const pos = useNpcStore.getState().npcs[id]?.worldPos;
+    if (!pos) return;
+    const isMoving =
+      prevPos.current !== null &&
+      (Math.abs(pos.x - prevPos.current.x) > NPC_MOVE_THRESHOLD ||
+        Math.abs(pos.z - prevPos.current.z) > NPC_MOVE_THRESHOLD);
+    if (isMoving !== movingRef.current) {
+      movingRef.current = isMoving;
+      setMoving(isMoving);
+    }
+    prevPos.current = { x: pos.x, z: pos.z };
+  });
+
+  if (cycle && cycle.length > 1) {
+    return (
+      <Suspense fallback={<NpcCapsuleFallback />}>
+        <SpriteAnimator frames={cycle} fps={NPC_ANIM_FPS} playing={moving} height={1.6} />
+      </Suspense>
+    );
+  }
+  return (
+    <Suspense fallback={<NpcCapsuleFallback />}>
+      <BillboardSprite path={spritePath} height={1.6} />
+    </Suspense>
+  );
 }
 
 /** Renders each NPC as a billboarded sprite if a sprite is registered for them. */
@@ -35,9 +77,7 @@ export function NpcView() {
         return (
           <group key={def.id} position={[worldPos.x, 0, worldPos.z]}>
             {spritePath ? (
-              <Suspense fallback={<NpcCapsuleFallback />}>
-                <BillboardSprite path={spritePath} height={1.6} />
-              </Suspense>
+              <NpcEntity id={def.id} spritePath={spritePath} />
             ) : (
               <NpcCapsuleFallback />
             )}
