@@ -1,0 +1,26 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 10, "z": -8 },
+  "personality": {
+    "core_traits": ["prático", "detalhista", "orgulhoso do ofício"],
+    "speech_style": "direto, sem rodeios, respostas focadas em ferramentas",
+    "values": ["qualidade", "trabalho honesto", "dedicação"],
+    "fears": ["trabalho mal feito", "materiais de baixa qualidade"]
+  },
+  "relations": { "bento": "cliente_fiel", "marina": "conhecida" },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "forja", "activity": "abrir_forja" },
+    { "from": "09:00", "to": "12:00", "location": "forja", "activity": "forjar" },
+    { "from": "12:00", "to": "14:00", "location": "estalagem", "activity": "almoco" },
+    { "from": "14:00", "to": "16:00", "location": "forja", "activity": "atender" },
+    { "from": "16:00", "to": "20:00", "location": "forja", "activity": "forjar" },
+    { "from": "20:00", "to": "22:00", "location": "casa_ferraz", "activity": "descanso" }
+  ],
+  "economy_role": {
+    "produces": ["ferramentas_avancadas", "armas"],
+    "consumes": ["minerio_ferro", "minerio_cobre"],
+    "shop_inventory": ["ferramentas_avancadas"]
+  }
+}
