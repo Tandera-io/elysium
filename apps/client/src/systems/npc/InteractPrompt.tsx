@@ -4,8 +4,11 @@ import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
 import { useNPCShopStore, DORINHA_SHOP_ID } from './NPCShop';
+import { openDorinhaDialogue } from '../../dialogue/dorinhaDialog';
+import { useChoiceDialogueStore } from '../../stores/dialogueStore';
 
 const SHOP_NPCS = new Set([DORINHA_SHOP_ID]);
+const CHOICE_DIALOGUE_NPCS = new Set([DORINHA_SHOP_ID]);
 
 /**
  * Watches player position vs NPCs and shows a small "Press E to talk / G for shop"
@@ -38,8 +41,13 @@ export function InteractPrompt() {
       if (!t) return;
 
       if (e.code === 'KeyE') {
-        if (useDialogueStore.getState().npcId) return; // already open
-        useDialogueStore.getState().open(t.def.id);
+        if (useChoiceDialogueStore.getState().npcId) return; // choice dialogue already open
+        if (useDialogueStore.getState().npcId) return; // AI dialogue already open
+        if (CHOICE_DIALOGUE_NPCS.has(t.def.id)) {
+          openDorinhaDialogue();
+        } else {
+          useDialogueStore.getState().open(t.def.id);
+        }
       }
 
       if (e.code === 'KeyG') {
