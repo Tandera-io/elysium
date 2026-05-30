@@ -1,0 +1,146 @@
+{
+  "id": "marina",
+  "greetings": [
+    {
+      "label": "Oi, Marina!",
+      "input": "Oi, Marina! Tudo bem com você?"
+    },
+    {
+      "label": "Quero pão",
+      "input": "Você tem pão fresquinho para vender hoje?"
+    },
+    {
+      "label": "Tenho trigo",
+      "input": "Marina, trouxe trigo para você. Aceita?"
+    },
+    {
+      "label": "Que cheiro bom!",
+      "input": "Marina, que cheiro maravilhoso vindo da padaria!"
+    }
+  ],
+  "topics": {
+    "receitas": [
+      {
+        "label": "Receita de bolo fubá",
+        "input": "Você pode me ensinar a receita do bolo fubá?"
+      },
+      {
+        "label": "Ingredientes especiais",
+        "input": "Você usa algum ingrediente especial nos seus pães?"
+      },
+      {
+        "label": "Pão mais difícil",
+        "input": "Qual é o pão mais difícil de fazer?"
+      }
+    ],
+    "ingredientes": [
+      {
+        "label": "Precisa de trigo?",
+        "input": "Você está precisando de trigo? Posso trazer da minha roça."
+      },
+      {
+        "label": "Compra ovos?",
+        "input": "Você compra ovos? Tenho galinhas em casa."
+      },
+      {
+        "label": "Aceita leite?",
+        "input": "Aceita leite fresco? A Lucia tem bastante."
+      }
+    ],
+    "conversa": [
+      {
+        "label": "Sobre a padaria",
+        "input": "Como está indo a padaria? Movimento bom?"
+      },
+      {
+        "label": "Sobre o Bento",
+        "input": "Você e o Bento se dão bem? Ele parece tão carrancudo..."
+      },
+      {
+        "label": "Vida no vilarejo",
+        "input": "Como é morar aqui no vilarejo há tanto tempo?"
+      }
+    ]
+  },
+  "shopTriggerPhrases": [
+    "abrir a padaria",
+    "posso te mostrar o que tenho",
+    "dá uma olhada no que assei"
+  ],
+  "dialogues": {
+    "greeting": {
+      "first_time": [
+        "Ah, que bom! Um rosto novo! Seja bem-vindo! Sou a Marina, da padaria.",
+        "Oi! Nunca te vi por aqui antes. Sou a Marina. Se quiser pão quentinho, pode me procurar!"
+      ],
+      "repeat_early": [
+        "Voltou! Fico feliz de ver! Tô acabando de assar uma fornada nova, chegou na hora certa.",
+        "Que saudade! Entra, entra. Tenho pão fresquinho esperando por você."
+      ],
+      "repeat_regular": [
+        "Meu cliente favorito! O pão de hoje ficou especialmente bom, você vai ver.",
+        "Que bom te ver de novo! Como está a roça? Tô com saudade de uma boa conversa."
+      ],
+      "friend": [
+        "Meu amigo! Tenho guardado um pão especial pra você desde cedo. Sabia que você viria!",
+        "Você é praticamente da família! Já até deixo a porta de fundo aberta quando te vejo chegando."
+      ]
+    },
+    "time_of_day": {
+      "early_morning": [
+        "Boa madrugada! Só pode ser lavrador que acorda cedo igual a mim. O forno já tá quente!"
+      ],
+      "morning": [
+        "Bom dia! Acabei de tirar o pão do forno. Chega mais, está quentinho!",
+        "Bom dia! Manhã boa essa, né? O pão ficou lindo hoje — todo douradinho."
+      ],
+      "afternoon": [
+        "Boa tarde! A padaria tá mais tranquila agora. É o melhor horário pra conversar com calma.",
+        "Boa tarde! Já vendi muito hoje, mas ainda tenho bolo fubá. Quer um pedaço?"
+      ],
+      "evening": [
+        "Boa noite! Já terminei de assar por hoje. Mas ainda tenho uns pães do final da tarde.",
+        "Boa noite! Essa hora é minha favorita — a praça fica tão animada."
+      ]
+    },
+    "season": {
+      "spring": [
+        "A primavera deixa o trigo mais perfumado. O pão dessa época tem um sabor especial!"
+      ],
+      "summer": [
+        "No verão o forno parece ainda mais quente. Mas o pão fica mais crocante, compensa!"
+      ],
+      "autumn": ["Outono é minha estação favorita! O trigo da colheita é sempre o melhor do ano."],
+      "winter": ["No inverno, o forno vira sala de estar. Todo mundo passa aqui pra esquentar!"]
+    },
+    "player_actions": {
+      "gave_wheat": [
+        "Trigo! Você é uma benção! Esse aqui tá bonito, pesado. Vai fazer uns pães ótimos."
+      ],
+      "gave_honey": [
+        "Mel! Ih, agora tô inspirada. Vou fazer pão de mel pra você na próxima fornada!"
+      ],
+      "gave_disliked": [
+        "Eita... Não sei bem o que fazer com isso aqui. Mas obrigada pela intenção!"
+      ],
+      "sold_crops": ["Que colheita linda você trouxe! Vou guardar o melhor pra usar na padaria."],
+      "completed_quest": [
+        "Você conseguiu! Eu sabia que podia contar com você. Fica com esse pão quentinho!"
+      ],
+      "accepted_quest": ["Obrigada por aceitar! Se você me trouxer isso, fico muito grata."],
+      "harvested_crops": ["Olha a safra! Que bonito. Você tem mãos de agricultor de verdade."]
+    },
+    "relationship": {
+      "stranger": [
+        "Ainda não nos conhecemos direito, mas já gosto de você. Parece uma boa pessoa."
+      ],
+      "acquaintance": ["Já estou te reconhecendo! Todo dia aparece por aqui. Que bom!"],
+      "friend": [
+        "Você já é como da família por aqui. Qualquer dia desses te convido para ver o processo de fazer pão!"
+      ],
+      "close_friend": [
+        "Você é uma das pessoas mais especiais que conheço. Fico feliz que veio morar aqui."
+      ]
+    }
+  }
+}

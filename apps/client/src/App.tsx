@@ -10,6 +10,7 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
+import { NPCDialogue } from './features/npc/NPCDialogue';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 import ToolUpgradeMenu from './components/ToolUpgradeMenu';
@@ -106,6 +107,7 @@ export function App() {
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
+      <NPCDialogue />
       <NPCInteractions />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
