@@ -1,0 +1,63 @@
+{
+  "marina": {
+    "greetings": [
+      "Oi! Acabou de sair o pão quentinho. Quer experimentar?",
+      "Que bom te ver por aqui! Hoje fiz aquele bolo de milho que você adora.",
+      "Entre, entre! Tô tirando os pães do forno agora."
+    ],
+    "choices": [
+      { "id": "shop", "text": "Ver o que tem na padaria" },
+      { "id": "quest", "text": "Tem alguma coisa que posso fazer?" },
+      { "id": "chat", "text": "Só queria bater um papo" },
+      { "id": "bye", "text": "Até logo, Marina!" }
+    ]
+  },
+  "bento": {
+    "greetings": ["Hum. O que precisa?", "Tô ocupado. Fala logo.", "Chegou cedo hoje. Pode falar."],
+    "choices": [
+      { "id": "shop", "text": "Preciso de sementes" },
+      { "id": "quest", "text": "Tem serviço pra mim?" },
+      { "id": "chat", "text": "Como vai a fazenda?" },
+      { "id": "bye", "text": "Valeu, Bento." }
+    ]
+  },
+  "lucia": {
+    "greetings": [
+      "Meu bem! Que saudade! Como você tá?",
+      "Ai, que alegria! Tava pensando em você hoje cedo.",
+      "Ô meu querido, que bom aparecer aqui!"
+    ],
+    "choices": [
+      { "id": "shop", "text": "Quero ver os produtos do rancho" },
+      { "id": "quest", "text": "Posso ajudar com alguma coisa?" },
+      { "id": "chat", "text": "Conta as novidades do rancho" },
+      { "id": "bye", "text": "Até mais, Lúcia!" }
+    ]
+  },
+  "dorinha": {
+    "greetings": [
+      "Ei, chegou! Tô com semente boa hoje, viu?",
+      "Oi oi! Separei umas verdura fresquinha pra você!",
+      "Chegou na hora certa! Tô com promoção hoje não, mas tem coisa boa!"
+    ],
+    "choices": [
+      { "id": "shop", "text": "O que tem na quitanda?" },
+      { "id": "quest", "text": "Precisa de alguma coisa?" },
+      { "id": "chat", "text": "Como tão as vendas?" },
+      { "id": "bye", "text": "Falou, Dorinha!" }
+    ]
+  },
+  "nina": {
+    "greetings": [
+      "Precisando de ferramenta?",
+      "Boa. Tem enxada, regador, tudo em estoque.",
+      "Pode entrar. O que veio buscar?"
+    ],
+    "choices": [
+      { "id": "shop", "text": "Quero ver as ferramentas" },
+      { "id": "quest", "text": "Tem algum serviço pra mim?" },
+      { "id": "chat", "text": "Como tão os negócios?" },
+      { "id": "bye", "text": "Obrigado, Nina." }
+    ]
+  }
+}
