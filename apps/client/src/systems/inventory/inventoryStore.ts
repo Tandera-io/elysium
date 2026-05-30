@@ -8,7 +8,7 @@ export interface SlotItem {
   qty: number;
 }
 
-export const INVENTORY_SIZE = 12;
+export const INVENTORY_SIZE = 20;
 const STACK_MAX = 99;
 
 export interface InventoryState {

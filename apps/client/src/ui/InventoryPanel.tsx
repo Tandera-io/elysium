@@ -5,15 +5,23 @@ import { CROPS, type CropId } from '../systems/farming/CropDefs';
 const ITEM_ICON: Record<string, string> = {
   seed_wheat: '🌾',
   seed_tomato: '🍅',
+  seed_corn: '🌽',
   wheat: '🌾',
   tomato: '🍅',
+  corn: '🌽',
+  pumpkin: '🎃',
+  strawberry: '🍓',
 };
 
 const ITEM_NAME: Record<string, string> = {
   seed_wheat: 'Sementes de trigo',
   seed_tomato: 'Sementes de tomate',
+  seed_corn: 'Sementes de milho',
   wheat: 'Trigo colhido',
   tomato: 'Tomate colhido',
+  corn: 'Milho colhido',
+  pumpkin: 'Abóbora colhida',
+  strawberry: 'Morango colhido',
 };
 
 function nameOf(id: string): string {
@@ -23,12 +31,16 @@ function nameOf(id: string): string {
 export function InventoryPanel() {
   const slots = useInventoryStore((s) => s.slots);
   const swap = useInventoryStore((s) => s.swap);
+  const gold = useInventoryStore((s) => s.gold);
   const [draggingFrom, setDraggingFrom] = useState<number | null>(null);
   const [hoverOver, setHoverOver] = useState<number | null>(null);
 
   return (
     <aside className="absolute top-20 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 min-w-[200px]">
       <h2 className="text-sm font-semibold text-slate-300 mb-2">Inventário</h2>
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-amber-300 font-mono">🪙 {gold}g</span>
+      </div>
       <div className="grid grid-cols-4 gap-1">
         {slots.map((slot, i) => (
           <Slot
