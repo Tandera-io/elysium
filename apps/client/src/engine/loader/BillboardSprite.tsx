@@ -13,6 +13,8 @@ interface BillboardSpriteProps {
   billboard?: boolean;
   /** Nearest-neighbor filter to keep pixels crisp (pixel art). */
   pixelated?: boolean;
+  /** Material opacity (0–1). Values < 1 enable transparency. */
+  opacity?: number;
 }
 
 /**
@@ -26,6 +28,7 @@ export function BillboardSprite({
   yOffset = 0,
   billboard = true,
   pixelated = true,
+  opacity = 1,
 }: BillboardSpriteProps) {
   const texture = useLoader(TextureLoader, `/${path}`);
   const meshRef = useRef<Mesh>(null);
@@ -56,7 +59,13 @@ export function BillboardSprite({
   return (
     <mesh ref={meshRef} position={[0, height / 2 + yOffset, 0]}>
       <planeGeometry args={[width, height]} />
-      <meshStandardMaterial map={texture} transparent alphaTest={0.5} depthWrite />
+      <meshStandardMaterial
+        map={texture}
+        transparent
+        alphaTest={opacity < 1 ? 0 : 0.5}
+        opacity={opacity}
+        depthWrite={opacity >= 1}
+      />
     </mesh>
   );
 }
