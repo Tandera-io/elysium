@@ -6,6 +6,8 @@ export interface QuestState {
   active: Record<string, Quest>;
   /** Completed quest ids — kept for history/repeatability prevention. */
   completed: string[];
+  /** Quest ids the player explicitly declined this session. */
+  declined: string[];
   /** Reputation per NPC id; integer, positive = friendly. */
   reputation: Record<string, number>;
   /** Player money pool — earned by completing quests + selling. */
@@ -14,6 +16,8 @@ export interface QuestState {
 
 export interface QuestActions {
   accept: (quest: Quest) => void;
+  /** Decline an offered quest so it won't be re-offered this session. */
+  decline: (questId: string) => void;
   hasActiveFromNpc: (npcId: string) => Quest | null;
   /** Mark the quest as ready to turn in (player gathered enough). */
   markReady: (questId: string) => void;
@@ -25,9 +29,11 @@ export interface QuestActions {
 export const useQuestStore = create<QuestState & QuestActions>((set, get) => ({
   active: {},
   completed: [],
+  declined: [],
   reputation: {},
   cash: 50,
   accept: (q) => set((s) => ({ active: { ...s.active, [q.id]: { ...q, status: 'active' } } })),
+  decline: (questId) => set((s) => ({ declined: [...s.declined, questId] })),
   hasActiveFromNpc: (npcId) => {
     const found = Object.values(get().active).find((q) => q.giverNpcId === npcId);
     return found ?? null;
@@ -56,7 +62,7 @@ export const useQuestStore = create<QuestState & QuestActions>((set, get) => ({
     });
     return q;
   },
-  reset: () => set({ active: {}, completed: [], reputation: {}, cash: 50 }),
+  reset: () => set({ active: {}, completed: [], declined: [], reputation: {}, cash: 50 }),
 }));
 
 if (import.meta.env.DEV) {

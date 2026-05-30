@@ -3,8 +3,8 @@ import { ITEMS, type EconomyItemId } from '../economy/itemDefs';
 import type { Quest } from './questDefs';
 
 /**
- * Inspect an NPC's economic state and propose a quest if there's a real
- * shortage (current stock below desiredStock by ≥ 3 units). Returns null
+ * Inspect an NPC's economic state and propose a deliver quest if there's a
+ * real shortage (current stock below desiredStock by >= 3 units). Returns null
  * if the NPC is content. Pure function — easy to unit-test.
  */
 export function proposeQuestFor(
@@ -35,6 +35,7 @@ export function proposeQuestFor(
   return {
     id: `${actor.id}-${worstItem}-d${day}`,
     giverNpcId: actor.id,
+    questType: 'deliver',
     item: worstItem,
     quantity,
     rewardCash: reward,

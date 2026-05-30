@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { useMarinaCropTaskStore, CROP_PT_NAMES } from '../systems/farming/marinaCropTask';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -27,7 +28,6 @@ export function DialogueBox() {
   useEffect(() => {
     if (npcId) {
       setDraft('');
-      // Focus the input when dialogue opens
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [npcId]);
@@ -47,23 +47,45 @@ export function DialogueBox() {
     return () => window.removeEventListener('keydown', onKey);
   }, [npcId, close]);
 
-  // Quest state (recomputed cheaply when dialogue opens)
   const acceptQuest = useQuestStore((s) => s.accept);
+  const declineQuest = useQuestStore((s) => s.decline);
   const turnInQuest = useQuestStore((s) => s.turnIn);
+  const declinedIds = useQuestStore((s) => s.declined);
   const activeQuest = useQuestStore((s) =>
     npcId ? (Object.values(s.active).find((q) => q.giverNpcId === npcId) ?? null) : null,
   );
   const invSlots = useInventoryStore((s) => s.slots);
 
-  // Generate a candidate quest from the static seed market (Phase 11 will
-  // wire this to a live economy state).
   const offered = useMemo(() => {
     if (!npcId) return null;
     const seed = makeSeedMarket();
     const actor = seed.actors[npcId];
     if (!actor) return null;
-    return proposeQuestFor(actor, dayInSeason);
-  }, [npcId, dayInSeason]);
+    const q = proposeQuestFor(actor, dayInSeason);
+    return q && !declinedIds.includes(q.id) ? q : null;
+  }, [npcId, dayInSeason, declinedIds]);
+
+  const marinaCropTask = useMarinaCropTaskStore((s) => s.current);
+  const marinaCropTaskOffer = useMarinaCropTaskStore((s) => s.offer);
+  const marinaCropTaskAccept = useMarinaCropTaskStore((s) => s.accept);
+  const marinaCropTaskDecline = useMarinaCropTaskStore((s) => s.decline);
+  const marinaCropTaskComplete = useMarinaCropTaskStore((s) => s.complete);
+
+  useEffect(() => {
+    if (npcId === 'marina') {
+      const cur = useMarinaCropTaskStore.getState().current;
+      if (!cur || cur.status === 'declined' || cur.status === 'completed') {
+        marinaCropTaskOffer(dayInSeason);
+      }
+    }
+  }, [npcId, dayInSeason, marinaCropTaskOffer]);
+
+  const haveForMarinaTask =
+    marinaCropTask && marinaCropTask.status === 'accepted'
+      ? invSlots.reduce((acc, s) => (s?.id === marinaCropTask.crop ? acc + s.qty : acc), 0)
+      : 0;
+  const canCompleteMarinaTask =
+    marinaCropTask?.status === 'accepted' && haveForMarinaTask >= marinaCropTask.quantity;
 
   if (!npcId) return null;
   const npc = npcs[npcId];
@@ -151,17 +173,77 @@ export function DialogueBox() {
         </div>
       )}
       {!activeQuest && offered && (
-        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
-          <span>
+        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 text-xs">
+          <p className="mb-2">
             {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
             {offered.rewardCash} +{offered.rewardReputation} rep.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => acceptQuest(offered)}
+              className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold"
+            >
+              Aceitar
+            </button>
+            <button
+              onClick={() => declineQuest(offered.id)}
+              className="bg-slate-700 text-slate-300 px-2 py-1 rounded hover:bg-slate-600"
+            >
+              Recusar
+            </button>
+          </div>
+        </div>
+      )}
+      {npcId === 'marina' && marinaCropTask?.status === 'accepted' && (
+        <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
+          <span>
+            Tarefa: entregar {marinaCropTask.quantity}× {CROP_PT_NAMES[marinaCropTask.crop]} (
+            {haveForMarinaTask}/{marinaCropTask.quantity}) — recompensa: {marinaCropTask.rewardGold}
+            g
           </span>
-          <button
-            onClick={() => acceptQuest(offered)}
-            className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold"
-          >
-            Aceitar
-          </button>
+          {canCompleteMarinaTask && (
+            <button
+              onClick={() => {
+                const removed = useInventoryStore
+                  .getState()
+                  .remove(marinaCropTask.crop, marinaCropTask.quantity);
+                if (removed) {
+                  useInventoryStore.getState().addGold(marinaCropTask.rewardGold);
+                  marinaCropTaskComplete();
+                }
+              }}
+              className="bg-emerald-500 text-slate-900 px-2 py-1 rounded font-semibold"
+            >
+              Entregar
+            </button>
+          )}
+        </div>
+      )}
+      {npcId === 'marina' && marinaCropTask?.status === 'completed' && (
+        <div className="px-4 py-2 border-t border-slate-700 bg-slate-800/60 text-xs text-slate-400 text-center">
+          Tarefa concluída! Volte amanhã para uma nova encomenda.
+        </div>
+      )}
+      {npcId === 'marina' && marinaCropTask?.status === 'offered' && (
+        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 text-xs">
+          <p className="mb-2">
+            Marina precisa de {marinaCropTask.quantity}× {CROP_PT_NAMES[marinaCropTask.crop]} da sua
+            roça. Recompensa: {marinaCropTask.rewardGold}g
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => marinaCropTaskAccept()}
+              className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold"
+            >
+              Aceitar
+            </button>
+            <button
+              onClick={() => marinaCropTaskDecline()}
+              className="bg-slate-700 text-slate-300 px-2 py-1 rounded hover:bg-slate-600"
+            >
+              Recusar
+            </button>
+          </div>
         </div>
       )}
       <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
