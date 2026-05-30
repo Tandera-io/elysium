@@ -90,11 +90,58 @@ describe('farmStore', () => {
     const t = { x: 3, z: 3 };
     const farm = useFarmStore.getState();
     farm.till(t);
-    farm.plant(t, 'tomato'); // 5 days
-    for (let i = 0; i < 4; i++) farm.advanceDay();
+    farm.plant(t, 'tomato', 'summer'); // 5 days, tomato is a summer crop
+    for (let i = 0; i < 4; i++) farm.advanceDay('summer');
     expect(useFarmStore.getState().harvest(t)).toBeNull();
-    farm.advanceDay();
+    farm.advanceDay('summer');
     expect(useFarmStore.getState().harvest(t)).toEqual({ crop: 'tomato', quantity: 3 });
+  });
+});
+
+describe('farmStore – season wilt', () => {
+  beforeEach(() => {
+    useFarmStore.getState().reset();
+  });
+
+  it('crop wilts when advanceDay called with an out-of-season season', () => {
+    const t = { x: 1, z: 1 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    // plant wheat (spring/autumn crop) during spring
+    farm.plant(t, 'wheat', 'spring');
+    expect(farm.getTile(t).kind).toBe('planted');
+    // advance day during summer → out of season → wilt
+    useFarmStore.getState().advanceDay('summer');
+    expect(useFarmStore.getState().getTile(t).kind).toBe('tilled');
+  });
+
+  it('crop survives when advanceDay called with an in-season season', () => {
+    const t = { x: 2, z: 2 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'wheat', 'spring');
+    useFarmStore.getState().advanceDay('spring');
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('planted');
+    if (tile.kind === 'planted') expect(tile.daysGrown).toBe(1);
+  });
+
+  it('tomato grows in summer', () => {
+    const t = { x: 3, z: 3 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'tomato', 'summer');
+    useFarmStore.getState().advanceDay('summer');
+    expect(useFarmStore.getState().getTile(t).kind).toBe('planted');
+  });
+
+  it('tomato wilts in spring', () => {
+    const t = { x: 4, z: 4 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'tomato', 'spring');
+    useFarmStore.getState().advanceDay('spring');
+    expect(useFarmStore.getState().getTile(t).kind).toBe('tilled');
   });
 });
 

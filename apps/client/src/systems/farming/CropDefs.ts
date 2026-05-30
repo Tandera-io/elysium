@@ -3,6 +3,8 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
+import type { Season } from '../time/timeStore';
+
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
@@ -20,6 +22,7 @@ export interface CropDef {
   readonly stages: readonly CropStage[];
   readonly daysToMature: number;
   readonly yieldQuantity: number;
+  readonly seasons: readonly Season[];
 }
 
 export const CROPS: Record<CropId, CropDef> = {
@@ -34,6 +37,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 4,
     yieldQuantity: 2,
+    seasons: ['spring', 'autumn'],
   },
   tomato: {
     id: 'tomato',
@@ -47,6 +51,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 5,
     yieldQuantity: 3,
+    seasons: ['summer'],
   },
   pumpkin: {
     id: 'pumpkin',
@@ -59,6 +64,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 7,
     yieldQuantity: 1,
+    seasons: ['autumn'],
   },
   corn: {
     id: 'corn',
@@ -71,6 +77,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 6,
     yieldQuantity: 3,
+    seasons: ['summer'],
   },
   strawberry: {
     id: 'strawberry',
@@ -82,6 +89,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 3,
     yieldQuantity: 4,
+    seasons: ['spring'],
   },
 };
 

@@ -11,6 +11,7 @@ import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { CropGrowth } from './farming/CropGrowth';
 
 type FetchState =
   | { kind: 'loading' }
@@ -95,6 +96,7 @@ export function App() {
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
+      <CropGrowth />
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
