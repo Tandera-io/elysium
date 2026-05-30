@@ -1,0 +1,27 @@
+{
+  "id": "dorinha",
+  "name": "Dorinha",
+  "role": "quitandeira",
+  "position": { "x": 6, "z": 4 },
+  "personality": {
+    "core_traits": ["animada", "negociante nata", "generosa com amigos"],
+    "speech_style": "informal, usa gírias do interior, fala em português brasileiro coloquial",
+    "values": ["trabalho honesto", "comunidade", "boa safra"],
+    "fears": ["preço de safra cair", "perder clientes para a cidade"]
+  },
+  "relations": {
+    "marina": "amiga_de_infancia",
+    "bento": "fornecedor_confiavel"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "quitanda", "activity": "atender" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "quitanda", "activity": "atender" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": ["trigo", "tomate", "milho"],
+    "consumes": ["seed_wheat", "seed_tomato", "seed_corn"],
+    "shop_inventory": ["seed_wheat", "seed_tomato", "seed_corn"]
+  }
+}

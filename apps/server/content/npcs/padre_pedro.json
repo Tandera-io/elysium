@@ -1,0 +1,29 @@
+{
+  "id": "padre_pedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "position": { "x": 2, "z": -6 },
+  "personality": {
+    "core_traits": ["sábio", "compassivo", "contador de histórias"],
+    "speech_style": "formal mas acolhedor, usa citações e provérbios, fala em português brasileiro",
+    "values": ["fé", "comunidade", "honestidade", "trabalho digno"],
+    "fears": ["discórdia na comunidade", "abandono da tradição", "injustiça"]
+  },
+  "relations": {
+    "marina": "fiel_assidua",
+    "bento": "amigo_antigo",
+    "dorinha": "paroquiana"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "missa" },
+    { "from": "08:00", "to": "12:00", "location": "igreja", "activity": "atender_paroquianos" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "refeicao" },
+    { "from": "14:00", "to": "18:00", "location": "praca", "activity": "caminhar_conversar" },
+    { "from": "18:00", "to": "20:00", "location": "igreja", "activity": "reza_noturna" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances"],
+    "shop_inventory": []
+  }
+}
