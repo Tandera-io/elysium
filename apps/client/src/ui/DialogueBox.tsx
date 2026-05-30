@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDialogueStore } from '../systems/dialogue/dialogueStore';
+import type { DialogueChoice } from '../systems/dialogue/dialogueStore';
 import { useNpcStore } from '../systems/npc/npcStore';
 import { currentSeason, useTimeStore } from '../systems/time/timeStore';
 import { useQuestStore } from '../systems/quest/questStore';
@@ -13,8 +14,10 @@ export function DialogueBox() {
   const history = useDialogueStore((s) => s.history);
   const pending = useDialogueStore((s) => s.pending);
   const error = useDialogueStore((s) => s.error);
+  const choices = useDialogueStore((s) => s.choices);
   const close = useDialogueStore((s) => s.close);
   const send = useDialogueStore((s) => s.send);
+  const clearChoices = useDialogueStore((s) => s.clearChoices);
   const npcs = useNpcStore((s) => s.npcs);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
@@ -77,15 +80,22 @@ export function DialogueBox() {
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
+  const worldContext = {
+    hour,
+    dayInSeason,
+    season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
+    year,
+  };
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void send(draft, {
-      hour,
-      dayInSeason,
-      season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
-      year,
-    });
+    void send(draft, worldContext);
     setDraft('');
+  };
+
+  const onChoiceClick = (choice: DialogueChoice) => {
+    clearChoices();
+    void send(choice.text, worldContext);
   };
 
   return (
@@ -129,6 +139,20 @@ export function DialogueBox() {
         {pending && <p className="text-slate-500 italic">…pensando</p>}
         {error && <p className="text-rose-400 text-xs">erro: {error}</p>}
       </div>
+      {choices.length > 0 && (
+        <div className="px-4 py-2 border-t border-slate-700 flex flex-wrap gap-2">
+          {choices.map((choice) => (
+            <button
+              key={choice.id}
+              onClick={() => onChoiceClick(choice)}
+              disabled={pending}
+              className="bg-slate-800 hover:bg-amber-500 hover:text-slate-900 border border-slate-600 hover:border-amber-500 text-slate-200 text-xs px-3 py-1.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {choice.text}
+            </button>
+          ))}
+        </div>
+      )}
       {activeQuest && (
         <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
           <span>
