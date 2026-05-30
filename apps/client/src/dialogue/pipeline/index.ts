@@ -171,6 +171,23 @@ const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
       'Você é meu melhor cliente — e o que melhor aguenta minhas histórias!',
     ],
   },
+  marina: {
+    repeat_early: [
+      'Voltou! Fico feliz de ver! Tô acabando de assar uma fornada nova, chegou na hora certa.',
+      'Que saudade! Entra, entra. Tenho pão fresquinho esperando por você.',
+      'Oi, oi! Hoje cedo acordei inspirada e fiz uma receita nova. Quer experimentar?',
+    ],
+    repeat_regular: [
+      'Meu cliente favorito! O pão de hoje ficou especialmente bom, você vai ver.',
+      'Olha quem apareceu! Já sabia que você ia aparecer hoje — fiz um bolo extra só por pressentimento.',
+      'Que bom te ver de novo! Como está a roça? Tô com saudade de uma boa conversa.',
+    ],
+    friend: [
+      'Meu amigo! Tenho guardado um pão especial pra você desde cedo. Sabia que você viria!',
+      'Aí chegou! Tava até preocupada. Aprendi uma receita nova e preciso de opinião honesta.',
+      'Você é praticamente da família! Já deixo a porta de fundo aberta quando te vejo chegando.',
+    ],
+  },
 };
 
 const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
@@ -321,6 +338,49 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
     goodbye: [
       'Até mais! Volta amanhã — o peixe sempre está mais fresco de manhã.',
       'Tchau! E não esqueça: o maior peixe ainda está no rio!',
+    ],
+  },
+  marina: {
+    greet: [
+      'Oi! Que bom te ver! Tenho pão fresquinho saindo do forno agora.',
+      'Olá! Chegou em boa hora — acabei de assar uma fornada nova!',
+      'Que prazer! O que vai ser hoje, pão ou bolo fubá?',
+    ],
+    buy: [
+      'Claro! Dá uma olhada no que tenho. Tudo saiu quentinho hoje cedo.',
+      'Boa escolha! Esse aqui está especialmente bom hoje, pode acreditar.',
+      'Pode escolher à vontade — garantia de frescor e capricho!',
+    ],
+    sell: [
+      'Trigo bom eu sempre aceito! Quanto você trouxe?',
+      'Ovos e leite fresco também compro! Me conta o que você tem.',
+      'Ingrediente de qualidade é o que faz meu pão ser diferente. O que você trouxe?',
+    ],
+    give_gift: [
+      'Trigo fresquinho! Você sabe o caminho pro meu coração. Obrigada de verdade!',
+      'Que presente lindo! Vou usar nas melhores receitas, prometo.',
+      'Ai, que gentileza! Fico tão feliz quando recebo ingrediente de qualidade. Muito obrigada!',
+    ],
+    talk: [
+      'O segredo do meu pão é o fermento natural. Tenho um que cultivo faz quinze anos!',
+      'Aprendi a fazer pão com minha mãe. Ela dizia: pão bom precisa de tempo e de amor.',
+      'Cada farinha tem personalidade. Trigo local absorve menos água — aprendi testando.',
+      'O Lucas, meu vizinho, reclama que o cheiro de pão acorda ele cedo. Mas é sempre o primeiro a aparecer!',
+      'O tio Bento parece seco, mas tem coração de ouro. Me ensinou muito sobre qualidade de ingrediente.',
+    ],
+    quest_accept: [
+      'Pode contar comigo! Se você me trouxer isso, fico muito grata.',
+      'Que bom! Sabia que podia contar com você. Tô na torcida!',
+    ],
+    quest_complete: [
+      'Você conseguiu! Eu sabia que podia contar com você. Fica com esse pão quentinho, é meu presente!',
+      'Que alívio! Você é incrível. Muito obrigada de coração.',
+      'Perfeito! Você merece muito. Tem pão fresquinho esperando por você como recompensa!',
+    ],
+    goodbye: [
+      'Até mais! Volta logo. Tem pão fresco todo dia cedo!',
+      'Tchau! Cuida-se. Pão bom esperando aqui todo dia.',
+      'Vai com Deus! Volta sempre que quiser conversar ou comprar alguma coisa.',
     ],
   },
 };

@@ -8,6 +8,7 @@ import {
 } from './pipeline/index.js';
 
 import FERRAZ_DIALOGUE from '../features/npc/dialogue/ferraz';
+import MARINA_DIALOGUE from '../features/npc/dialogue/marina';
 import NINA_DIALOGUE from '../features/npc/dialogue/nina';
 import DORINHA_DIALOGUE from '../features/npc/dialogue/dorinha';
 import PADRE_PEDRO_DIALOGUE from '../features/npc/dialogue/padre_pedro';
@@ -64,6 +65,7 @@ export {
 };
 
 registerNPC(FERRAZ_DIALOGUE as NpcDialogueConfig);
+registerNPC(MARINA_DIALOGUE as NpcDialogueConfig);
 registerNPC(NINA_DIALOGUE as NpcDialogueConfig);
 registerNPC(DORINHA_DIALOGUE as NpcDialogueConfig);
 registerNPC(PADRE_PEDRO_DIALOGUE as NpcDialogueConfig);

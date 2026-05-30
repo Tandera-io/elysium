@@ -1,61 +1,55 @@
 import { useState } from 'react';
-import { useDialogueStore } from '../systems/dialogue/dialogueStore';
-import { getGreetings, getTopics } from '../dialogue/DialogueManager';
-import { useTimeStore, currentSeason } from '../systems/time/timeStore';
+import { useDialogueStore } from '../../systems/dialogue/dialogueStore';
+import { useTimeStore, currentSeason } from '../../systems/time/timeStore';
+import marinaDialogue from '../../assets/dialogue/npc-marina.json';
 
-export const HUB_NPC_IDS = [
-  'marina',
-  'dorinha',
-  'padre_pedro',
-  'nina',
-  'arnaldo',
-  'sofia',
-  'romeu',
-] as const;
-export type HubNpcId = (typeof HUB_NPC_IDS)[number];
+const MARINA_ID = 'marina';
+const TOPIC_LABELS = { receitas: 'Receitas', ingredientes: 'Ingredientes', conversa: 'Conversa' };
 
-const TOPIC_LABELS: Record<string, string> = {
-  general: 'Geral',
-  guidance: 'Conselho',
-  woodwork: 'Marcenaria',
-  remedies: 'Remédios',
-  fish: 'Peixe',
-  tools: 'Ferramentas',
-  seeds: 'Sementes',
-  selling: 'Vender',
-  recipes: 'Receitas',
-  ingredients: 'Ingredientes',
-};
+function getTimeKey(hour) {
+  if (hour >= 5 && hour < 7) return 'early_morning';
+  if (hour >= 7 && hour < 12) return 'morning';
+  if (hour >= 12 && hour < 18) return 'afternoon';
+  return 'evening';
+}
 
-/**
- * Quick-reply chip panel for the 6 hub NPCs.
- * Renders greeting chips and topic-group buttons when dialogue is active
- * with any hub NPC. Mount once in App.tsx.
- */
-export function NPCInteractions() {
+function pickLine(lines, seed) {
+  if (!lines || lines.length === 0) return null;
+  return lines[seed % lines.length];
+}
+
+function getContextualGreeting(hour, season, historyLength) {
+  const d = marinaDialogue.dialogues;
+  if (historyLength === 0) return pickLine(d.greeting.first_time, 0);
+  const timeKey = getTimeKey(hour);
+  const timeLines = d.time_of_day[timeKey] ?? d.time_of_day.morning;
+  const seasonLines = d.season[season] ?? d.season.spring;
+  return historyLength % 4 < 2
+    ? pickLine(timeLines, Math.floor(historyLength / 2))
+    : pickLine(seasonLines, Math.floor(historyLength / 4));
+}
+
+export function NPCDialogue() {
   const npcId = useDialogueStore((s) => s.npcId);
+  const history = useDialogueStore((s) => s.history);
   const pending = useDialogueStore((s) => s.pending);
   const send = useDialogueStore((s) => s.send);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
   const seasonIndex = useTimeStore((s) => s.seasonIndex);
   const year = useTimeStore((s) => s.year);
-  const [openTopic, setOpenTopic] = useState<string | null>(null);
+  const [openTopic, setOpenTopic] = useState(null);
 
-  if (!npcId || !(HUB_NPC_IDS as readonly string[]).includes(npcId)) return null;
+  if (npcId !== MARINA_ID) return null;
 
-  const greetings = getGreetings(npcId);
-  const topics = getTopics(npcId);
+  const season = currentSeason({ seasonIndex });
+  const world = { hour, dayInSeason, season, year };
+  const contextualLine = getContextualGreeting(hour, season, history.length);
+  const greetings = marinaDialogue.greetings ?? [];
+  const topics = marinaDialogue.topics ?? {};
   const topicKeys = Object.keys(topics);
 
-  const world = {
-    hour,
-    dayInSeason,
-    season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
-    year,
-  };
-
-  const handleQuickReply = (input: string) => {
+  const handleQuickReply = (input) => {
     if (pending) return;
     void send(input, world);
     setOpenTopic(null);
@@ -63,9 +57,16 @@ export function NPCInteractions() {
 
   return (
     <div className="absolute bottom-[220px] left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] flex flex-col gap-2 pointer-events-none">
+      {contextualLine && (
+        <div className="flex justify-center pointer-events-none">
+          <p className="bg-amber-950/80 border border-amber-700/50 text-amber-200 text-xs px-4 py-1.5 rounded-xl max-w-[520px] text-center italic">
+            {contextualLine}
+          </p>
+        </div>
+      )}
       {openTopic !== null && topics[openTopic] !== undefined && (
         <div className="flex flex-wrap gap-1.5 justify-center pointer-events-auto">
-          {topics[openTopic]!.map((reply) => (
+          {topics[openTopic].map((reply) => (
             <button
               key={reply.input}
               onClick={() => handleQuickReply(reply.input)}
@@ -112,3 +113,5 @@ export function NPCInteractions() {
     </div>
   );
 }
+
+export default NPCDialogue;

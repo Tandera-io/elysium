@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn' | 'hoe';
 
 export interface SlotItem {
   id: ItemId;
@@ -31,8 +31,9 @@ export interface InventoryActions {
 
 function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
-  slots[0] = { id: 'seed_wheat', qty: 6 };
-  slots[1] = { id: 'seed_tomato', qty: 4 };
+  slots[0] = { id: 'hoe', qty: 1 };
+  slots[1] = { id: 'seed_wheat', qty: 6 };
+  slots[2] = { id: 'seed_tomato', qty: 4 };
   return { slots, gold: 500 };
 }
 
