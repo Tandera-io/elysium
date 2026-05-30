@@ -61,23 +61,21 @@ describe('farmStore', () => {
     expect(useFarmStore.getState().plant({ x: 0, z: 0 }, 'wheat')).toBe(false);
   });
 
-  it('wheat full grow loop: till → water → plant → 4 advances → harvest', () => {
+  it('wheat full grow loop: till → water → plant → water+advance×4 → harvest', () => {
     const t = { x: 10, z: 10 };
     const farm = useFarmStore.getState();
     expect(farm.till(t)).toBe(true);
     expect(farm.water(t)).toBe(true);
     expect(farm.plant(t, 'wheat')).toBe(true);
 
-    // Days 2, 3 → not mature
-    farm.advanceDay();
-    farm.advanceDay();
-    expect(useFarmStore.getState().harvest(t)).toBeNull();
+    // Advance 3 days with daily watering — should not be harvestable yet
+    for (let i = 0; i < 3; i++) {
+      farm.advanceDay();
+      expect(useFarmStore.getState().harvest(t)).toBeNull();
+      farm.water(t); // water for the next day
+    }
 
-    // Day 4: still not — daysGrown=3 after 3 advances
-    farm.advanceDay();
-    expect(useFarmStore.getState().harvest(t)).toBeNull();
-
-    // Day 5: daysGrown=4 → mature
+    // 4th advance — daysGrown reaches 4 = daysToMature
     farm.advanceDay();
     const yieldVal = useFarmStore.getState().harvest(t);
     expect(yieldVal).toEqual({ crop: 'wheat', quantity: 2 });
@@ -86,12 +84,30 @@ describe('farmStore', () => {
     expect(useFarmStore.getState().getTile(t).kind).toBe('tilled');
   });
 
-  it('planted tile reaches mature in daysToMature advances', () => {
+  it('crop does not grow when not watered', () => {
+    const t = { x: 7, z: 7 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.water(t);
+    farm.plant(t, 'wheat'); // day 1, lastWateredOnDay=1
+    farm.advanceDay(); // watered → grows to daysGrown=1
+    // do NOT water — advance again
+    farm.advanceDay(); // no water on day 2 → daysGrown stays at 1
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('planted');
+    if (tile.kind === 'planted') expect(tile.daysGrown).toBe(1);
+  });
+
+  it('planted tile reaches mature in daysToMature watered advances', () => {
     const t = { x: 3, z: 3 };
     const farm = useFarmStore.getState();
     farm.till(t);
+    farm.water(t);
     farm.plant(t, 'tomato'); // 5 days
-    for (let i = 0; i < 4; i++) farm.advanceDay();
+    for (let i = 0; i < 4; i++) {
+      farm.advanceDay();
+      farm.water(t); // water for next day
+    }
     expect(useFarmStore.getState().harvest(t)).toBeNull();
     farm.advanceDay();
     expect(useFarmStore.getState().harvest(t)).toEqual({ crop: 'tomato', quantity: 3 });

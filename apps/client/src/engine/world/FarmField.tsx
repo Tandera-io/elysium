@@ -53,14 +53,20 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let mature = false;
         let stageColor: string | null = null;
         let cropId: keyof typeof CROP_SPRITES | null = null;
+        let coneHeight = 0.4;
+        let coneRadius = 0.15;
 
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
         } else if (tile.kind === 'planted') {
-          texture = wateredTex; // planted always sits on damp soil
+          texture = wateredTex;
           const def = CROPS[tile.crop];
           const stage = stageForDayCount(def, tile.daysGrown);
           stageColor = stage.color;
+          const maxStageIndex = def.stages.length - 1;
+          const stageRatio = maxStageIndex > 0 ? stage.index / maxStageIndex : 0;
+          coneHeight = 0.1 + stageRatio * 0.55;
+          coneRadius = 0.04 + stageRatio * 0.12;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
         }
@@ -72,16 +78,28 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
+            {/* Growing-stage cone — scales up through each stage */}
             {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
+              <mesh position={[0, coneHeight / 2, 0]} castShadow>
+                <coneGeometry args={[coneRadius, coneHeight, 6]} />
                 <meshStandardMaterial color={stageColor} />
               </mesh>
             )}
-            {/* Mature plant sprite */}
+            {/* Mature plant sprite with harvest-ready ring */}
             {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+              <>
+                <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+                <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[0.3, 0.38, 16]} />
+                  <meshStandardMaterial
+                    color="#f5c842"
+                    emissive="#f5c842"
+                    emissiveIntensity={0.5}
+                    transparent
+                    opacity={0.85}
+                  />
+                </mesh>
+              </>
             )}
           </group>
         );

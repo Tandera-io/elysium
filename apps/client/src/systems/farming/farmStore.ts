@@ -97,9 +97,7 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
       const nextDay = s.day + 1;
       const nextTiles: Record<string, TileState> = { ...s.tiles };
       for (const [k, t] of Object.entries(s.tiles)) {
-        if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
+        if (t.kind === 'planted' && t.lastWateredOnDay === s.day) {
           nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
         }
       }
