@@ -7,6 +7,12 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import {
+  getGreetings,
+  getTopicReplies,
+  detectShopTrigger,
+} from '../features/npc/dialogue/pipeline';
+import { useNPCShopStore } from '../systems/npc/NPCShop';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -23,6 +29,7 @@ export function DialogueBox() {
   const [draft, setDraft] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const openShop = useNPCShopStore((s) => s.openShop);
 
   useEffect(() => {
     if (npcId) {
@@ -37,6 +44,15 @@ export function DialogueBox() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [history, pending]);
+
+  // Detect shop trigger phrases in NPC replies and auto-open the shop
+  useEffect(() => {
+    if (!npcId) return;
+    const last = history[history.length - 1];
+    if (last?.who === 'npc' && detectShopTrigger(npcId, last.text)) {
+      openShop(npcId);
+    }
+  }, [history, npcId, openShop]);
 
   useEffect(() => {
     if (!npcId) return;
@@ -76,6 +92,22 @@ export function DialogueBox() {
       )
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
+
+  const quickReplies =
+    history.length === 0
+      ? getGreetings(npcId)
+      : history[history.length - 1]?.who === 'npc'
+        ? getTopicReplies(npcId)
+        : [];
+
+  const sendQuickReply = (input: string) => {
+    void send(input, {
+      hour,
+      dayInSeason,
+      season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
+      year,
+    });
+  };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +194,19 @@ export function DialogueBox() {
           >
             Aceitar
           </button>
+        </div>
+      )}
+      {quickReplies.length > 0 && !pending && (
+        <div className="flex flex-wrap gap-1.5 px-3 py-2 border-t border-slate-700">
+          {quickReplies.map((reply) => (
+            <button
+              key={reply.label}
+              onClick={() => sendQuickReply(reply.input)}
+              className="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1 rounded-full transition-colors"
+            >
+              {reply.label}
+            </button>
+          ))}
         </div>
       )}
       <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
