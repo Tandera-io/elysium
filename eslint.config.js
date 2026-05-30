@@ -16,10 +16,25 @@ export default [
       '**/*.config.mjs',
       'apps/client/public/**',
       'scripts/**/*.mjs',
+      '**/.claude/**',
     ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    files: ['**/*.{js,jsx,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
+    },
+    rules: {
+      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
