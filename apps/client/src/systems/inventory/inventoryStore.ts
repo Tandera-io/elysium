@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
+import type { CraftItemId } from '../../farming-system/crafts';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ItemId = CropId | CraftItemId | 'lenha' | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
 
 export interface SlotItem {
   id: ItemId;
