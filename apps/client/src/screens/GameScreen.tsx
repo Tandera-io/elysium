@@ -7,6 +7,7 @@ import { QuestPanel } from '../ui/QuestPanel';
 import { InteractPrompt } from '../systems/npc/InteractPrompt';
 import { NPCShopModal } from '../engine/ui/NPCShopModal';
 import { useLightingOverlay } from '../stores/timeStore';
+import { WeatherIndicator } from '../components/WeatherIndicator';
 
 export function GameScreen() {
   const overlay = useLightingOverlay();
@@ -27,6 +28,10 @@ export function GameScreen() {
           transition: 'background-color 3s ease, opacity 3s ease',
         }}
       />
+      {/* Weather HUD — top-right corner */}
+      <div className="pointer-events-none absolute top-4 right-4" style={{ zIndex: 20 }}>
+        <WeatherIndicator />
+      </div>
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
