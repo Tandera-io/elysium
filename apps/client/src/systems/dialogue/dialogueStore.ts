@@ -1,5 +1,20 @@
 import { create } from 'zustand';
 import type { DialogueResponse, NpcEmotion } from '@elysium/shared';
+import { useNpcStore } from '../npc/npcStore';
+import { useTimeStore, DAYS_PER_SEASON, SEASONS } from '../time/timeStore';
+
+/**
+ * Converts the time store's (year, seasonIndex, dayInSeason) triple into a
+ * monotonically increasing integer game-day index.  Day 0 = Year 1, Spring, Day 1.
+ */
+function currentGameDay(): number {
+  const { year, seasonIndex, dayInSeason } = useTimeStore.getState();
+  return (
+    (year - 1) * SEASONS.length * DAYS_PER_SEASON +
+    seasonIndex * DAYS_PER_SEASON +
+    (dayInSeason - 1)
+  );
+}
 
 export interface DialogueTurn {
   who: 'player' | 'npc';
@@ -33,7 +48,14 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
   pending: false,
   error: null,
   open: (npcId) => set({ npcId, history: [], error: null }),
-  close: () => set({ npcId: null, history: [], pending: false, error: null }),
+  close: () => {
+    const { npcId, history } = get();
+    // Only record interaction if the player actually exchanged at least one message.
+    if (npcId && history.length > 0) {
+      useNpcStore.getState().recordInteraction(npcId, currentGameDay());
+    }
+    set({ npcId: null, history: [], pending: false, error: null });
+  },
   send: async (input, world) => {
     const npcId = get().npcId;
     if (!npcId) return;
