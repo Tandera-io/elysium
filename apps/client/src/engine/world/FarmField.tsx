@@ -7,6 +7,7 @@ import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
 import { BillboardSprite } from '../loader/BillboardSprite';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
+import { cropGrowthGeometry } from '../../features/farming/crop';
 
 const TILE_HEIGHT = 0.01;
 
@@ -54,6 +55,9 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let stageColor: string | null = null;
         let cropId: keyof typeof CROP_SPRITES | null = null;
 
+        let stageIndex = 0;
+        let totalStages = 1;
+
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
         } else if (tile.kind === 'planted') {
@@ -61,9 +65,13 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           const def = CROPS[tile.crop];
           const stage = stageForDayCount(def, tile.daysGrown);
           stageColor = stage.color;
+          stageIndex = stage.index;
+          totalStages = def.stages.length;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
         }
+
+        const geo = stageColor && !mature ? cropGrowthGeometry(stageIndex, totalStages) : null;
 
         return (
           <group key={key} position={[world.x, TILE_HEIGHT, world.z]}>
@@ -72,10 +80,10 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
-            {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
+            {/* Growing-stage cone — scales up per stage so growth is visible */}
+            {stageColor && !mature && geo && (
+              <mesh position={[0, geo.yOffset, 0]} castShadow>
+                <coneGeometry args={[geo.radius, geo.height, geo.segments]} />
                 <meshStandardMaterial color={stageColor} />
               </mesh>
             )}
