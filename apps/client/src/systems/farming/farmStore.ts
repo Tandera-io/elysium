@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CROPS, type CropId } from './CropDefs';
+import { CROPS, stageForDayCount, isMature, type CropId, type CropStage } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
 
@@ -30,6 +30,10 @@ export interface FarmActions {
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
   /** Advances day counter and progresses planted tiles by 1 day. */
   advanceDay: () => void;
+  /** Returns growth stage info for a planted tile, or null if the tile is not planted. */
+  growthStageFor: (
+    t: TileCoord,
+  ) => { stage: CropStage; stageIndex: number; mature: boolean } | null;
   /** Test helpers */
   reset: () => void;
 }
@@ -105,6 +109,13 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
       }
       return { day: nextDay, tiles: nextTiles };
     });
+  },
+  growthStageFor: (t) => {
+    const tile = get().tiles[tileKey(t)];
+    if (!tile || tile.kind !== 'planted') return null;
+    const def = CROPS[tile.crop];
+    const stage = stageForDayCount(def, tile.daysGrown);
+    return { stage, stageIndex: stage.index, mature: isMature(def, tile.daysGrown) };
   },
   reset: () => set({ tiles: {}, day: 1 }),
 }));
