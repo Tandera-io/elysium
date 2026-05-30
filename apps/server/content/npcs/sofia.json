@@ -1,0 +1,27 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "professora",
+  "position": { "x": -6, "z": 10 },
+  "personality": {
+    "core_traits": ["curiosa", "dedicada", "entusiasta"],
+    "speech_style": "animada e clara, faz perguntas, usa exemplos práticos da natureza e da roça",
+    "values": ["educação", "curiosidade", "crescimento pessoal"],
+    "fears": ["analfabetismo na comunidade", "escola fechar por falta de recursos"]
+  },
+  "relations": {
+    "padre-pedro": "aliado_na_comunidade",
+    "marina": "amiga_e_ex_aluna"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "escola", "activity": "lecionar" },
+    { "from": "12:00", "to": "13:30", "location": "casa", "activity": "almocar" },
+    { "from": "13:30", "to": "17:00", "location": "escola", "activity": "preparar_aulas" },
+    { "from": "17:00", "to": "20:00", "location": "praca", "activity": "leitura" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances", "leite"],
+    "shop_inventory": []
+  }
+}

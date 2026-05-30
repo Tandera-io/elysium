@@ -1,0 +1,26 @@
+{
+  "id": "padre-pedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "position": { "x": -12, "z": 6 },
+  "personality": {
+    "core_traits": ["sábio", "compassivo", "espiritual"],
+    "speech_style": "sereno, fala em tom elevado mas acessível, usa metáforas da natureza e da fé",
+    "values": ["fé", "comunidade", "misericórdia"],
+    "fears": ["divisão da comunidade", "perda da tradição religiosa local"]
+  },
+  "relations": {
+    "marina": "paroquiana_devota",
+    "sofia": "aliada_na_educacao"
+  },
+  "schedule": [
+    { "from": "05:30", "to": "08:00", "location": "igreja", "activity": "missa" },
+    { "from": "08:00", "to": "12:00", "location": "vila", "activity": "visitas_pastorais" },
+    { "from": "15:00", "to": "19:00", "location": "igreja", "activity": "confissoes" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances", "vinho"],
+    "shop_inventory": []
+  }
+}
