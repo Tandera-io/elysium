@@ -1,0 +1,74 @@
+[
+  {
+    "id": "seed_wheat",
+    "name": "Sementes de trigo",
+    "icon": "🌾",
+    "stackable": true,
+    "category": "seed",
+    "sellPrice": null,
+    "buyPrice": 10
+  },
+  {
+    "id": "seed_tomato",
+    "name": "Sementes de tomate",
+    "icon": "🍅",
+    "stackable": true,
+    "category": "seed",
+    "sellPrice": null,
+    "buyPrice": 15
+  },
+  {
+    "id": "seed_corn",
+    "name": "Sementes de milho",
+    "icon": "🌽",
+    "stackable": true,
+    "category": "seed",
+    "sellPrice": null,
+    "buyPrice": 12
+  },
+  {
+    "id": "wheat",
+    "name": "Trigo colhido",
+    "icon": "🌾",
+    "stackable": true,
+    "category": "crop",
+    "sellPrice": 50,
+    "buyPrice": null
+  },
+  {
+    "id": "tomato",
+    "name": "Tomate colhido",
+    "icon": "🍅",
+    "stackable": true,
+    "category": "crop",
+    "sellPrice": 60,
+    "buyPrice": null
+  },
+  {
+    "id": "corn",
+    "name": "Milho colhido",
+    "icon": "🌽",
+    "stackable": true,
+    "category": "crop",
+    "sellPrice": 70,
+    "buyPrice": null
+  },
+  {
+    "id": "pumpkin",
+    "name": "Abóbora colhida",
+    "icon": "🎃",
+    "stackable": true,
+    "category": "crop",
+    "sellPrice": 100,
+    "buyPrice": null
+  },
+  {
+    "id": "strawberry",
+    "name": "Morango colhido",
+    "icon": "🍓",
+    "stackable": true,
+    "category": "crop",
+    "sellPrice": 80,
+    "buyPrice": null
+  }
+]
