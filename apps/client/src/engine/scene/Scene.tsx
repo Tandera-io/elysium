@@ -3,6 +3,7 @@ import { IsometricCamera } from '../camera/IsometricCamera';
 import { PlayerController } from '../player/PlayerController';
 import { FarmField } from '../world/FarmField';
 import { Floor } from '../world/Floor';
+import { GroundItems } from '../world/GroundItems';
 import { StaticProps } from '../world/StaticProps';
 import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
@@ -25,6 +26,7 @@ export function Scene() {
       <TileMap />
       <FarmField />
       <StaticProps />
+      <GroundItems />
       <NpcView />
       <Floor />
       <PlayerController />
