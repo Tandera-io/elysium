@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { HealthResponse } from '@elysium/shared';
-import { Hotbar } from './ui/Hotbar';
-import { InventoryPanel } from './ui/InventoryPanel';
-import { DialogueBox } from './ui/DialogueBox';
-import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
-import { InteractPrompt } from './systems/npc/InteractPrompt';
-import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 import { GameScreen } from './screens/GameScreen';
@@ -66,9 +60,12 @@ export function App() {
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
-      {/* GameScreen: 3D canvas + day/night lighting overlay */}
+      {/* GameScreen: 3D canvas + day/night lighting overlay + game UI panels */}
       <GameScreen />
-      <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
+      <header
+        className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100"
+        style={{ zIndex: 30 }}
+      >
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
         <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
@@ -82,6 +79,7 @@ export function App() {
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
         data-testid="health-panel"
+        style={{ zIndex: 30 }}
       >
         {state.kind === 'loading' && <span>conectando…</span>}
         {state.kind === 'error' && <span className="text-rose-400">erro: {state.message}</span>}
@@ -93,12 +91,6 @@ export function App() {
           </span>
         )}
       </aside>
-      <InventoryPanel />
-      <QuestPanel />
-      <Hotbar />
-      <InteractPrompt />
-      <DialogueBox />
-      <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
