@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 import { useFarmStore } from '../farming/farmStore';
+import {
+  useWeatherStore,
+  WEATHER_GROWTH_MULTIPLIER,
+  WEATHER_WATERS_CROPS,
+} from '../weather/weatherStore';
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 
@@ -71,7 +76,14 @@ export const useTimeStore = create<TimeState & TimeActions>((set, get) => ({
       }
     }
     set({ hour, dayInSeason, seasonIndex, year });
-    if (dayRolled) useFarmStore.getState().advanceDay();
+    if (dayRolled) {
+      const incomingSeason = SEASONS[seasonIndex] ?? 'spring';
+      const weather = useWeatherStore.getState();
+      const multiplier = WEATHER_GROWTH_MULTIPLIER[weather.today];
+      const autoWater = WEATHER_WATERS_CROPS[weather.today];
+      useWeatherStore.getState().advanceDay(incomingSeason);
+      useFarmStore.getState().advanceDay(multiplier, autoWater);
+    }
   },
   setPaused: (paused) => set({ paused }),
   setRealSecondsPerDay: (value) => set({ realSecondsPerDay: Math.max(10, value) }),

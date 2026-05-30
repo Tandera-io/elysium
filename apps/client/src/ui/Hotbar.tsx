@@ -82,7 +82,7 @@ export function Hotbar() {
           dia {dayInSeason}
         </div>
         <button
-          onClick={advanceDay}
+          onClick={() => advanceDay()}
           className="text-[10px] text-slate-400 hover:text-slate-200"
           title="Skip 1 farm day (Alt+T) — does not advance clock"
         >
