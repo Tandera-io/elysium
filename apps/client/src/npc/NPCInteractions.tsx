@@ -11,6 +11,7 @@ export const HUB_NPC_IDS = [
   'arnaldo',
   'sofia',
   'romeu',
+  'ferraz',
 ] as const;
 export type HubNpcId = (typeof HUB_NPC_IDS)[number];
 
@@ -25,6 +26,8 @@ const TOPIC_LABELS: Record<string, string> = {
   selling: 'Vender',
   recipes: 'Receitas',
   ingredients: 'Ingredientes',
+  upgrades: 'Upgrades',
+  crafting: 'Forja',
 };
 
 /**
