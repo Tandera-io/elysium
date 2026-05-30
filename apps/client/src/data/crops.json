@@ -1,0 +1,74 @@
+{
+  "crops": [
+    {
+      "id": "wheat",
+      "name": "Trigo",
+      "icon": "🌾",
+      "growTime": 4,
+      "seedId": "seed_wheat",
+      "seedCost": 10,
+      "sellPrice": 25,
+      "seasons": ["spring", "summer"]
+    },
+    {
+      "id": "carrot",
+      "name": "Cenoura",
+      "icon": "🥕",
+      "growTime": 3,
+      "seedId": "seed_carrot",
+      "seedCost": 12,
+      "sellPrice": 20,
+      "seasons": ["spring", "autumn"]
+    },
+    {
+      "id": "potato",
+      "name": "Batata",
+      "icon": "🥔",
+      "growTime": 5,
+      "seedId": "seed_potato",
+      "seedCost": 15,
+      "sellPrice": 35,
+      "seasons": ["spring", "autumn"]
+    },
+    {
+      "id": "tomato",
+      "name": "Tomate",
+      "icon": "🍅",
+      "growTime": 5,
+      "seedId": "seed_tomato",
+      "seedCost": 20,
+      "sellPrice": 40,
+      "seasons": ["summer"]
+    },
+    {
+      "id": "pumpkin",
+      "name": "Abóbora",
+      "icon": "🎃",
+      "growTime": 7,
+      "seedId": "seed_pumpkin",
+      "seedCost": 18,
+      "sellPrice": 60,
+      "seasons": ["autumn"]
+    },
+    {
+      "id": "corn",
+      "name": "Milho",
+      "icon": "🌽",
+      "growTime": 6,
+      "seedId": "seed_corn",
+      "seedCost": 14,
+      "sellPrice": 30,
+      "seasons": ["summer", "autumn"]
+    },
+    {
+      "id": "strawberry",
+      "name": "Morango",
+      "icon": "🍓",
+      "growTime": 3,
+      "seedId": "seed_strawberry",
+      "seedCost": 20,
+      "sellPrice": 45,
+      "seasons": ["spring"]
+    }
+  ]
+}
