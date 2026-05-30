@@ -1,11 +1,12 @@
 import type { Actor, MarketState } from './sim';
 
 /**
- * Default seeded market with Marina (padeira), Bento (fazendeiro) and Lucia
- * (vaqueira). These three close the loop: Bento produces wheat consumed by
- * Marina; Lucia produces milk consumed by Marina; Marina produces bread
- * consumed by Bento and Lucia. Player isn't modelled here — Phase 11
- * adds the player as a real economic participant.
+ * Default seeded market with Marina (padeira), Bento (fazendeiro), Lucia
+ * (vaqueira), and Padre Pedro (pároco). These actors close basic loops:
+ * Bento produces wheat consumed by Marina; Lucia produces milk consumed by
+ * Marina; Marina produces bread consumed by Bento and Lucia; Padre Pedro
+ * needs trigo for communion bread and accepts donations. Player isn't
+ * modelled here — Phase 11 adds the player as a real economic participant.
  */
 
 const marina: Actor = {
@@ -44,10 +45,24 @@ const lucia: Actor = {
   isProducer: true,
 };
 
+// Padre Pedro receives community donations (modelled as high starting cash).
+// He consumes trigo for communion bread and offers quests when stock is low.
+const padrePedro: Actor = {
+  id: 'padre_pedro',
+  name: 'Padre Pedro',
+  cash: 800,
+  stock: { trigo: 2 },
+  desiredStock: { trigo: 8 },
+  dailyConsumes: { trigo: 1 },
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
 export function makeSeedMarket(): MarketState {
   return {
     day: 0,
-    actors: { marina, bento, lucia },
+    actors: { marina, bento, lucia, padre_pedro: padrePedro },
     lastDayLog: { trades: [], shortages: [], averagePrice: {} },
   };
 }

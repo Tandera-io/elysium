@@ -1,0 +1,29 @@
+{
+  "id": "padre_pedro",
+  "name": "Padre Pedro",
+  "role": "pároco",
+  "position": { "x": -8, "z": -6 },
+  "personality": {
+    "core_traits": ["compassivo", "sábio", "pacificador"],
+    "speech_style": "formal mas acolhedor, usa referências religiosas, fala em português brasileiro coloquial",
+    "values": ["fé", "comunidade", "perdão", "trabalho honesto"],
+    "fears": ["discórdia entre os moradores", "abandono da fé", "injustiça"]
+  },
+  "relations": {
+    "marina": "fiel_devota",
+    "bento": "paroquiano_antigo",
+    "dorinha": "voluntaria_da_festa"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "missa" },
+    { "from": "08:00", "to": "12:00", "location": "igreja", "activity": "atender_fieis" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "18:00", "location": "praca", "activity": "conversar" },
+    { "from": "18:00", "to": "20:00", "location": "igreja", "activity": "vesperas" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["trigo"],
+    "shop_inventory": []
+  }
+}
