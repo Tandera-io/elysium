@@ -1,0 +1,85 @@
+{
+  "crops": [
+    {
+      "id": "wheat",
+      "name": "Trigo",
+      "season": "spring",
+      "emoji": "[wheat]",
+      "accentColor": "#e8c34a",
+      "daysToMature": 4,
+      "yieldQuantity": 2,
+      "stages": [
+        { "index": 0, "daysInStage": 1, "color": "#5a4a2a", "label": "seed" },
+        { "index": 1, "daysInStage": 1, "color": "#8db454", "label": "sprout" },
+        { "index": 2, "daysInStage": 1, "color": "#c2c44a", "label": "young" },
+        { "index": 3, "daysInStage": 1, "color": "#e8c34a", "label": "mature" }
+      ]
+    },
+    {
+      "id": "tomato",
+      "name": "Tomate",
+      "season": "summer",
+      "emoji": "[tomato]",
+      "accentColor": "#d34a3a",
+      "daysToMature": 5,
+      "yieldQuantity": 3,
+      "stages": [
+        { "index": 0, "daysInStage": 1, "color": "#5a4a2a", "label": "seed" },
+        { "index": 1, "daysInStage": 1, "color": "#7caf3e", "label": "sprout" },
+        { "index": 2, "daysInStage": 1, "color": "#5e9b2e", "label": "young" },
+        { "index": 3, "daysInStage": 1, "color": "#3d7f1e", "label": "mature" },
+        { "index": 4, "daysInStage": 1, "color": "#d34a3a", "label": "ripe" }
+      ]
+    },
+    {
+      "id": "pumpkin",
+      "name": "Abobora",
+      "season": "autumn",
+      "emoji": "[pumpkin]",
+      "accentColor": "#e8862a",
+      "daysToMature": 7,
+      "yieldQuantity": 1,
+      "stages": [
+        { "index": 0, "daysInStage": 1, "color": "#5a4a2a", "label": "seed" },
+        { "index": 1, "daysInStage": 2, "color": "#7caf3e", "label": "sprout" },
+        { "index": 2, "daysInStage": 2, "color": "#5e9b2e", "label": "growing" },
+        { "index": 3, "daysInStage": 2, "color": "#e8862a", "label": "ripe" }
+      ]
+    },
+    {
+      "id": "corn",
+      "name": "Milho",
+      "season": "summer",
+      "emoji": "[corn]",
+      "accentColor": "#e6c44a",
+      "daysToMature": 6,
+      "yieldQuantity": 3,
+      "stages": [
+        { "index": 0, "daysInStage": 1, "color": "#5a4a2a", "label": "seed" },
+        { "index": 1, "daysInStage": 1, "color": "#9bbf52", "label": "sprout" },
+        { "index": 2, "daysInStage": 2, "color": "#c2c44a", "label": "stalk" },
+        { "index": 3, "daysInStage": 2, "color": "#e6c44a", "label": "ripe" }
+      ]
+    },
+    {
+      "id": "strawberry",
+      "name": "Morango",
+      "season": "spring",
+      "emoji": "[strawberry]",
+      "accentColor": "#d44a4a",
+      "daysToMature": 3,
+      "yieldQuantity": 4,
+      "stages": [
+        { "index": 0, "daysInStage": 1, "color": "#5a4a2a", "label": "seed" },
+        { "index": 1, "daysInStage": 1, "color": "#7caf3e", "label": "sprout" },
+        { "index": 2, "daysInStage": 1, "color": "#d44a4a", "label": "ripe" }
+      ]
+    }
+  ],
+  "seasons": {
+    "spring": { "label": "Primavera", "color": "#7ecb67", "crops": ["wheat", "strawberry"] },
+    "summer": { "label": "Verao", "color": "#f5c842", "crops": ["tomato", "corn"] },
+    "autumn": { "label": "Outono", "color": "#d4732a", "crops": ["pumpkin"] },
+    "winter": { "label": "Inverno", "color": "#8bb9e0", "crops": [] }
+  }
+}
