@@ -7,6 +7,11 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import {
+  getGreeting,
+  getInteractionCount,
+  incrementInteractionCount,
+} from '../systems/dialogue/DialogueSystem';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -21,15 +26,25 @@ export function DialogueBox() {
   const seasonIndex = useTimeStore((s) => s.seasonIndex);
   const year = useTimeStore((s) => s.year);
   const [draft, setDraft] = useState('');
+  const [greeting, setGreeting] = useState<{ text: string; emotion: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (npcId) {
       setDraft('');
+      // Show a time-of-day greeting from the DialogueSystem when dialogue opens
+      const count = getInteractionCount(npcId);
+      const line = getGreeting(npcId, hour, count);
+      setGreeting(line);
+      incrementInteractionCount(npcId);
       // Focus the input when dialogue opens
       setTimeout(() => inputRef.current?.focus(), 0);
+    } else {
+      setGreeting(null);
     }
+    // hour intentionally excluded — greeting should use the hour at the moment of opening,
+    // not re-run every tick as the in-game clock advances.
   }, [npcId]);
 
   useEffect(() => {
@@ -104,7 +119,15 @@ export function DialogueBox() {
         </button>
       </header>
       <div ref={scrollRef} className="max-h-[300px] overflow-y-auto px-4 py-3 space-y-3 text-sm">
-        {history.length === 0 && !pending && (
+        {history.length === 0 && !pending && greeting && (
+          <div className="flex justify-start">
+            <div className="max-w-[80%] px-3 py-2 rounded-xl bg-slate-800 text-slate-100">
+              {greeting.text}
+              <div className="text-[10px] text-slate-400 mt-1">— {greeting.emotion}</div>
+            </div>
+          </div>
+        )}
+        {history.length === 0 && !pending && !greeting && (
           <p className="text-slate-500 italic">Diga olá para {npc.def.name}…</p>
         )}
         {history.map((turn, i) => (
