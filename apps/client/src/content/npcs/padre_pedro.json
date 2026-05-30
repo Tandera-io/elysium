@@ -1,0 +1,27 @@
+{
+  "id": "padre_pedro",
+  "name": "Padre Pedro",
+  "role": "pároco",
+  "position": { "x": -10, "z": 2 },
+  "personality": {
+    "core_traits": ["sereno", "acolhedor", "sábio", "justo"],
+    "speech_style": "pausado, usa provérbios e metáforas, fala em português brasileiro coloquial",
+    "values": ["comunidade", "fé", "honestidade", "cuidado com os outros"],
+    "fears": ["discórdia na comunidade", "abandono dos mais velhos"]
+  },
+  "relations": {
+    "marina": "fiel_de_longa_data",
+    "bento": "confidente"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "igreja", "activity": "missa" },
+    { "from": "09:00", "to": "12:00", "location": "praca", "activity": "conversar_com_moradores" },
+    { "from": "14:00", "to": "18:00", "location": "igreja", "activity": "atender_fieis" },
+    { "from": "18:00", "to": "20:00", "location": "casa", "activity": "estudar" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": [],
+    "shop_inventory": []
+  }
+}

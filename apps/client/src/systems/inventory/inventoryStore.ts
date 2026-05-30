@@ -14,6 +14,7 @@ const STACK_MAX = 99;
 export interface InventoryState {
   slots: (SlotItem | null)[];
   gold: number;
+  open: boolean;
 }
 
 export interface InventoryActions {
@@ -27,13 +28,14 @@ export interface InventoryActions {
   addGold: (amount: number) => void;
   /** Returns false if player has insufficient gold. */
   removeGold: (amount: number) => boolean;
+  toggleOpen: () => void;
 }
 
 function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
   slots[0] = { id: 'seed_wheat', qty: 6 };
   slots[1] = { id: 'seed_tomato', qty: 4 };
-  return { slots, gold: 500 };
+  return { slots, gold: 500, open: false };
 }
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
@@ -101,6 +103,7 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     set({ slots });
   },
   reset: () => set(makeInitial()),
+  toggleOpen: () => set((s) => ({ open: !s.open })),
   addGold: (amount) => set((s) => ({ gold: s.gold + amount })),
   removeGold: (amount) => {
     if (get().gold < amount) return false;

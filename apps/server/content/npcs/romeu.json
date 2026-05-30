@@ -1,0 +1,27 @@
+{
+  "id": "romeu",
+  "name": "Romeu",
+  "role": "pescador",
+  "position": { "x": 12, "z": 12 },
+  "personality": {
+    "core_traits": ["alegre", "contador de histórias", "aventureiro"],
+    "speech_style": "animado, usa gírias de pescador, exagera nas histórias, fala em português brasileiro coloquial",
+    "values": ["liberdade", "amizade", "o rio"],
+    "fears": ["ficar preso em terra", "seca que seca os rios"]
+  },
+  "relations": {
+    "dorinha": "cliente_regular",
+    "bento": "amigo_de_pesca"
+  },
+  "schedule": [
+    { "from": "04:00", "to": "10:00", "location": "rio", "activity": "pescar" },
+    { "from": "10:00", "to": "13:00", "location": "mercado", "activity": "vender_peixe" },
+    { "from": "14:00", "to": "17:00", "location": "casa", "activity": "descansar" },
+    { "from": "17:00", "to": "22:00", "location": "praca", "activity": "contar_historias" }
+  ],
+  "economy_role": {
+    "produces": ["fish", "smoked_fish"],
+    "consumes": ["bait", "rope"],
+    "shop_inventory": ["fish", "smoked_fish"]
+  }
+}

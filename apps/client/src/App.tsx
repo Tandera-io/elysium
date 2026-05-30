@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { FarmGrid } from './farming/FarmGrid';
 
 type FetchState =
   | { kind: 'loading' }
@@ -22,6 +23,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [farmOpen, setFarmOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -58,12 +60,19 @@ export function App() {
         setSaveOpen(true);
       }
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
-        setSaveOpen(true);
+        if (farmOpen) {
+          setFarmOpen(false);
+        } else {
+          setSaveOpen(true);
+        }
+      }
+      if (e.code === 'KeyF' && !titleOpen && !saveOpen && !e.ctrlKey && !e.altKey) {
+        setFarmOpen((v) => !v);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [titleOpen, saveOpen]);
+  }, [titleOpen, saveOpen, farmOpen]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
@@ -72,12 +81,21 @@ export function App() {
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
         <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
-        <button
-          onClick={() => setSaveOpen(true)}
-          className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
-        >
-          📁 menu (Esc · Ctrl+S)
-        </button>
+        <div className="mt-1 flex gap-2">
+          <button
+            onClick={() => setSaveOpen(true)}
+            className="text-[10px] text-slate-400 hover:text-slate-200"
+          >
+            📁 menu (Esc · Ctrl+S)
+          </button>
+          <button
+            onClick={() => setFarmOpen((v) => !v)}
+            className={`text-[10px] font-mono ${farmOpen ? 'text-green-400' : 'text-slate-400 hover:text-slate-200'}`}
+            title="Fazenda (F)"
+          >
+            🌱 fazenda [F]
+          </button>
+        </div>
       </header>
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
@@ -100,6 +118,7 @@ export function App() {
       <DialogueBox />
       <NPCInteractions />
       <NPCShopModal />
+      {farmOpen && <FarmGrid asOverlay onClose={() => setFarmOpen(false)} />}
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>

@@ -23,12 +23,25 @@ function nameOf(id: string): string {
 export function InventoryPanel() {
   const slots = useInventoryStore((s) => s.slots);
   const swap = useInventoryStore((s) => s.swap);
+  const open = useInventoryStore((s) => s.open);
+  const toggleOpen = useInventoryStore((s) => s.toggleOpen);
   const [draggingFrom, setDraggingFrom] = useState<number | null>(null);
   const [hoverOver, setHoverOver] = useState<number | null>(null);
 
+  if (!open) return null;
+
   return (
     <aside className="absolute top-20 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 min-w-[200px]">
-      <h2 className="text-sm font-semibold text-slate-300 mb-2">Inventário</h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-semibold text-slate-300">Inventário</h2>
+        <button
+          onClick={toggleOpen}
+          className="text-slate-500 hover:text-slate-200 text-xs leading-none px-1"
+          aria-label="Fechar inventário"
+        >
+          ✕
+        </button>
+      </div>
       <div className="grid grid-cols-4 gap-1">
         {slots.map((slot, i) => (
           <Slot

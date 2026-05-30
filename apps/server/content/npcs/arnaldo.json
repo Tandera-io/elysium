@@ -1,0 +1,27 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "carpinteiro",
+  "position": { "x": 8, "z": 8 },
+  "personality": {
+    "core_traits": ["meticuloso", "silencioso", "confiável"],
+    "speech_style": "conciso, pensa antes de falar, usa metáforas de madeira e construção",
+    "values": ["estrutura sólida", "trabalho feito com capricho", "durabilidade"],
+    "fears": ["obra malfeita", "clientes impacientes"]
+  },
+  "relations": {
+    "ferraz": "parceiro_comercial",
+    "nina": "vizinho"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "marcenaria", "activity": "trabalhar" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "18:00", "location": "marcenaria", "activity": "atender" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "relaxar" }
+  ],
+  "economy_role": {
+    "produces": ["plank", "fence", "crate"],
+    "consumes": ["log", "iron_ore"],
+    "shop_inventory": ["plank", "fence", "crate"]
+  }
+}
