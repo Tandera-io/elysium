@@ -7,6 +7,14 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { getTimeOfDay, getOpeningLine } from '../dialogue/pipeline/index.js';
+
+const TIME_OF_DAY_LABELS: Record<string, string> = {
+  morning: 'Manhã',
+  afternoon: 'Tarde',
+  evening: 'Noite',
+  night: 'Madrugada',
+};
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -15,6 +23,8 @@ export function DialogueBox() {
   const error = useDialogueStore((s) => s.error);
   const close = useDialogueStore((s) => s.close);
   const send = useDialogueStore((s) => s.send);
+  const getInteractionCount = useDialogueStore((s) => s.getInteractionCount);
+  const appendNpcTurn = useDialogueStore((s) => s.appendNpcTurn);
   const npcs = useNpcStore((s) => s.npcs);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
@@ -27,7 +37,9 @@ export function DialogueBox() {
   useEffect(() => {
     if (npcId) {
       setDraft('');
-      // Focus the input when dialogue opens
+      const count = getInteractionCount(npcId);
+      const opening = getOpeningLine(npcId, hour, { interactionCount: count });
+      if (opening) appendNpcTurn(opening, 'neutral');
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [npcId]);
@@ -95,6 +107,9 @@ export function DialogueBox() {
           <h2 className="text-lg font-bold">{npc.def.name}</h2>
           <p className="text-xs text-slate-400">{npc.def.role}</p>
         </div>
+        <span className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
+          {TIME_OF_DAY_LABELS[getTimeOfDay(hour)] ?? 'Tarde'}
+        </span>
         <button
           onClick={close}
           className="text-slate-400 hover:text-slate-200 text-sm"

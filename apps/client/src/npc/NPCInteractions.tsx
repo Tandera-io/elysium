@@ -2,6 +2,21 @@ import { useState } from 'react';
 import { useDialogueStore } from '../systems/dialogue/dialogueStore';
 import { getGreetings, getTopics } from '../dialogue/DialogueManager';
 import { useTimeStore, currentSeason } from '../systems/time/timeStore';
+import { getTimeOfDay } from '../dialogue/pipeline/index.js';
+
+const TIME_GREETING_LABELS: Record<string, string> = {
+  morning: 'Bom dia!',
+  afternoon: 'Boa tarde!',
+  evening: 'Boa noite!',
+  night: 'Boa noite!',
+};
+
+const TIME_GREETING_INPUTS: Record<string, string> = {
+  morning: 'Bom dia! Como você está hoje de manhã?',
+  afternoon: 'Boa tarde! O que está fazendo?',
+  evening: 'Boa noite! Ainda está trabalhando?',
+  night: 'Boa noite! Ainda acordado?',
+};
 
 export const HUB_NPC_IDS = ['dorinha', 'padre_pedro', 'nina', 'arnaldo', 'sofia', 'romeu'] as const;
 export type HubNpcId = (typeof HUB_NPC_IDS)[number];
@@ -34,9 +49,12 @@ export function NPCInteractions() {
 
   if (!npcId || !(HUB_NPC_IDS as readonly string[]).includes(npcId)) return null;
 
+  const tod = getTimeOfDay(hour);
   const greetings = getGreetings(npcId);
   const topics = getTopics(npcId);
   const topicKeys = Object.keys(topics);
+  const timeGreetingLabel = TIME_GREETING_LABELS[tod] ?? 'Olá!';
+  const timeGreetingInput = TIME_GREETING_INPUTS[tod] ?? 'Olá! Como está?';
 
   const world = {
     hour,
@@ -74,6 +92,14 @@ export function NPCInteractions() {
         </div>
       )}
       <div className="flex flex-wrap gap-1.5 justify-center pointer-events-auto">
+        <button
+          key={`tod-${tod}`}
+          onClick={() => handleQuickReply(timeGreetingInput)}
+          disabled={pending}
+          className="bg-sky-500/90 hover:bg-sky-400 text-slate-900 text-xs font-medium px-3 py-1.5 rounded-full transition-colors disabled:opacity-50"
+        >
+          {timeGreetingLabel}
+        </button>
         {greetings.map((reply) => (
           <button
             key={reply.input}

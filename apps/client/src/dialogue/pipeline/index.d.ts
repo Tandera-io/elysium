@@ -1,3 +1,19 @@
+export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
+
+export declare function getTimeOfDay(hour: number): TimeOfDay;
+
+export declare function getTimeOfDayGreeting(
+  npcId: string,
+  hour: number,
+  context?: { interactionCount?: number; heartLevel?: number },
+): string;
+
+export declare function getOpeningLine(
+  npcId: string,
+  hour: number,
+  context?: { interactionCount?: number; heartLevel?: number },
+): string;
+
 export declare const PLAYER_ACTIONS: Readonly<{
   GREET: 'greet';
   BUY: 'buy';
