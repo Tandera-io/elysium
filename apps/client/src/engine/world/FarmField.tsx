@@ -1,6 +1,6 @@
-import { useLoader } from '@react-three/fiber';
-import { useMemo } from 'react';
-import { NearestFilter, TextureLoader } from 'three';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { type ReactNode, useMemo, useRef } from 'react';
+import { Group, NearestFilter, TextureLoader } from 'three';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
 import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
@@ -9,6 +9,35 @@ import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
 
 const TILE_HEIGHT = 0.01;
+
+// ---------------------------------------------------------------------------
+// Per-stage cone geometry parameters — each stage gets a distinct shape.
+// [radiusBottom, height] in world units.
+// ---------------------------------------------------------------------------
+const STAGE_CONE: Record<number, [number, number]> = {
+  0: [0.07, 0.15], // seed  — tiny nub
+  1: [0.1, 0.28], // sprout — slim shoot
+  2: [0.14, 0.42], // young  — taller
+  3: [0.18, 0.55], // mature — full size (pre-harvest)
+};
+
+// ---------------------------------------------------------------------------
+// HarvestBob — wrapper that bobs the mature crop sprite up/down each frame.
+// ---------------------------------------------------------------------------
+interface HarvestBobProps {
+  children: ReactNode;
+}
+
+function HarvestBob({ children }: HarvestBobProps) {
+  const groupRef = useRef<Group>(null);
+  useFrame(({ clock }) => {
+    const g = groupRef.current;
+    if (!g) return;
+    // Gentle sinusoidal float: ±0.06 units at ~0.9 Hz
+    g.position.y = Math.sin(clock.getElapsedTime() * 5.5) * 0.06;
+  });
+  return <group ref={groupRef}>{children}</group>;
+}
 
 interface FarmFieldProps {
   grid?: GridConfig;
@@ -52,6 +81,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let texture = tilledTex;
         let mature = false;
         let stageColor: string | null = null;
+        let stageIndex = 0;
         let cropId: keyof typeof CROP_SPRITES | null = null;
 
         if (tile.kind === 'tilled') {
@@ -61,9 +91,15 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           const def = CROPS[tile.crop];
           const stage = stageForDayCount(def, tile.daysGrown);
           stageColor = stage.color;
+          stageIndex = stage.index;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
         }
+
+        // Pick cone dimensions for this growth stage (clamp to known range 0-3).
+        const [coneRadius, coneHeight] = STAGE_CONE[Math.min(stageIndex, 3)] ?? [0.15, 0.4];
+        // Y position so the cone sits on top of the soil quad.
+        const coneY = coneHeight / 2 + TILE_HEIGHT;
 
         return (
           <group key={key} position={[world.x, TILE_HEIGHT, world.z]}>
@@ -72,16 +108,18 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
+            {/* Growing-stage cone — distinct size per stage */}
             {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
+              <mesh position={[0, coneY, 0]} castShadow>
+                <coneGeometry args={[coneRadius, coneHeight, 6]} />
                 <meshStandardMaterial color={stageColor} />
               </mesh>
             )}
-            {/* Mature plant sprite */}
+            {/* Mature plant sprite — gently bobs up/down */}
             {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+              <HarvestBob>
+                <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+              </HarvestBob>
             )}
           </group>
         );

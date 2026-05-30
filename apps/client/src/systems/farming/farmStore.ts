@@ -28,6 +28,8 @@ export interface FarmActions {
   plant: (t: TileCoord, crop: CropId) => boolean;
   /** Returns the yielded item id and quantity, or null if nothing to harvest. */
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
+  /** Harvests all mature crops and returns their yields. */
+  harvestAll: () => Array<{ crop: CropId; quantity: number }>;
   /** Advances day counter and progresses planted tiles by 1 day. */
   advanceDay: () => void;
   /** Test helpers */
@@ -91,6 +93,20 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
       tiles: { ...s.tiles, [key]: { kind: 'tilled', tilledOnDay: s.day, watered: false } },
     }));
     return { crop: cur.crop, quantity: def.yieldQuantity };
+  },
+  harvestAll: () => {
+    const { tiles, day } = get();
+    const yields: Array<{ crop: CropId; quantity: number }> = [];
+    const nextTiles: Record<string, TileState> = { ...tiles };
+    for (const [key, t] of Object.entries(tiles)) {
+      if (t.kind !== 'planted') continue;
+      const def = CROPS[t.crop];
+      if (t.daysGrown < def.daysToMature) continue;
+      yields.push({ crop: t.crop, quantity: def.yieldQuantity });
+      nextTiles[key] = { kind: 'tilled', tilledOnDay: day, watered: false };
+    }
+    if (yields.length > 0) set({ tiles: nextTiles });
+    return yields;
   },
   advanceDay: () => {
     set((s) => {

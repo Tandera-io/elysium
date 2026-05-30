@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { DialogueNodeChoices } from '../components/NPC/DialogueNodeChoices';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -15,7 +16,10 @@ export function DialogueBox() {
   const error = useDialogueStore((s) => s.error);
   const close = useDialogueStore((s) => s.close);
   const send = useDialogueStore((s) => s.send);
+  const currentNodeId = useDialogueStore((s) => s.currentNodeId);
+  const getCurrentNode = useDialogueStore((s) => s.getCurrentNode);
   const npcs = useNpcStore((s) => s.npcs);
+  const recordInteraction = useNpcStore((s) => s.recordInteraction);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
   const seasonIndex = useTimeStore((s) => s.seasonIndex);
@@ -24,13 +28,21 @@ export function DialogueBox() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Node-mode: derive current node from store each render
+  const currentNode = currentNodeId != null ? getCurrentNode() : null;
+  const isNodeMode = currentNodeId != null;
+
   useEffect(() => {
     if (npcId) {
       setDraft('');
-      // Focus the input when dialogue opens
-      setTimeout(() => inputRef.current?.focus(), 0);
+      // Record interaction for progression tracking
+      recordInteraction(npcId);
+      // Focus input only in free-text mode
+      if (!isNodeMode) {
+        setTimeout(() => inputRef.current?.focus(), 0);
+      }
     }
-  }, [npcId]);
+  }, [npcId]); // intentional: only run on npcId change
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -66,8 +78,11 @@ export function DialogueBox() {
   }, [npcId, dayInSeason]);
 
   if (!npcId) return null;
-  const npc = npcs[npcId];
-  if (!npc) return null;
+  const npc = npcs[npcId] ?? null;
+  // Allow dialogue for NPCs not yet in the world store (hub/virtual NPCs)
+  const npcName =
+    npc?.def.name ?? npcId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  const npcRole = npc?.def.role ?? '';
 
   const haveForActive = activeQuest
     ? invSlots.reduce(
@@ -92,8 +107,8 @@ export function DialogueBox() {
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
       <header className="flex items-center justify-between px-4 py-2 border-b border-slate-700">
         <div>
-          <h2 className="text-lg font-bold">{npc.def.name}</h2>
-          <p className="text-xs text-slate-400">{npc.def.role}</p>
+          <h2 className="text-lg font-bold">{npcName}</h2>
+          {npcRole && <p className="text-xs text-slate-400">{npcRole}</p>}
         </div>
         <button
           onClick={close}
@@ -105,7 +120,7 @@ export function DialogueBox() {
       </header>
       <div ref={scrollRef} className="max-h-[300px] overflow-y-auto px-4 py-3 space-y-3 text-sm">
         {history.length === 0 && !pending && (
-          <p className="text-slate-500 italic">Diga olá para {npc.def.name}…</p>
+          <p className="text-slate-500 italic">Diga olá para {npcName}…</p>
         )}
         {history.map((turn, i) => (
           <div
@@ -153,7 +168,7 @@ export function DialogueBox() {
       {!activeQuest && offered && (
         <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
           <span>
-            {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
+            {npcName} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
             {offered.rewardCash} +{offered.rewardReputation} rep.
           </span>
           <button
@@ -164,23 +179,27 @@ export function DialogueBox() {
           </button>
         </div>
       )}
-      <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
-        <input
-          ref={inputRef}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="Diga algo..."
-          disabled={pending}
-          className="flex-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
-        />
-        <button
-          type="submit"
-          disabled={pending || draft.trim().length === 0}
-          className="bg-amber-500 text-slate-900 px-3 py-2 rounded text-sm font-semibold disabled:opacity-50"
-        >
-          Enviar
-        </button>
-      </form>
+      {isNodeMode && currentNode ? (
+        <DialogueNodeChoices responses={currentNode.responses} disabled={pending} />
+      ) : (
+        <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
+          <input
+            ref={inputRef}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Diga algo..."
+            disabled={pending}
+            className="flex-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
+          />
+          <button
+            type="submit"
+            disabled={pending || draft.trim().length === 0}
+            className="bg-amber-500 text-slate-900 px-3 py-2 rounded text-sm font-semibold disabled:opacity-50"
+          >
+            Enviar
+          </button>
+        </form>
+      )}
     </div>
   );
 }

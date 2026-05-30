@@ -15,3 +15,70 @@ body,
     BlinkMacSystemFont,
     sans-serif;
 }
+
+/* ---------------------------------------------------------------------------
+ * Crop growth stage animations
+ * --------------------------------------------------------------------------- */
+
+/** Pop-in animation — plays once when a crop icon mounts (stage advance). */
+@keyframes crop-stage-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/** Harvestable glow ring — gentle golden pulse with shadow expansion. */
+@keyframes harvest-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 4px 1px rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px 4px rgba(251, 191, 36, 0.85);
+  }
+}
+
+/** Harvestable icon bounce — subtle up/down float. */
+@keyframes harvest-float {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.05);
+  }
+}
+
+.crop-stage-pop {
+  animation: crop-stage-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.harvest-glow {
+  animation:
+    harvest-glow 1.4s ease-in-out infinite,
+    harvest-float 1.6s ease-in-out infinite;
+}
+
+/** Progress pip fill — slide in from left when a pip becomes active. */
+@keyframes pip-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.pip-fill {
+  transform-origin: left center;
+  animation: pip-fill 0.25s ease-out both;
+}
