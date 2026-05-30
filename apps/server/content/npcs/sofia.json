@@ -1,0 +1,35 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "curandeira e ervanária",
+  "personality": {
+    "core_traits": [
+      "empática",
+      "estudiosa das plantas",
+      "ligeiramente excêntrica",
+      "protetora da natureza"
+    ],
+    "speech_style": "suave e cuidadoso, às vezes usa nomes científicos de ervas de forma casual, entusiasmada quando fala de plantas, fala em português brasileiro coloquial",
+    "values": ["cura natural", "saber tradicional", "equilíbrio da natureza", "cuidar das pessoas"],
+    "fears": [
+      "plantas medicinais desaparecendo",
+      "doenças que não sabe tratar",
+      "perder o conhecimento dos mais velhos"
+    ]
+  },
+  "relations": {
+    "lucia": "amiga_proxima",
+    "padre_pedro": "aliada_na_comunidade"
+  },
+  "schedule": [
+    { "from": "05:00", "to": "07:00", "location": "campo", "activity": "colher_ervas" },
+    { "from": "08:00", "to": "12:00", "location": "botica", "activity": "preparar_remedios" },
+    { "from": "13:00", "to": "18:00", "location": "botica", "activity": "atender" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "conversar" }
+  ],
+  "economy_role": {
+    "produces": ["poção_energia", "poção_cura", "fertilizante_organico"],
+    "consumes": ["ervas_medicinais", "mel", "agua"],
+    "shop_inventory": ["pocao_energia", "pocao_cura", "fertilizante_organico", "ervas_secas"]
+  }
+}

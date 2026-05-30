@@ -1,0 +1,31 @@
+{
+  "id": "romeu",
+  "name": "Romeu",
+  "role": "pescador",
+  "personality": {
+    "core_traits": [
+      "contador de histórias nato",
+      "alegre",
+      "exagerado nas histórias de pesca",
+      "generoso"
+    ],
+    "speech_style": "animado, exagera detalhes das histórias, usa expressões ribeirinhas, ri muito, fala em português brasileiro coloquial",
+    "values": ["respeito ao rio", "amizade", "liberdade", "honrar o peixe que pesca"],
+    "fears": ["poluição do rio", "rio secar na seca grande", "esquecer as histórias do avô"]
+  },
+  "relations": {
+    "bento": "parceiro_de_pesca",
+    "dorinha": "compradora_de_peixe"
+  },
+  "schedule": [
+    { "from": "04:00", "to": "09:00", "location": "rio", "activity": "pescar" },
+    { "from": "09:00", "to": "12:00", "location": "peixaria", "activity": "limpar_e_vender" },
+    { "from": "14:00", "to": "17:00", "location": "rio", "activity": "pescar" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "contar_historias" }
+  ],
+  "economy_role": {
+    "produces": ["peixe_fresco", "peixe_defumado"],
+    "consumes": ["sal", "lenha"],
+    "shop_inventory": ["peixe_fresco", "peixe_defumado", "isca"]
+  }
+}
