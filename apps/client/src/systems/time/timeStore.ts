@@ -71,7 +71,7 @@ export const useTimeStore = create<TimeState & TimeActions>((set, get) => ({
       }
     }
     set({ hour, dayInSeason, seasonIndex, year });
-    if (dayRolled) useFarmStore.getState().advanceDay();
+    if (dayRolled) useFarmStore.getState().advanceDay(SEASONS[seasonIndex] ?? 'spring');
   },
   setPaused: (paused) => set({ paused }),
   setRealSecondsPerDay: (value) => set({ realSecondsPerDay: Math.max(10, value) }),

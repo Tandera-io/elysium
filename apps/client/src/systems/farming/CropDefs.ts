@@ -3,6 +3,9 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
+export type { Season } from '../time/timeStore';
+import type { Season } from '../time/timeStore';
+
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
@@ -98,4 +101,18 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
+}
+
+/** Seasons in which each crop can grow. */
+const CROP_SEASONS: Record<CropId, readonly Season[]> = {
+  wheat: ['spring', 'summer'],
+  tomato: ['summer'],
+  pumpkin: ['autumn'],
+  corn: ['summer', 'autumn'],
+  strawberry: ['spring'],
+};
+
+/** Returns true when `cropId` cannot grow during `season`. */
+export function isOutOfSeason(cropId: CropId, season: Season): boolean {
+  return !(CROP_SEASONS[cropId]?.includes(season) ?? false);
 }

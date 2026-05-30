@@ -2,13 +2,18 @@ import { useEffect } from 'react';
 import { useFarmStore } from '../systems/farming/farmStore';
 import { useInventoryStore, type ItemId } from '../systems/inventory/inventoryStore';
 import { useToolStore, type ToolId } from '../store/toolStore';
-import { SEASON_LABEL, currentSeason, formatClock, useTimeStore } from '../systems/time/timeStore';
+import {
+  SEASON_LABEL,
+  SEASONS,
+  currentSeason,
+  formatClock,
+  useTimeStore,
+} from '../systems/time/timeStore';
 
 interface ToolButton {
   id: ToolId;
   label: string;
   hotkey: string;
-  /** Optional inventory item to track count badge. */
   countOf?: ItemId;
 }
 
@@ -30,14 +35,15 @@ export function Hotbar() {
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
   const seasonIndex = useTimeStore((s) => s.seasonIndex);
+  const season = SEASONS[seasonIndex] ?? 'spring';
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tool = TOOLS.find((t) => t.hotkey === e.key);
       if (tool) setTool(tool.id);
       if (e.code === 'KeyT' && e.altKey) {
-        // Alt+T advances one day (debug)
-        advanceDay();
+        const si = useTimeStore.getState().seasonIndex;
+        advanceDay(SEASONS[si] ?? 'spring');
       }
     };
     window.addEventListener('keydown', onKey);
@@ -82,7 +88,7 @@ export function Hotbar() {
           dia {dayInSeason}
         </div>
         <button
-          onClick={advanceDay}
+          onClick={() => advanceDay(season)}
           className="text-[10px] text-slate-400 hover:text-slate-200"
           title="Skip 1 farm day (Alt+T) — does not advance clock"
         >
