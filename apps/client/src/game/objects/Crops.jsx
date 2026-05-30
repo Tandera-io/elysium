@@ -20,6 +20,8 @@ import cornPng from '../../assets/images/crops/corn.png?url';
 import pumpkinPng from '../../assets/images/crops/pumpkin.png?url';
 import strawberryPng from '../../assets/images/crops/strawberry.png?url';
 import wheatPng from '../../assets/images/crops/wheat.png?url';
+import lettucePng from '../../assets/images/crops/lettuce.png?url';
+import sunflowerPng from '../../assets/images/crops/sunflower.png?url';
 
 /**
  * Maps each CropId to the Vite-resolved URL of its source crop image.
@@ -33,6 +35,8 @@ export const CROP_IMAGE_PATHS = {
   pumpkin: pumpkinPng,
   strawberry: strawberryPng,
   wheat: wheatPng,
+  lettuce: lettucePng,
+  sunflower: sunflowerPng,
 };
 
 // ─── Crop definitions ─────────────────────────────────────────────────────────
@@ -120,6 +124,30 @@ export const CROP_DEFS = {
     sellPrice: 60,
     accentColor: '#d44a4a',
     imagePath: CROP_IMAGE_PATHS.strawberry,
+  },
+  lettuce: {
+    id: 'lettuce',
+    name: 'Alface',
+    description: 'Folhas frescas e crocantes. Cresce rapidamente na primavera.',
+    seasons: ['spring', 'fall'],
+    growthDays: 3,
+    yieldMin: 3,
+    yieldMax: 5,
+    sellPrice: 30,
+    accentColor: '#56a03c',
+    imagePath: CROP_IMAGE_PATHS.lettuce,
+  },
+  sunflower: {
+    id: 'sunflower',
+    name: 'Girassol',
+    description: 'Vira-se para o sol. Produz sementes valiosas no verão.',
+    seasons: ['summer'],
+    growthDays: 6,
+    yieldMin: 2,
+    yieldMax: 3,
+    sellPrice: 70,
+    accentColor: '#ffc800',
+    imagePath: CROP_IMAGE_PATHS.sunflower,
   },
 };
 
