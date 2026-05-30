@@ -3,6 +3,7 @@ import type { HealthResponse } from '@elysium/shared';
 import { Scene } from './engine/scene/Scene';
 import { Hotbar } from './ui/Hotbar';
 import { InventoryPanel } from './ui/InventoryPanel';
+import { InventoryScreen } from './ui/InventoryScreen';
 import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
@@ -23,6 +24,9 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+  const toggleInventory = useInventoryStore((s) => s.toggleInventory);
+  const closeInventory = useInventoryStore((s) => s.closeInventory);
+  const inventoryOpen = useInventoryStore((s) => s.isOpen);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,13 +61,21 @@ export function App() {
         e.preventDefault();
         setSaveOpen(true);
       }
+      if (e.code === 'KeyI' && !titleOpen && !saveOpen) {
+        toggleInventory();
+        return;
+      }
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
-        setSaveOpen(true);
+        if (inventoryOpen) {
+          closeInventory();
+        } else {
+          setSaveOpen(true);
+        }
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [titleOpen, saveOpen]);
+  }, [titleOpen, saveOpen, inventoryOpen, toggleInventory, closeInventory]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
@@ -94,6 +106,7 @@ export function App() {
         )}
       </aside>
       <InventoryPanel />
+      <InventoryScreen />
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
