@@ -5,6 +5,14 @@
  * Update entries here after running `pnpm asset:generate` or `pnpm sprite:generate`.
  */
 
+import emptyPlotPng from '../assets/sprites/farming/plot/empty.png?url';
+import tilledPlotPng from '../assets/sprites/farming/plot/tilled.png?url';
+import wateredPlotPng from '../assets/sprites/farming/plot/watered.png?url';
+import seedPlotPng from '../assets/sprites/farming/plot/seed.png?url';
+import sproutPlotPng from '../assets/sprites/farming/plot/sprout.png?url';
+import grownPlotPng from '../assets/sprites/farming/plot/grown.png?url';
+import harvestablePlotPng from '../assets/sprites/farming/plot/harvestable.png?url';
+
 export const ASSETS = {
   player_glb: 'assets/cache/edd51f8ab91d0ebf.glb',
 } as const;
@@ -60,7 +68,19 @@ export const DECOR_SPRITES = {
   grass_tuft: 'sprites/cache/0bc489cf949e3dc3.png',
 } as const;
 
+/** Farming plot state sprites — per-tile visual overlays for soil and growth stages. */
+export const PLOT_SPRITES = {
+  empty: emptyPlotPng,
+  tilled: tilledPlotPng,
+  watered: wateredPlotPng,
+  seed: seedPlotPng,
+  sprout: sproutPlotPng,
+  grown: grownPlotPng,
+  harvestable: harvestablePlotPng,
+} as const;
+
 export type AssetSlot = keyof typeof ASSETS;
 export type SpriteSlot = keyof typeof SPRITES;
 export type CropSpriteSlot = keyof typeof CROP_SPRITES;
 export type TileTextureSlot = keyof typeof TILE_TEXTURES;
+export type PlotSpriteSlot = keyof typeof PLOT_SPRITES;
