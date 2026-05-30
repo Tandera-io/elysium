@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CROPS, type CropId } from './CropDefs';
+import { CROPS, isOutOfSeason, type CropId, type Season } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
 
@@ -12,12 +12,11 @@ export type TileState =
       plantedOnDay: number;
       lastWateredOnDay: number;
       daysGrown: number;
+      seasonPlanted: Season;
     };
 
 export interface FarmState {
-  /** Map of tileKey(x,z) → TileState. Missing = empty. */
   tiles: Record<string, TileState>;
-  /** Game day counter — bumped by advanceDay(). */
   day: number;
 }
 
@@ -25,12 +24,9 @@ export interface FarmActions {
   getTile: (t: TileCoord) => TileState;
   till: (t: TileCoord) => boolean;
   water: (t: TileCoord) => boolean;
-  plant: (t: TileCoord, crop: CropId) => boolean;
-  /** Returns the yielded item id and quantity, or null if nothing to harvest. */
+  plant: (t: TileCoord, crop: CropId, season: Season) => boolean;
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
-  /** Advances day counter and progresses planted tiles by 1 day. */
-  advanceDay: () => void;
-  /** Test helpers */
+  advanceDay: (season: Season) => void;
   reset: () => void;
 }
 
@@ -63,7 +59,7 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     }
     return false;
   },
-  plant: (t, crop) => {
+  plant: (t, crop, season) => {
     const key = tileKey(t);
     const cur = get().tiles[key];
     if (!cur || cur.kind !== 'tilled') return false;
@@ -76,6 +72,7 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
           plantedOnDay: s.day,
           lastWateredOnDay: cur.watered ? s.day : s.day - 1,
           daysGrown: 0,
+          seasonPlanted: season,
         },
       },
     }));
@@ -92,15 +89,23 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     }));
     return { crop: cur.crop, quantity: def.yieldQuantity };
   },
-  advanceDay: () => {
+  advanceDay: (season) => {
     set((s) => {
       const nextDay = s.day + 1;
-      const nextTiles: Record<string, TileState> = { ...s.tiles };
+      const nextTiles: Record<string, TileState> = {};
       for (const [k, t] of Object.entries(s.tiles)) {
-        if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+        if (t.kind === 'tilled') {
+          nextTiles[k] = { ...t, watered: false };
+        } else if (t.kind === 'planted') {
+          if (isOutOfSeason(t.crop, season)) {
+            nextTiles[k] = { kind: 'empty' };
+          } else if (t.lastWateredOnDay >= s.day) {
+            nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          } else {
+            nextTiles[k] = t;
+          }
+        } else {
+          nextTiles[k] = t;
         }
       }
       return { day: nextDay, tiles: nextTiles };

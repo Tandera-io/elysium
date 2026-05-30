@@ -19,7 +19,7 @@ describe('snapshot round-trip', () => {
     // Set up non-default state
     usePlayerStore.setState({ position: { x: 12, y: 0, z: -3.5 }, path: [] });
     useFarmStore.getState().till({ x: 1, z: 1 });
-    useFarmStore.getState().plant({ x: 1, z: 1 }, 'wheat');
+    useFarmStore.getState().plant({ x: 1, z: 1 }, 'wheat', 'spring');
     useInventoryStore.getState().add('wheat', 17);
     useQuestStore.setState({ cash: 999 });
     useTimeStore.setState({ hour: 14.5, dayInSeason: 4, seasonIndex: 2 });

@@ -1,16 +1,15 @@
 /**
  * Crop definitions. Each crop has growth stages with day counts.
- * `daysToMature` is the sum of all stage durations.
  */
+
+export type { Season } from '../time/timeStore';
+import type { Season } from '../time/timeStore';
 
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
-  /** 0 = just planted, last index = mature/ready to harvest. */
   readonly index: number;
-  /** Days needed in this stage before advancing. */
   readonly daysInStage: number;
-  /** Color hint for the visual placeholder. */
   readonly color: string;
 }
 
@@ -27,10 +26,10 @@ export const CROPS: Record<CropId, CropDef> = {
     id: 'wheat',
     name: 'Trigo',
     stages: [
-      { index: 0, daysInStage: 1, color: '#5a4a2a' }, // seeded soil
-      { index: 1, daysInStage: 1, color: '#8db454' }, // sprout
-      { index: 2, daysInStage: 1, color: '#c2c44a' }, // young
-      { index: 3, daysInStage: 1, color: '#e8c34a' }, // mature
+      { index: 0, daysInStage: 1, color: '#5a4a2a' },
+      { index: 1, daysInStage: 1, color: '#8db454' },
+      { index: 2, daysInStage: 1, color: '#c2c44a' },
+      { index: 3, daysInStage: 1, color: '#e8c34a' },
     ],
     daysToMature: 4,
     yieldQuantity: 2,
@@ -43,7 +42,7 @@ export const CROPS: Record<CropId, CropDef> = {
       { index: 1, daysInStage: 1, color: '#7caf3e' },
       { index: 2, daysInStage: 1, color: '#5e9b2e' },
       { index: 3, daysInStage: 1, color: '#3d7f1e' },
-      { index: 4, daysInStage: 1, color: '#d34a3a' }, // ripe red
+      { index: 4, daysInStage: 1, color: '#d34a3a' },
     ],
     daysToMature: 5,
     yieldQuantity: 3,
@@ -55,7 +54,7 @@ export const CROPS: Record<CropId, CropDef> = {
       { index: 0, daysInStage: 1, color: '#5a4a2a' },
       { index: 1, daysInStage: 2, color: '#7caf3e' },
       { index: 2, daysInStage: 2, color: '#5e9b2e' },
-      { index: 3, daysInStage: 2, color: '#e8862a' }, // ripe orange
+      { index: 3, daysInStage: 2, color: '#e8862a' },
     ],
     daysToMature: 7,
     yieldQuantity: 1,
@@ -98,4 +97,16 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
+}
+
+const CROP_SEASONS: Record<CropId, readonly Season[]> = {
+  wheat: ['spring', 'summer'],
+  tomato: ['summer'],
+  pumpkin: ['autumn'],
+  corn: ['summer', 'autumn'],
+  strawberry: ['spring'],
+};
+
+export function isOutOfSeason(cropId: CropId, season: Season): boolean {
+  return !(CROP_SEASONS[cropId]?.includes(season) ?? false);
 }
