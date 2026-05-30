@@ -60,6 +60,15 @@ export const DECOR_SPRITES = {
   grass_tuft: 'sprites/cache/0bc489cf949e3dc3.png',
 } as const;
 
+/** Building sprites — used by the Buildings world layer. */
+export const BUILDING_SPRITES = {
+  farmhouse: 'sprites/cache/b0acc37f6478c4a3.png',
+  bakery: 'sprites/cache/784993f58f8bd280.png',
+  stable: 'sprites/cache/3daaf8d50fbbd3b8.png',
+} as const;
+
+export type BuildingSpriteSlot = keyof typeof BUILDING_SPRITES;
+
 export type AssetSlot = keyof typeof ASSETS;
 export type SpriteSlot = keyof typeof SPRITES;
 export type CropSpriteSlot = keyof typeof CROP_SPRITES;
