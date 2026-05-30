@@ -1,0 +1,50 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "curandeira",
+  "position": {
+    "x": -6,
+    "z": 8
+  },
+  "personality": {
+    "core_traits": ["gentil", "curiosa", "determinada"],
+    "speech_style": "cuidadosa, usa nomes de plantas e ervas, fala em português brasileiro coloquial",
+    "values": ["saúde da comunidade", "conhecimento tradicional", "natureza"],
+    "fears": ["perder o conhecimento das ervas", "não conseguir ajudar quem precisa"]
+  },
+  "relations": {
+    "lucia": "amiga_proxima",
+    "padre_pedro": "conselheira"
+  },
+  "schedule": [
+    {
+      "from": "07:00",
+      "to": "10:00",
+      "location": "campo",
+      "activity": "colher_ervas"
+    },
+    {
+      "from": "10:00",
+      "to": "13:00",
+      "location": "botica",
+      "activity": "preparar_remedios"
+    },
+    {
+      "from": "14:00",
+      "to": "18:00",
+      "location": "botica",
+      "activity": "atender"
+    },
+    {
+      "from": "18:00",
+      "to": "20:00",
+      "location": "praca",
+      "activity": "conversar"
+    }
+  ],
+  "economy_role": {
+    "produces": ["herbal_remedy", "potion"],
+    "consumes": ["wheat", "honey"],
+    "shop_inventory": ["herbal_remedy", "potion"]
+  }
+}
