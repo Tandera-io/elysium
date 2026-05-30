@@ -1,0 +1,45 @@
+{
+  "npcId": "bento",
+  "quests": [
+    {
+      "id": "bento_irrigation_quest",
+      "title": "Encanamento Novo",
+      "offerDialogue": "Meu sistema de irrigação tá enferrujado faz tempo. Você consegue me arranjar 3 pedaços de ferro? Sem irrigação boa, a seca vai me vencer.",
+      "acceptDialogue": "...Bom. Sabia que podia contar com você. Não demora muito.",
+      "pendingDialogue": "O ferro ainda não chegou. Sem pressa — mas a lavoura sente falta da irrigação.",
+      "completeDialogue": "Ferro de qualidade. Vai durar anos. Valeu mesmo — não sou de muitas palavras, mas esse material vai ajudar muito a roça.",
+      "requirements": {
+        "items": [{ "id": "ferro", "quantity": 3 }]
+      },
+      "rewards": {
+        "gold": 100,
+        "heartGain": 3,
+        "items": [{ "id": "trigo", "quantity": 10 }]
+      }
+    },
+    {
+      "id": "bento_crop_wisdom_quest",
+      "title": "Sabedoria do Campo",
+      "offerDialogue": "Você cultiva bem, mas tem um segredo que meu pai me ensinou. Me traz 10 raízes colhidas. Depois eu te conto o resto — não é algo que se explica sem prova de comprometimento.",
+      "acceptDialogue": "Paciência é ferramenta também. Você vai entender quando trouxer as raízes.",
+      "pendingDialogue": "Plantou e colheu as raízes? Não adianta correr. A terra não aceita pressa.",
+      "completeDialogue": "Bem feito. Agora ouça: plante sempre em fileiras paralelas ao vento — economiza água e protege da erosão. Esse era o segredo do meu pai.",
+      "requirements": {
+        "items": [{ "id": "raiz", "quantity": 10 }]
+      },
+      "rewards": {
+        "gold": 0,
+        "heartGain": 4,
+        "items": [{ "id": "semente_especial", "quantity": 3 }]
+      }
+    }
+  ],
+  "infoLines": [
+    "Terra boa não grita. Ela sussurra. Aprende a ouvir com o tempo.",
+    "Meu pai dizia: quem cuida da terra, a terra cuida de volta. Nunca errou.",
+    "Essa seca vai passar. Sempre passa. É lei do campo — nada é permanente.",
+    "A Marina faz um pão que vale ouro. Sou sortudo de ser tio dela.",
+    "A Lúcia cuida dos animais melhor do que eu cuidaria. Parceria boa essa aqui na vila.",
+    "Olha o céu de manhã antes de plantar. O tempo diz o que a planta precisa."
+  ]
+}

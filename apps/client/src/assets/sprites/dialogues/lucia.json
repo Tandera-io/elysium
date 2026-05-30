@@ -1,0 +1,48 @@
+{
+  "npcId": "lucia",
+  "quests": [
+    {
+      "id": "lucia_feed_animals_quest",
+      "title": "Ração das Vaquinhas",
+      "offerDialogue": "Meu bem, minhas vacas estão precisando de capim especial para essa semana! Você consegue me trazer 8 maços de erva fresca? Elas merecem o melhor!",
+      "acceptDialogue": "Que bênção você é, meu filho! As vacas vão adorar. Obrigada do fundo do coração!",
+      "pendingDialogue": "As vaquinhas estão esperando, meu bem. Como está o capim por aí?",
+      "completeDialogue": "Ai, que lindo! Olha as vacas felizes! Toma esse leite e esses ovos — são os mais fresquinhos que tenho, colhidos hoje cedo!",
+      "requirements": {
+        "items": [{ "id": "erva_fresca", "quantity": 8 }]
+      },
+      "rewards": {
+        "gold": 40,
+        "heartGain": 3,
+        "items": [
+          { "id": "leite", "quantity": 5 },
+          { "id": "ovo", "quantity": 6 }
+        ]
+      }
+    },
+    {
+      "id": "lucia_medicine_quest",
+      "title": "Remédio para a Vaquinha",
+      "offerDialogue": "Meu bem, uma das minhas vacas não está nada bem. A Sofia disse que precisa de ervas medicinais especiais. Você pode me ajudar a encontrar? Essa vaquinha é como família pra mim!",
+      "acceptDialogue": "Obrigada do fundo do coração, meu filho! Que Deus te abençoe em dobro! Essa vaquinha vai ficar bem, graças a você!",
+      "pendingDialogue": "A vaquinha ainda está esperando, meu bem... Qualquer coisa que ajude, pode trazer.",
+      "completeDialogue": "Que milagre, meu bem! A vaca melhorou! Jamais vou esquecer sua bondade. Toma esse queijo especial — o melhor que já fiz na vida!",
+      "requirements": {
+        "items": [{ "id": "ervas_medicinais", "quantity": 3 }]
+      },
+      "rewards": {
+        "gold": 120,
+        "heartGain": 5,
+        "items": [{ "id": "queijo_especial", "quantity": 2 }]
+      }
+    }
+  ],
+  "infoLines": [
+    "Meu bem, animal bem tratado dá mais leite, mais amor e mais saúde!",
+    "Acordo às quatro e meia todo dia. As vacas não conhecem domingo, e eu tampouco!",
+    "O Bento me ajuda quando posso. Bom homem, esse Bento — quieto, mas de coração grande.",
+    "A Marina me traz pão fresquinho às vezes. A gente se cuida por aqui na vila.",
+    "Se quiser leite ou ovo fresquinhos, meu filho, é só me chamar no estábulo!",
+    "Cada vaca tem nome e personalidade. A Mimosa é a mais carinhosa — fica me lambendo!"
+  ]
+}

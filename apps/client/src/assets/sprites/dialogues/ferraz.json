@@ -1,0 +1,44 @@
+{
+  "npcId": "ferraz",
+  "quests": [
+    {
+      "id": "ferraz_ore_quest",
+      "title": "Minério de Qualidade",
+      "offerDialogue": "Preciso de minério de cobre de boa qualidade. Me traz 5 e forjo uma ferramenta especial pra você — algo que dura gerações, não essa coisa fraca que vendo pra qualquer um.",
+      "acceptDialogue": "Bom. Sabia que podia contar com você. Sem pressa, mas sem eternidade também.",
+      "pendingDialogue": "O minério ainda não chegou. Sem pressa — qualidade não se apressa, mas o tempo passa.",
+      "completeDialogue": "Cobre de primeira linha! Com esse material forjo algo que dura gerações. Aqui — ferramenta especial, feita por mim. Cuida bem dela.",
+      "requirements": {
+        "items": [{ "id": "cobre", "quantity": 5 }]
+      },
+      "rewards": {
+        "gold": 0,
+        "heartGain": 3,
+        "items": [{ "id": "picareta_reforcada", "quantity": 1 }]
+      }
+    },
+    {
+      "id": "ferraz_apprentice_quest",
+      "title": "Lição do Ferreiro",
+      "offerDialogue": "Tô pensando em te ensinar o básico da forja. Mas primeiro prove que respeita o material — me traz 10 minérios de ferro. Não qualquer coisa: ferro de verdade.",
+      "acceptDialogue": "Boa escolha. Quem aprende a trabalhar o ferro nunca passa fome. Pode levar o tempo que precisar.",
+      "pendingDialogue": "O ferro ainda não chegou. Não é sobre velocidade — é sobre comprometimento com a qualidade.",
+      "completeDialogue": "Excelente. Agora vem cá — vou te mostrar como a bigorna responde ao toque. Esse conhecimento vale mais do que qualquer ferramenta pronta.",
+      "requirements": {
+        "items": [{ "id": "ferro", "quantity": 10 }]
+      },
+      "rewards": {
+        "gold": 0,
+        "heartGain": 5,
+        "items": [{ "id": "receita_forja", "quantity": 1 }]
+      }
+    }
+  ],
+  "infoLines": [
+    "Ferramenta bem cuidada dura a vida toda. Mal cuidada quebra na hora certa errada.",
+    "Aprendi com meu pai: o metal sente quando você não o respeita. Não é filosofia — é fato.",
+    "O Arnaldo e eu temos boa parceria — ele com a madeira, eu com o ferro. Resultado: estruturas que duram.",
+    "Nessa região tem minério bom enterrado. Quando abrir uma mina aqui, me avisa primeiro.",
+    "Nada que forjo sai pela metade. Ou é completo e de qualidade, ou não sai da ferraria."
+  ]
+}

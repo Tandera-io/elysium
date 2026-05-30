@@ -1,0 +1,45 @@
+{
+  "npcId": "marina",
+  "quests": [
+    {
+      "id": "marina_flour_quest",
+      "title": "Farinha Boa",
+      "offerDialogue": "Você está cultivando bem! Preciso muito de trigo fresquinho para a padaria. Me traz 5 sacos e te pago bem — prometo que vale a pena!",
+      "acceptDialogue": "Ótimo! Fico contando com você, sim! Esse trigo vai fazer o melhor pão que a vila já viu!",
+      "pendingDialogue": "E o trigo? A padaria não espera muito, sabe... O Bento já pediu pão para o final da semana.",
+      "completeDialogue": "Que trigo lindo! Cheiroso, de qualidade! Meu pão vai ficar uma delícia agora. Toma, você mais do que merece!",
+      "requirements": {
+        "items": [{ "id": "trigo", "quantity": 5 }]
+      },
+      "rewards": {
+        "gold": 80,
+        "heartGain": 3,
+        "items": [{ "id": "pao_frances", "quantity": 3 }]
+      }
+    },
+    {
+      "id": "marina_honey_quest",
+      "title": "Mel para o Bolo Especial",
+      "offerDialogue": "Tenho uma receita especial de bolo que precisa de mel puro. Você consegue me trazer 2 potes de mel da floresta? Vou fazer o bolo mais bonito da vila!",
+      "acceptDialogue": "Que maravilha! Esse bolo vai fazer todo mundo feliz. Obrigada mesmo!",
+      "pendingDialogue": "Esse mel ainda não chegou... O Tio Bento e a Lúcia já estão esperando o bolo de mel!",
+      "completeDialogue": "Esse mel cheira tão, tão bem! O bolo vai ficar perfeito. Muito obrigada, meu bem! Toma um bolinho de fubá pra você!",
+      "requirements": {
+        "items": [{ "id": "mel", "quantity": 2 }]
+      },
+      "rewards": {
+        "gold": 60,
+        "heartGain": 2,
+        "items": [{ "id": "bolo_fuba", "quantity": 2 }]
+      }
+    }
+  ],
+  "infoLines": [
+    "A padaria fica mais movimentada às manhãs — venha cedo se quiser pão quentinho!",
+    "O Tio Bento planta o melhor trigo da região. Tenho sorte de ter ele na família.",
+    "Aprendi as receitas com minha avó. Cada pão tem uma história por trás.",
+    "Quando a vila prospera, a padaria prospera também. Torço muito pela sua roça!",
+    "A Lúcia me traz leite fresco todo dia. Faço um pão especial pra ela em troca.",
+    "A porta da padaria sempre está aberta pra quem precisa de um café e uma conversa."
+  ]
+}
