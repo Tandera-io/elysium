@@ -3,8 +3,8 @@ import { ITEMS, type EconomyItemId } from '../economy/itemDefs';
 import type { Quest } from './questDefs';
 
 /**
- * Inspect an NPC's economic state and propose a quest if there's a real
- * shortage (current stock below desiredStock by ≥ 3 units). Returns null
+ * Inspect an NPC's economic state and propose a deliver quest if there's a
+ * real shortage (current stock below desiredStock by ≥ 3 units). Returns null
  * if the NPC is content. Pure function — easy to unit-test.
  */
 export function proposeQuestFor(
@@ -35,10 +35,31 @@ export function proposeQuestFor(
   return {
     id: `${actor.id}-${worstItem}-d${day}`,
     giverNpcId: actor.id,
+    questType: 'deliver',
     item: worstItem,
     quantity,
     rewardCash: reward,
     rewardReputation: 1,
+    status: 'available',
+    createdOnDay: day,
+  };
+}
+
+/**
+ * Marina asks the player to plant wheat plots to ensure her bakery supply.
+ * Plant quests complete when the player has enough wheat tiles growing in
+ * the farm — no item delivery required.
+ */
+export function proposePlantQuestForMarina(day: number): Quest {
+  return {
+    id: `marina-plant-wheat-d${day}`,
+    giverNpcId: 'marina',
+    questType: 'plant',
+    item: 'trigo',
+    cropId: 'wheat',
+    quantity: 3,
+    rewardCash: 30,
+    rewardReputation: 2,
     status: 'available',
     createdOnDay: day,
   };

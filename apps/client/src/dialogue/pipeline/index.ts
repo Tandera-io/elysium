@@ -36,8 +36,8 @@ const FIRST_MEETING_LINES: Record<string, string[]> = {
     'Bem-vindo! Sou Dorinha. Precisa de semente ou quer vender o que colheu? Pode falar!',
   ],
   marina: [
-    'Que bom ver um rosto novo! Sou a Marina, da padaria. Se quiser pão fresquinho, é aqui!',
-    'Olá, bem-vindo! Me chamo Marina. O cheirinho de pão quentinho veio até você, né?',
+    'Que bom ver um rosto novo! Sou a Marina, da padaria. Se quiser pão fresquinho ou tiver alguma colheita para me trazer, é aqui!',
+    'Olá, bem-vindo! Me chamo Marina. O cheirinho de pão quentinho veio até você, né? Ah, e se você planta na roça, talvez eu precise da sua ajuda!',
   ],
   bento: [
     'Hmm. Novo por aqui. Bento. Trabalho nessa terra faz tempo. Qualquer coisa, pode perguntar.',
@@ -169,6 +169,20 @@ const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
     friend: [
       'Meu parceiro de pesca favorito! Mesmo que você não pesque comigo...',
       'Você é meu melhor cliente — e o que melhor aguenta minhas histórias!',
+    ],
+  },
+  marina: {
+    repeat_early: [
+      'De volta! Estou com o forno quente. Precisa de pão ou veio me trazer colheita?',
+      'Que bom te ver de novo! Ainda preciso de ingredientes da roça.',
+    ],
+    repeat_regular: [
+      'Olá! O que você traz de bom da roça hoje?',
+      'Bem-vindo de volta à padaria! Sempre um prazer.',
+    ],
+    friend: [
+      'Meu fazendeiro favorito! Já deixei um pão quentinho guardado para você.',
+      'Você é minha salvação! Sem a sua colheita minha padaria parava.',
     ],
   },
 };
@@ -321,6 +335,40 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
     goodbye: [
       'Até mais! Volta amanhã — o peixe sempre está mais fresco de manhã.',
       'Tchau! E não esqueça: o maior peixe ainda está no rio!',
+    ],
+  },
+  marina: {
+    greet: [
+      'Oi! Está precisando de pão ou veio me trazer alguma colheita?',
+      'Olá! O forno está quente e a padaria está cheirosa. O que você precisa?',
+      'Bem-vindo! Posso te ajudar com alguma coisa hoje?',
+    ],
+    buy: [
+      'Claro! Temos pão fresquinho e bolo de fubá saindo do forno agora.',
+      'Boa escolha! Venha ver o que tenho na vitrine.',
+    ],
+    sell: [
+      'Compro trigo, tomate, milho e qualquer produto da roça. O que você trouxe?',
+      'Sempre preciso de ingredientes frescos! O que você tem para me oferecer?',
+    ],
+    give_gift: ['Que gentileza! Obrigada de coração.', 'Nossa, não precisava. Adorei mesmo!'],
+    talk: [
+      'Minha padaria existe há vinte anos. Minha mãe me ensinou tudo que sei.',
+      'O segredo do meu pão é o trigo fresquinho. Se não for bom, o pão sente.',
+      'A Dorinha é minha amiga de infância. A gente cresceu nessa comunidade juntas.',
+      'Às vezes acordo às quatro da manhã pra botar o forno. O pão quentinho de manhã cedo compensa.',
+    ],
+    quest_accept: [
+      'Que ótimo! Vou aguardar sua colheita. Pode contar comigo para a recompensa!',
+      'Combinado! Traga o que preciso e te pago bem.',
+    ],
+    quest_complete: [
+      'Perfeito! Exatamente o que eu precisava. Muito obrigada!',
+      'Que alívio! O pão de amanhã já está garantido. Você é um anjo!',
+    ],
+    goodbye: [
+      'Até mais! Passa aqui quando quiser pão quentinho.',
+      'Tchau! E se tiver colheita boa, lembra de mim!',
     ],
   },
 };

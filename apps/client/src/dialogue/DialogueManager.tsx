@@ -10,6 +10,7 @@ import {
 import FERRAZ_DIALOGUE from '../features/npc/dialogue/ferraz';
 import NINA_DIALOGUE from '../features/npc/dialogue/nina';
 import DORINHA_DIALOGUE from '../features/npc/dialogue/dorinha';
+import MARINA_DIALOGUE from '../features/npc/dialogue/marina';
 import PADRE_PEDRO_DIALOGUE from '../features/npc/dialogue/padre_pedro';
 import ARNALDO_DIALOGUE from '../features/npc/dialogue/arnaldo';
 import SOFIA_DIALOGUE from '../features/npc/dialogue/sofia';
@@ -66,6 +67,7 @@ export {
 registerNPC(FERRAZ_DIALOGUE as NpcDialogueConfig);
 registerNPC(NINA_DIALOGUE as NpcDialogueConfig);
 registerNPC(DORINHA_DIALOGUE as NpcDialogueConfig);
+registerNPC(MARINA_DIALOGUE as NpcDialogueConfig);
 registerNPC(PADRE_PEDRO_DIALOGUE as NpcDialogueConfig);
 registerNPC(ARNALDO_DIALOGUE as NpcDialogueConfig);
 registerNPC(SOFIA_DIALOGUE as NpcDialogueConfig);
