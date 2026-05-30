@@ -49,6 +49,43 @@ export const CROP_SPRITES = {
   strawberry: 'sprites/cache/3b00a3aef9e1abcf.png',
 } as const;
 
+/**
+ * Per-growth-stage sprites for each crop. Index matches CropStage.index.
+ * The final entry is the pre-harvest stage; mature tiles use CROP_SPRITES.
+ */
+export const CROP_STAGE_SPRITES: Record<keyof typeof CROP_SPRITES, string[]> = {
+  wheat: [
+    'sprites/cache/crops/wheat_0.png',
+    'sprites/cache/crops/wheat_1.png',
+    'sprites/cache/crops/wheat_2.png',
+    'sprites/cache/crops/wheat_3.png',
+  ],
+  tomato: [
+    'sprites/cache/crops/tomato_0.png',
+    'sprites/cache/crops/tomato_1.png',
+    'sprites/cache/crops/tomato_2.png',
+    'sprites/cache/crops/tomato_3.png',
+    'sprites/cache/crops/tomato_4.png',
+  ],
+  pumpkin: [
+    'sprites/cache/crops/pumpkin_0.png',
+    'sprites/cache/crops/pumpkin_1.png',
+    'sprites/cache/crops/pumpkin_2.png',
+    'sprites/cache/crops/pumpkin_3.png',
+  ],
+  corn: [
+    'sprites/cache/crops/corn_0.png',
+    'sprites/cache/crops/corn_1.png',
+    'sprites/cache/crops/corn_2.png',
+    'sprites/cache/crops/corn_3.png',
+  ],
+  strawberry: [
+    'sprites/cache/crops/strawberry_0.png',
+    'sprites/cache/crops/strawberry_1.png',
+    'sprites/cache/crops/strawberry_2.png',
+  ],
+};
+
 /** Ground tile textures — 1024×1024 tileable PNGs with opaque background. */
 export const TILE_TEXTURES = {
   grass: 'sprites/cache/5da46cb2379b570d.png',
