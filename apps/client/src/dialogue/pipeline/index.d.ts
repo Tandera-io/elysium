@@ -35,3 +35,22 @@ export declare function classifyContext(context?: {
   interactionCount?: number;
   heartLevel?: number;
 }): 'first_meeting' | 'repeat_early' | 'repeat_regular' | 'friend';
+
+export interface NpcPersonalityContext {
+  core_traits: string[];
+  speech_style?: string;
+}
+
+export type NpcPersonalityArchetype = 'warm' | 'gruff' | 'cheerful';
+
+export type ContextStage = 'first_meeting' | 'repeat_early' | 'repeat_regular' | 'friend';
+
+export declare function getNpcArchetype(npcId: string): NpcPersonalityArchetype;
+
+export declare function getPersonalityOpener(npcId: string, stage: ContextStage): string;
+
+export declare function getOpeningLine(
+  npcId: string,
+  context?: { interactionCount?: number; heartLevel?: number },
+  personality?: NpcPersonalityContext,
+): string;

@@ -39,6 +39,7 @@ export function InteractPrompt() {
 
       if (e.code === 'KeyE') {
         if (useDialogueStore.getState().npcId) return; // already open
+        useNpcStore.getState().recordInteraction(t.def.id);
         useDialogueStore.getState().open(t.def.id);
       }
 
