@@ -3,6 +3,9 @@ import {
   getActionResponse,
   getFirstMeetingLine,
   getRepeatVisitLine,
+  getTimeOfDayGreeting,
+  getOpeningLine,
+  getTimeOfDay,
   classifyContext,
   PLAYER_ACTIONS,
 } from './pipeline/index.js';
@@ -59,6 +62,9 @@ export {
   getActionResponse,
   getFirstMeetingLine,
   getRepeatVisitLine,
+  getTimeOfDayGreeting,
+  getOpeningLine,
+  getTimeOfDay,
   classifyContext,
   PLAYER_ACTIONS,
 };

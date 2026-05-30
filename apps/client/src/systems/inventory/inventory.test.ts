@@ -73,4 +73,49 @@ describe('inventoryStore (slot-based)', () => {
       .reduce((a, s) => a + (s?.qty ?? 0), 0);
     expect(wheatTotal).toBe(129);
   });
+
+  it('dropSlot removes all items from a slot and returns dropped item', () => {
+    const dropped = useInventoryStore.getState().dropSlot(0);
+    expect(dropped).toEqual({ id: 'seed_wheat', qty: 6 });
+    expect(useInventoryStore.getState().slots[0]).toBeNull();
+  });
+
+  it('dropSlot on empty slot returns null', () => {
+    const dropped = useInventoryStore.getState().dropSlot(5);
+    expect(dropped).toBeNull();
+  });
+
+  it('dropSlot out of bounds returns null', () => {
+    expect(useInventoryStore.getState().dropSlot(-1)).toBeNull();
+    expect(useInventoryStore.getState().dropSlot(INVENTORY_SIZE)).toBeNull();
+  });
+
+  it('useItem consumes qty from inventory', () => {
+    expect(useInventoryStore.getState().useItem('seed_wheat', 2)).toBe(true);
+    expect(useInventoryStore.getState().count('seed_wheat')).toBe(4);
+  });
+
+  it('useItem returns false when not enough', () => {
+    expect(useInventoryStore.getState().useItem('seed_wheat', 99)).toBe(false);
+    expect(useInventoryStore.getState().count('seed_wheat')).toBe(6);
+  });
+
+  it('useItem defaults to qty=1', () => {
+    expect(useInventoryStore.getState().useItem('seed_wheat')).toBe(true);
+    expect(useInventoryStore.getState().count('seed_wheat')).toBe(5);
+  });
+
+  it('pickup adds items and returns true when space available', () => {
+    expect(useInventoryStore.getState().pickup('wheat', 5)).toBe(true);
+    expect(useInventoryStore.getState().count('wheat')).toBe(5);
+  });
+
+  it('pickup returns false when inventory is full', () => {
+    // fill all slots
+    for (let i = 2; i < INVENTORY_SIZE; i++) {
+      useInventoryStore.getState().add('wheat', 99);
+    }
+    const result = useInventoryStore.getState().pickup('tomato', 1);
+    expect(result).toBe(false);
+  });
 });

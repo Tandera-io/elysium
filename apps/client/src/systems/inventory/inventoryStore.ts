@@ -27,6 +27,12 @@ export interface InventoryActions {
   addGold: (amount: number) => void;
   /** Returns false if player has insufficient gold. */
   removeGold: (amount: number) => boolean;
+  /** Clears a specific slot, returning what was dropped (or null if already empty). */
+  dropSlot: (index: number) => SlotItem | null;
+  /** Consumes qty of item from inventory. Returns true if successful. */
+  useItem: (id: ItemId, qty?: number) => boolean;
+  /** Picks up a world item into inventory. Returns true if all fit. */
+  pickup: (id: ItemId, qty: number) => boolean;
 }
 
 function makeInitial(): InventoryState {
@@ -107,6 +113,17 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     set((s) => ({ gold: s.gold - amount }));
     return true;
   },
+  dropSlot: (index) => {
+    const slots = [...get().slots];
+    if (index < 0 || index >= slots.length) return null;
+    const dropped = slots[index];
+    if (!dropped) return null;
+    slots[index] = null;
+    set({ slots });
+    return dropped;
+  },
+  useItem: (id, qty = 1) => get().remove(id, qty),
+  pickup: (id, qty) => get().add(id, qty),
 }));
 
 if (import.meta.env.DEV) {

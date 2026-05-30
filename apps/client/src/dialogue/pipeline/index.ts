@@ -1,3 +1,12 @@
+export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
+
+export function getTimeOfDay(hour: number): TimeOfDay {
+  if (hour >= 6 && hour < 12) return 'morning';
+  if (hour >= 12 && hour < 18) return 'afternoon';
+  if (hour >= 18 && hour < 22) return 'evening';
+  return 'night';
+}
+
 export const PLAYER_ACTIONS = Object.freeze({
   GREET: 'greet',
   BUY: 'buy',
@@ -402,4 +411,147 @@ export function triggerDialogue(
   context: Context = {},
 ): string[] {
   return [getActionResponse(npcId, playerAction, context)];
+}
+
+const TIME_OF_DAY_GREETINGS: Record<string, Record<TimeOfDay, string[]>> = {
+  ferraz: {
+    morning: [
+      'Bom dia! Começando o dia com ferramenta na mão? Isso sim é jeito de lavrador!',
+      'Manhã cedo e você já tá aqui. Gosto disso. O que precisa?',
+    ],
+    afternoon: [
+      'Boa tarde! Tô com um lote novo de ferramentas — chegou na hora.',
+      'Tarde boa! O calor não tá fácil, mas o trabalho não para. O que precisa?',
+    ],
+    evening: [
+      'Boa noite! Trabalhando até tarde? A ferraria vai estar aberta mais um pouco.',
+      'Noite chegando e você aparece. O que será que precisa a essa hora?',
+    ],
+    night: [
+      'Caramba, a essa hora? Mas pode chegar — a forja não apaga cedo.',
+      'Não durmo muito mesmo. Pode falar, o que precisa?',
+    ],
+  },
+  nina: {
+    morning: [
+      'Bom dia! Começando o dia com compras? Adoro cliente madrugador!',
+      'Manhã boa! Acabei de abrir. O que vai precisar hoje?',
+    ],
+    afternoon: [
+      'Boa tarde! Tô organizando o estoque — chegou em boa hora.',
+      'Tarde, tarde! Muito sol lá fora, né? O que posso fazer por você?',
+    ],
+    evening: [
+      'Boa noite! Ainda tenho bastante coisa disponível antes de fechar.',
+      'Que bom te ver ainda hoje! O que precisa?',
+    ],
+    night: [
+      'Hm, tô quase fechando, mas pode entrar. O que precisa?',
+      'Tarde da noite... mas tudo bem! O que vai ser?',
+    ],
+  },
+  dorinha: {
+    morning: [
+      'Bom dia, bom dia! Safra colhida cedo é safra fresca! Vai vender ou comprar?',
+      'Manhã boa! Acabei de receber entregas. Tem coisa boa hoje!',
+    ],
+    afternoon: [
+      'Boa tarde! Dia agitado aqui na quitanda. O que vai ser?',
+      'Tarde! Tô com promoção de semente — chegou na hora certa!',
+    ],
+    evening: [
+      'Boa noite! Ainda tem bastante coisa antes de fechar. O que precisa?',
+      'Tarde de trabalho, né? Veio vender colheita ou comprar semente?',
+    ],
+    night: [
+      'Ei, tô quase fechando mas pode entrar. Rápido, o que precisa?',
+      'Noite das boas! Ainda tenho semente se precisar.',
+    ],
+  },
+  padre_pedro: {
+    morning: [
+      'Bom dia, meu filho! Que alegria ver você cedo assim. A manhã é abençoada.',
+      'Manhã boa! Vim rezar o terço e já encontro você. Boa sorte para o dia!',
+    ],
+    afternoon: [
+      'Boa tarde! O sol está forte, mas o espírito está firme. O que te traz até mim?',
+      'Tarde abençoada! Posso ajudar em algo?',
+    ],
+    evening: [
+      'Boa noite! O dia foi longo, mas a fé renova a energia. O que precisa?',
+      'Noite chegando... é hora de refletir. Posso ajudar com algo?',
+    ],
+    night: [
+      'A esta hora? Deve ser algo importante. Pode falar, estou aqui.',
+      'A noite é de descanso, mas nunca fecho os ouvidos para quem precisa.',
+    ],
+  },
+  arnaldo: {
+    morning: [
+      'Bom dia. Cedo assim, bom sinal — quem trabalha cedo faz o dobro.',
+      'Manhã. O que vai precisar hoje?',
+    ],
+    afternoon: [
+      'Boa tarde. Tô no meio de uma peça, mas pode falar.',
+      'Tarde. Boa hora para madeira — o calor seca bem.',
+    ],
+    evening: [
+      'Boa noite. Finalizando mais uma peça. O que precisa?',
+      'Noite. Ainda com serragem por aqui, mas pode entrar.',
+    ],
+    night: [
+      'Tarde da noite... mas tudo bem. O que precisa?',
+      'Não costumo receber a essa hora, mas pode falar.',
+    ],
+  },
+  sofia: {
+    morning: [
+      'Bom dia! Ervas de manhã têm mais força — boa hora para passar aqui!',
+      'Manhã boa! Acabei de fazer um chá. Quer provar?',
+    ],
+    afternoon: [
+      'Boa tarde! O sol tá forte, mas as ervas adoram. O que precisa?',
+      'Tarde! Tô secando um lote novo de remédios. Chegou na hora!',
+    ],
+    evening: [
+      'Boa noite! Hora boa para um chá calmante. O que posso fazer?',
+      'Noite chegando... e você aparece. Que bom! O que precisa?',
+    ],
+    night: [
+      'A essa hora? Deve estar precisando de remédio urgente. O que sente?',
+      'Noite funda... mas nunca fecho para quem precisa de saúde.',
+    ],
+  },
+  romeu: {
+    morning: [
+      'Bom dia! Acabei de voltar do rio — peixe mais fresquinho impossível!',
+      'Manhã boa! O rio tava cheio de peixe hoje cedo. Quer ouvir como foi?',
+    ],
+    afternoon: [
+      'Boa tarde! Tô limpando o peixe de hoje. O que vai querer?',
+      'Tarde! O sol no rio é brabo, mas o peixe compensa. O que precisa?',
+    ],
+    evening: [
+      'Boa noite! Tô defumando um peixão aqui. Quer provar?',
+      'Noite chegando... hora boa pra contar história de pescaria. Topa?',
+    ],
+    night: [
+      'Caramba, a essa hora? Tô preparando isca pro amanhã. Pode falar!',
+      'Noite das boas! Peixeiro nunca dorme muito cedo. O que precisa?',
+    ],
+  },
+};
+
+export function getTimeOfDayGreeting(npcId: string, hour: number, context: Context = {}): string {
+  const stage = classifyContext(context);
+  if (stage === 'first_meeting') return getFirstMeetingLine(npcId, context.interactionCount ?? 0);
+  const tod = getTimeOfDay(hour);
+  const lines = TIME_OF_DAY_GREETINGS[npcId]?.[tod];
+  if (lines && lines.length > 0) return pickRandom(lines);
+  return getRepeatVisitLine(npcId, context);
+}
+
+/** Returns the NPC's opening line when a conversation starts, factoring in time of day and relationship stage. */
+export function getOpeningLine(npcId: string, hour: number, context: Context = {}): string {
+  return getTimeOfDayGreeting(npcId, hour, context);
 }
