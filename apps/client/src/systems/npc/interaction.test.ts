@@ -10,6 +10,14 @@ const fakeNpc = (id: string, x: number, z: number): NpcStateEntry => ({
     personality: { core_traits: [], speech_style: '', values: [], fears: [] },
   },
   worldPos: { x, z },
+  social: {
+    friendshipLevel: 0,
+    interactionCount: 0,
+    dailyInteractionsToday: 0,
+    lastInteractedDay: -1,
+    cooldownUntilMs: 0,
+    pendingTask: null,
+  },
 });
 
 describe('findInteractTarget', () => {
