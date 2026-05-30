@@ -6,7 +6,7 @@ export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 export const SEASONS: readonly Season[] = ['spring', 'summer', 'autumn', 'winter'];
 export const DAYS_PER_SEASON = 7;
 export const HOURS_PER_DAY = 24;
-export const SECONDS_PER_REAL_DAY_DEFAULT = 15 * 60; // 15 real minutes = 1 in-game day
+export const SECONDS_PER_REAL_DAY_DEFAULT = 20 * 60; // 20 real minutes = 1 in-game day (Stardew-paced)
 
 export const SEASON_LABEL: Record<Season, string> = {
   spring: 'Primavera',

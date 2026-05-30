@@ -25,8 +25,8 @@ describe('timeStore', () => {
 
   it('tick advances hour proportionally', () => {
     const s = useTimeStore.getState();
-    // realSecondsPerDay default = 900; tick(900) = +24h
-    s.tick(450); // half day = +12h
+    // tick half a day → +12h regardless of default speed
+    s.tick(SECONDS_PER_REAL_DAY_DEFAULT / 2);
     expect(useTimeStore.getState().hour).toBeCloseTo(18);
   });
 
