@@ -19,6 +19,79 @@ interface Context {
   heartLevel?: number;
 }
 
+export interface NpcPersonalityContext {
+  core_traits: string[];
+  speech_style?: string;
+}
+
+/**
+ * Personality archetype used to colour NPC responses.
+ * - warm: expansive, maternal/paternal — opens up early, very friendly at friend level.
+ * - gruff: reserved, few words until friendship — brief at low heart, warmer at friend.
+ * - cheerful: upbeat, chatty regardless of relationship level.
+ */
+export type NpcPersonalityArchetype = 'warm' | 'gruff' | 'cheerful';
+
+const NPC_ARCHETYPES: Record<string, NpcPersonalityArchetype> = {
+  marina: 'warm',
+  bento: 'gruff',
+  lucia: 'warm',
+  dorinha: 'cheerful',
+  nina: 'cheerful',
+  ferraz: 'gruff',
+  padre_pedro: 'warm',
+  arnaldo: 'gruff',
+  sofia: 'warm',
+  romeu: 'cheerful',
+};
+
+export function getNpcArchetype(npcId: string): NpcPersonalityArchetype {
+  return NPC_ARCHETYPES[npcId] ?? 'cheerful';
+}
+
+/**
+ * Personality-based response modifier lines appended or prepended to a base
+ * response when the archetype and stage call for it. These create the feeling
+ * that gruff NPCs warm up over time and warm NPCs feel natural from the start.
+ */
+const PERSONALITY_OPENERS: Record<
+  NpcPersonalityArchetype,
+  Partial<Record<ContextStage, string[]>>
+> = {
+  gruff: {
+    repeat_early: ['Hm.', 'De volta.', 'Tá bom.'],
+    repeat_regular: ['Sempre bom te ver por aqui.', 'Voltou de novo.'],
+    friend: ['Ei, amigo!', 'Você é quase de casa aqui.', 'Que bom te ver — de verdade.'],
+  },
+  warm: {
+    first_meeting: ['Bem-vindo!', 'Que alegria conhecer você!'],
+    repeat_early: ['Que bom te ver de novo!', 'Voltou! Fico feliz.'],
+    repeat_regular: ['Sempre uma alegria!', 'Você ilumina o dia por aqui.'],
+    friend: ['Meu querido!', 'Você já é da família!', 'Que saudade!'],
+  },
+  cheerful: {
+    first_meeting: ['Olá, olá!', 'Ei, seja bem-vindo!'],
+    repeat_early: ['Voltou! Que bom!', 'De volta!'],
+    repeat_regular: ['Sempre um prazer!', 'Que ótimo!'],
+    friend: ['Meu favorito chegou!', 'Você nunca me decepciona!'],
+  },
+};
+
+/**
+ * Picks a personality-flavoured opener for the given NPC and relationship stage.
+ * Returns an empty string when no opener is needed (e.g. gruff at first_meeting —
+ * the NPC's actual first-meeting line already handles the tone).
+ */
+export function getPersonalityOpener(npcId: string, stage: ContextStage): string {
+  const archetype = getNpcArchetype(npcId);
+  // Gruff NPCs don't get an extra opener at first meeting — they're just curt.
+  if (archetype === 'gruff' && stage === 'first_meeting') return '';
+  const buckets = PERSONALITY_OPENERS[archetype];
+  const lines = buckets[stage];
+  if (!lines || lines.length === 0) return '';
+  return lines[Math.floor(Math.random() * lines.length)] ?? '';
+}
+
 const FIRST_MEETING_LINES: Record<string, string[]> = {
   ferraz: [
     'Ei, rosto novo! Bem-vindo à ferraria. Sou o Ferraz — se precisar de ferramenta boa ou upgrade, é aqui.',
@@ -369,7 +442,16 @@ export function getRepeatVisitLine(npcId: string, context: Context = {}): string
   const npcRepeat = REPEAT_VISIT_LINES[npcId];
   if (npcRepeat) {
     const bucket = npcRepeat[stage] ?? npcRepeat['repeat_early'];
-    if (bucket && bucket.length > 0) return pickRandom(bucket);
+    if (bucket && bucket.length > 0) {
+      const base = pickRandom(bucket);
+      // Warm and cheerful NPCs prepend a personality opener to their repeat lines.
+      const archetype = getNpcArchetype(npcId);
+      if (archetype !== 'gruff') {
+        const opener = getPersonalityOpener(npcId, stage);
+        return opener ? `${opener} ${base}` : base;
+      }
+      return base;
+    }
   }
 
   return FALLBACK_RESPONSES['greet']?.[0] ?? '';
@@ -389,7 +471,22 @@ export function getActionResponse(
   const npcResponses = ACTION_RESPONSES[npcId];
   if (npcResponses) {
     const bucket = npcResponses[playerAction];
-    if (bucket && bucket.length > 0) return pickRandom(bucket);
+    if (bucket && bucket.length > 0) {
+      const base = pickRandom(bucket);
+      // At friend stage, gruff NPCs warm up — prepend a personality opener.
+      // Warm and cheerful NPCs add openers starting from repeat_early.
+      const archetype = getNpcArchetype(npcId);
+      const addOpener =
+        archetype === 'gruff'
+          ? stage === 'friend' && playerAction === PLAYER_ACTIONS.GREET
+          : playerAction === PLAYER_ACTIONS.GREET &&
+            (stage === 'repeat_regular' || stage === 'friend');
+      if (addOpener) {
+        const opener = getPersonalityOpener(npcId, stage);
+        return opener ? `${opener} ${base}` : base;
+      }
+      return base;
+    }
   }
 
   const fallback = FALLBACK_RESPONSES[playerAction] ?? FALLBACK_RESPONSES['default'];
@@ -402,4 +499,47 @@ export function triggerDialogue(
   context: Context = {},
 ): string[] {
   return [getActionResponse(npcId, playerAction, context)];
+}
+
+/**
+ * Returns a personality-appropriate opening line for when the player initiates
+ * dialogue. Uses relationship context to pick between first-meeting, returning
+ * visitor, and friend-tier lines. Falls back to personality trait keywords when
+ * no NPC-specific line exists.
+ */
+export function getOpeningLine(
+  npcId: string,
+  context: Context = {},
+  personality?: NpcPersonalityContext,
+): string {
+  const stage = classifyContext(context);
+
+  if (stage === 'first_meeting') {
+    return getFirstMeetingLine(npcId, context.interactionCount ?? 0);
+  }
+
+  const line = getRepeatVisitLine(npcId, context);
+  if (line) return line;
+
+  // Personality-based fallback when no NPC-specific repeat line exists
+  if (personality?.core_traits.length) {
+    const traits = personality.core_traits.map((t) => t.toLowerCase());
+    if (traits.some((t) => t.includes('animad') || t.includes('alegr') || t.includes('cheerful'))) {
+      return stage === 'friend'
+        ? 'Que saudade! Sempre bom te ver por aqui!'
+        : 'Olá! Que bom te ver de novo!';
+    }
+    if (traits.some((t) => t.includes('reservad') || t.includes('quieto') || t.includes('sério'))) {
+      return stage === 'friend' ? 'Você de novo. Bom te ver.' : 'Hm. Voltou.';
+    }
+    if (
+      traits.some((t) => t.includes('caloroso') || t.includes('maternal') || t.includes('warm'))
+    ) {
+      return stage === 'friend'
+        ? 'Meu querido! Como você está?'
+        : 'Que bom ver você de novo! Está bem?';
+    }
+  }
+
+  return stage === 'friend' ? 'Que bom te ver, amigo!' : 'Olá! De volta por aqui?';
 }

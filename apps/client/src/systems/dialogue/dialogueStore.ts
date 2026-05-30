@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { DialogueResponse, NpcEmotion } from '@elysium/shared';
+import { useNpcStore } from '../npc/npcStore';
 
 export interface DialogueTurn {
   who: 'player' | 'npc';
@@ -46,11 +47,23 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
       error: null,
     }));
 
+    // Include relationship data so the server prompt can reflect personality + friendship level.
+    const npcStoreState = useNpcStore.getState();
+    const relationship = npcStoreState.relationships[npcId] ?? {
+      heartLevel: 0,
+      interactionCount: 0,
+    };
+
     try {
       const res = await fetch('/api/dialogue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ npcId, playerInput: trimmed, worldContext: world }),
+        body: JSON.stringify({
+          npcId,
+          playerInput: trimmed,
+          worldContext: world,
+          relationship,
+        }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({ error: `HTTP ${res.status}` }))) as {
@@ -59,6 +72,8 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
         throw new Error(body.error ?? `HTTP ${res.status}`);
       }
       const data = (await res.json()) as DialogueResponse;
+      // Record the interaction so relationship state stays current for future replies.
+      npcStoreState.recordInteraction(npcId);
       set((s) => ({
         history: [
           ...s.history,
