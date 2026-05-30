@@ -3,9 +3,9 @@ import { useDialogueStore } from '../dialogue/dialogueStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
-import { useNPCShopStore, DORINHA_SHOP_ID, NINA_SHOP_ID } from './NPCShop';
+import { useNPCShopStore, DORINHA_SHOP_ID, NINA_SHOP_ID, FERRAZ_SHOP_ID } from './NPCShop';
 
-const SHOP_NPCS = new Set([DORINHA_SHOP_ID, NINA_SHOP_ID]);
+const SHOP_NPCS = new Set([DORINHA_SHOP_ID, NINA_SHOP_ID, FERRAZ_SHOP_ID]);
 
 /**
  * Watches player position vs NPCs and shows a small "Press E to talk / G for shop"
