@@ -3,6 +3,15 @@ import type { CropId } from '../farming/CropDefs';
 
 export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
 
+/** Items that can be equipped as tools when clicked in the inventory. */
+export type ToolItemId = 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+
+export const TOOL_ITEM_IDS: ReadonlySet<string> = new Set<ToolItemId>([
+  'seed_wheat',
+  'seed_tomato',
+  'seed_corn',
+]);
+
 export interface SlotItem {
   id: ItemId;
   qty: number;
@@ -14,6 +23,8 @@ const STACK_MAX = 99;
 export interface InventoryState {
   slots: (SlotItem | null)[];
   gold: number;
+  /** Index of the currently equipped slot, or null if nothing is equipped. */
+  equippedSlotIndex: number | null;
 }
 
 export interface InventoryActions {
@@ -27,13 +38,38 @@ export interface InventoryActions {
   addGold: (amount: number) => void;
   /** Returns false if player has insufficient gold. */
   removeGold: (amount: number) => boolean;
+  /**
+   * Equip the item in the given slot as the active tool.
+   * Only slots containing a tool-equippable item (seeds, tools) can be equipped.
+   * If the slot is already equipped, it is unequipped instead (toggle).
+   * Returns the ItemId that was equipped, or null if unequipped / not equippable.
+   */
+  equipTool: (slotIndex: number) => ItemId | null;
+  /** Clear the equipped slot, returning to the 'move' tool. */
+  unequipTool: () => void;
 }
 
 function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
   slots[0] = { id: 'seed_wheat', qty: 6 };
   slots[1] = { id: 'seed_tomato', qty: 4 };
-  return { slots, gold: 500 };
+  return { slots, gold: 500, equippedSlotIndex: null };
+}
+
+// Lazy import to avoid circular dep — toolStore is a peer store.
+// We import at call-time inside equipTool so bundler sees no cycle.
+function setActiveTool(id: string) {
+  // Dynamic require keeps the circular dependency out of the module graph.
+  import('../../store/toolStore')
+    .then(({ useToolStore }) => {
+      const validTools = ['move', 'hoe', 'water', 'seed_wheat', 'seed_tomato', 'harvest'];
+      if (validTools.includes(id)) {
+        useToolStore.getState().set(id as import('../../store/toolStore').ToolId);
+      }
+    })
+    .catch(() => {
+      /* noop */
+    });
 }
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
@@ -106,6 +142,30 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     if (get().gold < amount) return false;
     set((s) => ({ gold: s.gold - amount }));
     return true;
+  },
+  equipTool: (slotIndex) => {
+    const { slots, equippedSlotIndex } = get();
+    const slot = slots[slotIndex] ?? null;
+
+    // Toggle off if already equipped
+    if (equippedSlotIndex === slotIndex) {
+      set({ equippedSlotIndex: null });
+      setActiveTool('move');
+      return null;
+    }
+
+    // Only equip slots that contain equippable items
+    if (!slot || !TOOL_ITEM_IDS.has(slot.id)) {
+      return null;
+    }
+
+    set({ equippedSlotIndex: slotIndex });
+    setActiveTool(slot.id);
+    return slot.id;
+  },
+  unequipTool: () => {
+    set({ equippedSlotIndex: null });
+    setActiveTool('move');
   },
 }));
 
