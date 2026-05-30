@@ -7,6 +7,7 @@ import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
 import { BillboardSprite } from '../loader/BillboardSprite';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
+import { GrowingCrop, HarvestReadyPulse } from './CropAnimation';
 
 const TILE_HEIGHT = 0.01;
 
@@ -53,6 +54,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let mature = false;
         let stageColor: string | null = null;
         let cropId: keyof typeof CROP_SPRITES | null = null;
+        let growthProgress = 0;
 
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
@@ -63,6 +65,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           stageColor = stage.color;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
+          growthProgress = Math.min(tile.daysGrown / def.daysToMature, 1);
         }
 
         return (
@@ -72,16 +75,16 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
+            {/* Animated growing-stage crop */}
             {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
-                <meshStandardMaterial color={stageColor} />
-              </mesh>
+              <GrowingCrop stageColor={stageColor} progress={growthProgress} />
             )}
-            {/* Mature plant sprite */}
+            {/* Mature plant sprite + harvest-ready pulse */}
             {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+              <>
+                <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+                <HarvestReadyPulse />
+              </>
             )}
           </group>
         );
