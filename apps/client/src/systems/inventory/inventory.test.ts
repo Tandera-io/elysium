@@ -51,6 +51,17 @@ describe('inventoryStore (slot-based)', () => {
     expect(hasWheat).toBe(false);
   });
 
+  it('starts closed', () => {
+    expect(useInventoryStore.getState().open).toBe(false);
+  });
+
+  it('toggleOpen opens then closes', () => {
+    useInventoryStore.getState().toggleOpen();
+    expect(useInventoryStore.getState().open).toBe(true);
+    useInventoryStore.getState().toggleOpen();
+    expect(useInventoryStore.getState().open).toBe(false);
+  });
+
   it('swap exchanges two slots', () => {
     useInventoryStore.getState().swap(0, 1);
     const slots = useInventoryStore.getState().slots;
