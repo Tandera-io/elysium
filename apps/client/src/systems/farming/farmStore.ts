@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CROPS, type CropId } from './CropDefs';
+import { CROPS, stageForDayCount, type CropId } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
 
@@ -12,6 +12,8 @@ export type TileState =
       plantedOnDay: number;
       lastWateredOnDay: number;
       daysGrown: number;
+      /** Current growth stage index, derived from daysGrown and CropDef stages. */
+      growthStage: number;
     };
 
 export interface FarmState {
@@ -30,6 +32,8 @@ export interface FarmActions {
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
   /** Advances day counter and progresses planted tiles by 1 day. */
   advanceDay: () => void;
+  /** Returns the current growth stage index (0-based) for a planted tile, or -1. */
+  getGrowthStage: (t: TileCoord) => number;
   /** Test helpers */
   reset: () => void;
 }
@@ -76,6 +80,7 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
           plantedOnDay: s.day,
           lastWateredOnDay: cur.watered ? s.day : s.day - 1,
           daysGrown: 0,
+          growthStage: 0,
         },
       },
     }));
@@ -100,11 +105,19 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
         if (t.kind === 'planted') {
           // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
           // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          const newDaysGrown = t.daysGrown + 1;
+          const def = CROPS[t.crop];
+          const newGrowthStage = stageForDayCount(def, newDaysGrown).index;
+          nextTiles[k] = { ...t, daysGrown: newDaysGrown, growthStage: newGrowthStage };
         }
       }
       return { day: nextDay, tiles: nextTiles };
     });
+  },
+  getGrowthStage: (t) => {
+    const cur = get().tiles[tileKey(t)];
+    if (!cur || cur.kind !== 'planted') return -1;
+    return cur.growthStage;
   },
   reset: () => set({ tiles: {}, day: 1 }),
 }));

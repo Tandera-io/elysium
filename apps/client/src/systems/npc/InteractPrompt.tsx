@@ -10,6 +10,7 @@ const SHOP_NPCS = new Set([DORINHA_SHOP_ID, NINA_SHOP_ID]);
 /**
  * Watches player position vs NPCs and shows a small "Press E to talk / G for shop"
  * prompt when in range. Also wires the E key to open dialogue and G to open shop.
+ * Mouse click on NPC sprites is handled in NpcView.tsx.
  */
 export function InteractPrompt() {
   const npcs = useNpcStore((s) => s.npcs);
@@ -63,8 +64,8 @@ export function InteractPrompt() {
   return (
     <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-16 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-1.5 text-sm text-slate-100 flex flex-col items-center gap-0.5">
       <div>
-        <kbd className="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">E</kbd> conversar com{' '}
-        <span className="font-semibold">{target.name}</span>
+        <kbd className="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">E</kbd> ou clique para
+        conversar com <span className="font-semibold">{target.name}</span>
       </div>
       {isShopkeeper && (
         <div>
