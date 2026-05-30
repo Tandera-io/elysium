@@ -12,8 +12,11 @@
  * Reads NPC chip definitions from useNpcDialogueStore (stores/npc.js).
  * Reads NPC world defs from useNpcStore (systems/npc/npcStore.ts).
  *
- * Mount once in App.tsx alongside the existing DialogueBox; it will only
- * render when activeNpcId is set in useNpcDialogueStore.
+ * Mount once in App.tsx alongside the existing DialogueBox (ui/DialogueBox.tsx).
+ * It only renders when activeNpcId is set in useNpcDialogueStore.
+ *
+ * For a lighter standalone variant without chip-bar functionality, see
+ * components/DialogueBox.js, which is driven by stores/dialogueStore.js.
  */
 
 import { useEffect, useRef, useState } from 'react';
