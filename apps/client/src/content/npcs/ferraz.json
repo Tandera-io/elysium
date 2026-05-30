@@ -1,0 +1,28 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 10, "z": -6 },
+  "personality": {
+    "core_traits": ["prático", "exigente com qualidade", "orgulhoso do ofício"],
+    "speech_style": "direto, sem rodeios, usa termos técnicos de forja, fala em português brasileiro coloquial",
+    "values": ["artesanato de qualidade", "trabalho honesto", "durabilidade"],
+    "fears": ["vender ferramenta ruim", "minério desperdiçado", "ser interrompido na forja"]
+  },
+  "relations": {
+    "nina": "colega_de_oficio",
+    "bento": "cliente_antigo"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "ferraria", "activity": "acender_forja" },
+    { "from": "09:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "16:00", "location": "ferraria", "activity": "atender" },
+    { "from": "16:00", "to": "20:00", "location": "ferraria", "activity": "forjar" }
+  ],
+  "economy_role": {
+    "produces": ["upgraded_hoe", "upgraded_watering_can", "upgraded_pickaxe"],
+    "consumes": ["iron_ore", "copper_ore", "coal"],
+    "shop_inventory": ["upgraded_hoe", "upgraded_watering_can", "upgraded_pickaxe"]
+  }
+}
