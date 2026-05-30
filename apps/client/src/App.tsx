@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { WeatherHUD } from './components/Weather';
 
 type FetchState =
   | { kind: 'loading' }
@@ -100,6 +101,7 @@ export function App() {
       <DialogueBox />
       <NPCInteractions />
       <NPCShopModal />
+      <WeatherHUD />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
