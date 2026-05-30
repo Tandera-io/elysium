@@ -48,6 +48,45 @@ export const CROP_SPRITES = {
   strawberry: 'sprites/cache/3b00a3aef9e1abcf.png',
 } as const;
 
+/**
+ * Per-stage growth sprites for each crop.
+ * Index 0 = seed (just planted), increasing indices = older/larger.
+ * The last entry in each array is the harvest-ready stage.
+ * Used by CropGrowthStageSprite (3D) and CropDisplay (2D overlay).
+ */
+export const CROP_GROWTH_SPRITES: Record<string, readonly string[]> = {
+  wheat: [
+    'assets/crops/wheat_stage0.png',
+    'assets/crops/wheat_stage1.png',
+    'assets/crops/wheat_stage2.png',
+    'assets/crops/wheat_stage3.png',
+  ],
+  tomato: [
+    'assets/crops/tomato_stage0.png',
+    'assets/crops/tomato_stage1.png',
+    'assets/crops/tomato_stage2.png',
+    'assets/crops/tomato_stage3.png',
+    'assets/crops/tomato_stage4.png',
+  ],
+  pumpkin: [
+    'assets/crops/pumpkin_stage0.png',
+    'assets/crops/pumpkin_stage1.png',
+    'assets/crops/pumpkin_stage2.png',
+    'assets/crops/pumpkin_stage3.png',
+  ],
+  corn: [
+    'assets/crops/corn_stage0.png',
+    'assets/crops/corn_stage1.png',
+    'assets/crops/corn_stage2.png',
+    'assets/crops/corn_stage3.png',
+  ],
+  strawberry: [
+    'assets/crops/strawberry_stage0.png',
+    'assets/crops/strawberry_stage1.png',
+    'assets/crops/strawberry_stage2.png',
+  ],
+} as const;
+
 /** Ground tile textures — 1024×1024 tileable PNGs with opaque background. */
 export const TILE_TEXTURES = {
   grass: 'sprites/cache/5da46cb2379b570d.png',
