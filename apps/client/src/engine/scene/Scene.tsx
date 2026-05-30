@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { IsometricCamera } from '../camera/IsometricCamera';
 import { PlayerController } from '../player/PlayerController';
-import { FarmField } from '../world/FarmField';
+import { FarmMap } from '../../components/FarmMap';
 import { Floor } from '../world/Floor';
 import { StaticProps } from '../world/StaticProps';
 import { TileMap } from '../world/TileMap';
@@ -23,7 +23,7 @@ export function Scene() {
       <Daylight />
       <TimeAdvancer />
       <TileMap />
-      <FarmField />
+      <FarmMap layoutId="marisa" />
       <StaticProps />
       <NpcView />
       <Floor />

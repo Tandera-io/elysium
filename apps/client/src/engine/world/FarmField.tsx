@@ -1,43 +1,23 @@
-import { useLoader } from '@react-three/fiber';
 import { useMemo } from 'react';
-import { NearestFilter, TextureLoader } from 'three';
 import { useFarmStore } from '../../systems/farming/farmStore';
-import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
-import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
-import { BillboardSprite } from '../loader/BillboardSprite';
-import { tileKey } from './pathfinding';
+import { FarmingPlotTile } from '../../tiles/FarmingPlotTile';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
-
-const TILE_HEIGHT = 0.01;
+import { tileKey } from './pathfinding';
 
 interface FarmFieldProps {
   grid?: GridConfig;
-}
-
-function useTileTexture(path: string) {
-  const tex = useLoader(TextureLoader, `/${path}`);
-  useMemo(() => {
-    tex.magFilter = NearestFilter;
-    tex.minFilter = NearestFilter;
-    tex.needsUpdate = true;
-  }, [tex]);
-  return tex;
+  onInteract?: (key: string) => void;
 }
 
 /**
- * Renders farming tiles using the OpenAI-generated tile textures (tilled or
- * watered soil), plus a Stardew-style crop sprite once the plant reaches
- * mature. Pre-mature growing plants still show a small green cone as a
- * lightweight indicator (matures get the real sprite).
+ * Renders all non-empty farming tiles from the farm store.
+ * Each tile is delegated to FarmingPlotTile which handles texture selection,
+ * hover highlighting, and click callbacks.
  */
-export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
+export function FarmField({ grid = DEFAULT_GRID, onInteract }: FarmFieldProps) {
   const tiles = useFarmStore((s) => s.tiles);
   const size = grid.tileSize;
-
-  const tilledTex = useTileTexture(TILE_TEXTURES.tilled);
-  const wateredTex = useTileTexture(TILE_TEXTURES.watered);
-
-  const entries = Object.entries(tiles);
+  const entries = useMemo(() => Object.entries(tiles), [tiles]);
 
   return (
     <group>
@@ -48,47 +28,20 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         const tileZ = Number(zStr);
         if (Number.isNaN(tileX) || Number.isNaN(tileZ)) return null;
         const world = tileToWorld({ x: tileX, z: tileZ }, grid);
-
-        let texture = tilledTex;
-        let mature = false;
-        let stageColor: string | null = null;
-        let cropId: keyof typeof CROP_SPRITES | null = null;
-
-        if (tile.kind === 'tilled') {
-          texture = tile.watered ? wateredTex : tilledTex;
-        } else if (tile.kind === 'planted') {
-          texture = wateredTex; // planted always sits on damp soil
-          const def = CROPS[tile.crop];
-          const stage = stageForDayCount(def, tile.daysGrown);
-          stageColor = stage.color;
-          mature = tile.daysGrown >= def.daysToMature;
-          cropId = tile.crop as keyof typeof CROP_SPRITES;
-        }
-
         return (
-          <group key={key} position={[world.x, TILE_HEIGHT, world.z]}>
-            {/* Textured soil quad */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-              <planeGeometry args={[size * 0.98, size * 0.98]} />
-              <meshStandardMaterial map={texture} />
-            </mesh>
-            {/* Growing-stage cone for non-mature plants */}
-            {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
-                <meshStandardMaterial color={stageColor} />
-              </mesh>
-            )}
-            {/* Mature plant sprite */}
-            {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
-            )}
-          </group>
+          <FarmingPlotTile
+            key={key}
+            tileKey={key}
+            tile={tile}
+            worldX={world.x}
+            worldZ={world.z}
+            tileSize={size}
+            onInteract={onInteract}
+          />
         );
       })}
     </group>
   );
 }
 
-// Keep the export to silence the "unused" linter while we resolve dependents.
 export { tileKey as _tileKey };
