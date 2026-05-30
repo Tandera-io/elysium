@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-import type { DialogueResponse, NpcEmotion } from '@elysium/shared';
+import type { DialogueResponse, NpcEmotion, WorldContext } from '@elysium/shared';
+import { useNpcStore } from '../npc/npcStore';
+import { useQuestStore } from '../quest/questStore';
 
 export interface DialogueTurn {
   who: 'player' | 'npc';
@@ -21,10 +23,7 @@ export interface DialogueState {
 export interface DialogueActions {
   open: (npcId: string) => void;
   close: () => void;
-  send: (
-    input: string,
-    world: { hour: number; dayInSeason: number; season: string; year: number },
-  ) => Promise<void>;
+  send: (input: string, world: WorldContext) => Promise<void>;
 }
 
 export const useDialogueStore = create<DialogueState & DialogueActions>((set, get) => ({
@@ -47,10 +46,23 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
     }));
 
     try {
+      const relation = useNpcStore.getState().getRelation(npcId);
+      const questState = useQuestStore.getState();
+      const activeQuest = Object.values(questState.active).find((q) => q.giverNpcId === npcId);
+      const enrichedWorld = {
+        ...world,
+        heartLevel: relation.heartLevel,
+        interactionCount: relation.interactionCount,
+        activeQuestItem: activeQuest?.item as string | undefined,
+        completedQuestCount:
+          questState.completed.filter((id) =>
+            questState.active[id] ? questState.active[id]?.giverNpcId === npcId : false,
+          ).length + relation.questsCompleted,
+      };
       const res = await fetch('/api/dialogue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ npcId, playerInput: trimmed, worldContext: world }),
+        body: JSON.stringify({ npcId, playerInput: trimmed, worldContext: enrichedWorld }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({ error: `HTTP ${res.status}` }))) as {
@@ -59,6 +71,8 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
         throw new Error(body.error ?? `HTTP ${res.status}`);
       }
       const data = (await res.json()) as DialogueResponse;
+      // Gain 1 heart per dialogue exchange (relationship building).
+      useNpcStore.getState().gainHeart(npcId, 1);
       set((s) => ({
         history: [
           ...s.history,
