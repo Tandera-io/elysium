@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import type { HealthResponse } from '@elysium/shared';
-import { Scene } from './engine/scene/Scene';
 import { Hotbar } from './ui/Hotbar';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { DialogueBox } from './ui/DialogueBox';
@@ -11,6 +10,7 @@ import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { GameScreen } from './screens/GameScreen';
 
 type FetchState =
   | { kind: 'loading' }
@@ -66,7 +66,8 @@ export function App() {
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
-      <Scene />
+      {/* GameScreen: 3D canvas + day/night lighting overlay */}
+      <GameScreen />
       <header className="absolute top-4 left-4 bg-slate-900/70 backdrop-blur rounded-lg px-4 py-2 text-slate-100">
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
