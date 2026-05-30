@@ -1,0 +1,42 @@
+{
+  "npc_id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "dialogues": {
+    "greeting": {
+      "first_time": [
+        "Bem? Precisa de alguma coisa consertada? Ou veio só olhar a forja? Os dois atrapalham.",
+        "Novo por aqui, hein. Pode chamar de Ferraz. Se quiser ferramenta boa ou melhoramento de equipamento, sabe onde me achar."
+      ],
+      "repeat_early": [
+        "Voltou. Bom. Quem volta sabe o que quer.",
+        "Apareceu cedo. Gosto disso. A forja tá quente desde as seis da manhã."
+      ],
+      "repeat_regular": [
+        "Já tô te reconhecendo. Isso é bom sinal — significa que cuida do equipamento.",
+        "De novo aqui. Tem algo pra melhorar, ou só veio bater papo? Tudo bem pelos dois."
+      ],
+      "friend": [
+        "Olha quem chegou. Separei um pedaço de minério de cobre pra você. Achei que ia precisar.",
+        "Você de novo. Que bom. Tô fazendo algo especial, dá uma olhada depois."
+      ]
+    },
+    "talk_topics": {
+      "about_blacksmithing": [
+        "O segredo da forja boa é paciência. Metal que você apressar vai quebrar na hora errada. Nunca na hora certa.",
+        "Aprendi esse ofício com um mestre ferreiro itinerante. Três anos rodando. Ele me ensinou mais em três meses do que eu aprendi sozinho em dez.",
+        "O martelo não faz a peça — o calor faz. O martelo só guia. Muita gente confunde onde fica o trabalho real."
+      ],
+      "about_upgrades": [
+        "Upgrade de ferramenta é o melhor investimento que um agricultor pode fazer. Confia em mim.",
+        "Enxada de ferro corta o dobro da de bronze. Traz o minério e eu te mostro."
+      ]
+    },
+    "goodbye": {
+      "generic": [
+        "Até mais! Volta quando precisar de upgrade.",
+        "Cuida dessa ferramenta, hein! Tchau."
+      ]
+    }
+  }
+}
