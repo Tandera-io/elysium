@@ -12,7 +12,6 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
-import { FarmGrid } from './farming/FarmGrid';
 
 type FetchState =
   | { kind: 'loading' }
@@ -23,7 +22,6 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
-  const [farmOpen, setFarmOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -69,6 +67,9 @@ export function App() {
       if (e.code === 'KeyF' && !titleOpen && !saveOpen && !e.ctrlKey && !e.altKey) {
         setFarmOpen((v) => !v);
       }
+      if (e.code === 'KeyI' && !titleOpen && !e.ctrlKey && !e.metaKey) {
+        useInventoryStore.getState().toggleOpen();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -94,6 +95,13 @@ export function App() {
             title="Fazenda (F)"
           >
             🌱 fazenda [F]
+          </button>
+          <button
+            onClick={() => useInventoryStore.getState().toggleOpen()}
+            className="text-[10px] font-mono text-slate-400 hover:text-slate-200"
+            title="Inventário (I)"
+          >
+            🎒 inv [I]
           </button>
         </div>
       </header>
