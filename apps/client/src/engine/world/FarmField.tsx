@@ -2,9 +2,8 @@ import { useLoader } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { NearestFilter, TextureLoader } from 'three';
 import { useFarmStore } from '../../systems/farming/farmStore';
-import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
-import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
-import { BillboardSprite } from '../loader/BillboardSprite';
+import { TILE_TEXTURES } from '../../content/assets';
+import { CropGrowthStageSprite } from '../loader/CropGrowthStageSprite';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
 
@@ -25,10 +24,10 @@ function useTileTexture(path: string) {
 }
 
 /**
- * Renders farming tiles using the OpenAI-generated tile textures (tilled or
- * watered soil), plus a Stardew-style crop sprite once the plant reaches
- * mature. Pre-mature growing plants still show a small green cone as a
- * lightweight indicator (matures get the real sprite).
+ * Renders farming tiles using the generated tile textures (tilled or watered
+ * soil), plus a growth-stage sprite for every planted crop at every stage.
+ * CropGrowthStageSprite handles stage→sprite mapping, height scaling, and
+ * billboard rotation for all crops from seed through mature/harvest-ready.
  */
 export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
   const tiles = useFarmStore((s) => s.tiles);
@@ -50,19 +49,17 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         const world = tileToWorld({ x: tileX, z: tileZ }, grid);
 
         let texture = tilledTex;
-        let mature = false;
-        let stageColor: string | null = null;
-        let cropId: keyof typeof CROP_SPRITES | null = null;
+        let plantedCropId: string | null = null;
+        let daysGrown = 0;
 
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
         } else if (tile.kind === 'planted') {
-          texture = wateredTex; // planted always sits on damp soil
-          const def = CROPS[tile.crop];
-          const stage = stageForDayCount(def, tile.daysGrown);
-          stageColor = stage.color;
-          mature = tile.daysGrown >= def.daysToMature;
-          cropId = tile.crop as keyof typeof CROP_SPRITES;
+          // Use watered texture when the crop was watered on or after planting day
+          const isWatered = tile.lastWateredOnDay >= tile.plantedOnDay;
+          texture = isWatered ? wateredTex : tilledTex;
+          plantedCropId = tile.crop;
+          daysGrown = tile.daysGrown;
         }
 
         return (
@@ -72,16 +69,14 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
-            {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
-                <meshStandardMaterial color={stageColor} />
-              </mesh>
-            )}
-            {/* Mature plant sprite */}
-            {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
+            {/* Crop sprite — all growth stages including mature */}
+            {plantedCropId && (
+              <CropGrowthStageSprite
+                cropId={plantedCropId as import('../../systems/farming/CropDefs').CropId}
+                daysGrown={daysGrown}
+                maxHeight={1.1}
+                billboard
+              />
             )}
           </group>
         );
