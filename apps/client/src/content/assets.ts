@@ -39,6 +39,40 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
   ],
 };
 
+/** Growth-stage sprite sequences per crop — index matches CropStage.index. */
+export const CROP_GROWTH_SPRITES: Partial<Record<string, string[]>> = {
+  wheat: [
+    'assets/crops/wheat_stage0.png',
+    'assets/crops/wheat_stage1.png',
+    'assets/crops/wheat_stage2.png',
+    'assets/crops/wheat_stage3.png',
+  ],
+  tomato: [
+    'assets/crops/tomato_stage0.png',
+    'assets/crops/tomato_stage1.png',
+    'assets/crops/tomato_stage2.png',
+    'assets/crops/tomato_stage3.png',
+    'assets/crops/tomato_stage4.png',
+  ],
+  pumpkin: [
+    'assets/crops/pumpkin_stage0.png',
+    'assets/crops/pumpkin_stage1.png',
+    'assets/crops/pumpkin_stage2.png',
+    'assets/crops/pumpkin_stage3.png',
+  ],
+  corn: [
+    'assets/crops/corn_stage0.png',
+    'assets/crops/corn_stage1.png',
+    'assets/crops/corn_stage2.png',
+    'assets/crops/corn_stage3.png',
+  ],
+  strawberry: [
+    'assets/crops/strawberry_stage0.png',
+    'assets/crops/strawberry_stage1.png',
+    'assets/crops/strawberry_stage2.png',
+  ],
+};
+
 /** Ripe crop sprites — used by FarmField when a planted tile reaches mature. */
 export const CROP_SPRITES = {
   wheat: 'sprites/cache/8dcc7821fa994510.png',
