@@ -32,11 +32,36 @@ export const ARNALDO_SHOP_TRIGGER_PHRASES: string[] = [
   'pode escolher o que precisa',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const ARNALDO_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Tá bom! Madeira e trabalho braçal são o que eu sei fazer de melhor.',
+    'Pode deixar na minha mão. Cuido disso com a mesma dedicação que minha marcenaria.',
+    'Entendido. Vou separar o material necessário e já começo.',
+  ],
+  working: [
+    'No ritmo certo, sem pressa e sem desleixo. É assim que funciona a marcenaria.',
+    'Cada talho no lugar. Esse serviço merece atenção.',
+    'Quase terminando. Não gosto de deixar coisa incompleta.',
+  ],
+  completed: [
+    'Pronto! Ficou do jeito que eu gosto: sólido e bem acabado.',
+    'Terminei! Pode conferir, não vou te decepcionar.',
+    'Missão cumprida. Se quiser mais alguma coisa, é só falar comigo.',
+  ],
+};
+
 export const ARNALDO_DIALOGUE = {
   npcId: ARNALDO_NPC_ID,
   greetings: ARNALDO_GREETINGS,
   topics: ARNALDO_TOPICS,
   shopTriggerPhrases: ARNALDO_SHOP_TRIGGER_PHRASES,
+  choreDialogue: ARNALDO_CHORE_DIALOGUE,
 } as const;
 
 export default ARNALDO_DIALOGUE;

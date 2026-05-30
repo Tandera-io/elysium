@@ -44,11 +44,36 @@ export const FERRAZ_SHOP_TRIGGER_PHRASES: string[] = [
   'olha o que tenho aqui',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const FERRAZ_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Pode confiar. Vou fazer direito, sem pressa e sem desleixo.',
+    'Trabalho bem feito não se negocia. Pode me deixar.',
+    'Tá bom. Sei o que tenho que fazer. Já vou nessa.',
+  ],
+  working: [
+    'Batendo ferro enquanto ele tá quente. Não me interrompe não.',
+    'Cada golpe no lugar certo. Isso aqui precisa de concentração.',
+    'Ferraria é assim: silêncio, fogo e trabalho sério.',
+  ],
+  completed: [
+    'Tá pronto. Trabalho bem feito, pode conferir.',
+    'Acabou. Testei tudo, não vai te decepcionar.',
+    'Pronto. Não gosto de serviço pela metade, pode ficar tranquilo.',
+  ],
+};
+
 export const FERRAZ_DIALOGUE = {
   npcId: FERRAZ_NPC_ID,
   greetings: FERRAZ_GREETINGS,
   topics: FERRAZ_TOPICS,
   shopTriggerPhrases: FERRAZ_SHOP_TRIGGER_PHRASES,
+  choreDialogue: FERRAZ_CHORE_DIALOGUE,
 } as const;
 
 export default FERRAZ_DIALOGUE;

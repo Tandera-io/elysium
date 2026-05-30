@@ -5,6 +5,10 @@ import bentoJson from '../../content/npcs/bento.json';
 import luciaJson from '../../content/npcs/lucia.json';
 import dorinhaJson from '../../content/npcs/dorinha.json';
 import ninaJson from '../../content/npcs/nina.json';
+import { getChoreDialogue as _getChoreDialogue } from '../../dialogue/DialogueManager';
+import type { ChoreState } from '../../dialogue/DialogueManager';
+
+export type { ChoreState };
 
 export interface NpcStateEntry {
   def: NpcDef;
@@ -18,6 +22,8 @@ export interface NpcState {
 
 export interface NpcActions {
   setPosition: (id: string, pos: { x: number; z: number }) => void;
+  /** Returns a random chore dialogue line for the NPC in the given state, or null if not available. */
+  getChoreDialogue: (npcId: string, state: ChoreState) => string | null;
 }
 
 function loadBootstrap(): NpcState {
@@ -44,6 +50,7 @@ export const useNpcStore = create<NpcState & NpcActions>((set) => ({
       if (!cur) return s;
       return { npcs: { ...s.npcs, [id]: { ...cur, worldPos: pos } } };
     }),
+  getChoreDialogue: (npcId, state) => _getChoreDialogue(npcId, state),
 }));
 
 if (import.meta.env.DEV) {

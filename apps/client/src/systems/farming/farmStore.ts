@@ -28,8 +28,10 @@ export interface FarmActions {
   plant: (t: TileCoord, crop: CropId) => boolean;
   /** Returns the yielded item id and quantity, or null if nothing to harvest. */
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
-  /** Advances day counter and progresses planted tiles by 1 day. */
-  advanceDay: () => void;
+  /** Advances day counter and progresses planted tiles by 1 day.
+   *  growthMultiplier comes from the weather system (e.g. 1.5 on rainy days).
+   *  autoWater marks all planted tiles as watered (rain / stormy weather). */
+  advanceDay: (growthMultiplier?: number, autoWater?: boolean) => void;
   /** Test helpers */
   reset: () => void;
 }
@@ -92,15 +94,19 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     }));
     return { crop: cur.crop, quantity: def.yieldQuantity };
   },
-  advanceDay: () => {
+  advanceDay: (growthMultiplier = 1, autoWater = false) => {
     set((s) => {
       const nextDay = s.day + 1;
       const nextTiles: Record<string, TileState> = { ...s.tiles };
       for (const [k, t] of Object.entries(s.tiles)) {
-        if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+        if (t.kind === 'tilled' && autoWater) {
+          nextTiles[k] = { ...t, watered: true };
+        } else if (t.kind === 'planted') {
+          nextTiles[k] = {
+            ...t,
+            daysGrown: t.daysGrown + growthMultiplier,
+            lastWateredOnDay: autoWater ? s.day : t.lastWateredOnDay,
+          };
         }
       }
       return { day: nextDay, tiles: nextTiles };

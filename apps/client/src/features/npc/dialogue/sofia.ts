@@ -36,11 +36,36 @@ export const SOFIA_SHOP_TRIGGER_PHRASES: string[] = [
   'olha o que tenho aqui',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const SOFIA_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Vou cuidar com todo carinho e atenção que isso merece.',
+    'Claro! Cada tarefa é uma oportunidade de cuidar bem de alguém.',
+    'Pode deixar. Ervas e trabalho pedem a mesma dedicação.',
+  ],
+  working: [
+    'Cada passo tem que ser feito com cuidado e intenção.',
+    'Trabalhando devagar e sempre, como a natureza ensina.',
+    'Concentrada aqui. A pressa estraga até o melhor remédio.',
+  ],
+  completed: [
+    'Pronto! Tudo feito com muito cuidado, pode conferir.',
+    'Terminei. Espero que o resultado te traga alívio e alegria.',
+    'Acabou! Fiz da mesma forma que preparo meus remédios: com amor.',
+  ],
+};
+
 export const SOFIA_DIALOGUE = {
   npcId: SOFIA_NPC_ID,
   greetings: SOFIA_GREETINGS,
   topics: SOFIA_TOPICS,
   shopTriggerPhrases: SOFIA_SHOP_TRIGGER_PHRASES,
+  choreDialogue: SOFIA_CHORE_DIALOGUE,
 } as const;
 
 export default SOFIA_DIALOGUE;
