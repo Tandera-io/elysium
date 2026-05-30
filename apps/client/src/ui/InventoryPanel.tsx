@@ -121,11 +121,9 @@ function Slot({
       {item && (
         <>
           <span aria-hidden>{ITEM_ICON[item.id] ?? '?'}</span>
-          {item.qty > 1 && (
-            <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
-              {item.qty}
-            </span>
-          )}
+          <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
+            {item.qty}
+          </span>
           {showTip && (
             <div className="absolute top-full mt-1 right-0 z-10 bg-slate-950 border border-slate-700 rounded px-2 py-1 whitespace-nowrap text-xs text-slate-200 pointer-events-none">
               <div className="font-semibold">{nameOf(item.id)}</div>
