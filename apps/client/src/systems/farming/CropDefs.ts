@@ -3,7 +3,14 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
-export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
+export type CropId =
+  | 'wheat'
+  | 'tomato'
+  | 'pumpkin'
+  | 'corn'
+  | 'strawberry'
+  | 'lettuce'
+  | 'sunflower';
 
 export interface CropStage {
   /** 0 = just planted, last index = mature/ready to harvest. */
@@ -82,6 +89,29 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 3,
     yieldQuantity: 4,
+  },
+  lettuce: {
+    id: 'lettuce',
+    name: 'Alface',
+    stages: [
+      { index: 0, daysInStage: 1, color: '#5a4a2a' },
+      { index: 1, daysInStage: 1, color: '#9bbf52' },
+      { index: 2, daysInStage: 1, color: '#56a03c' }, // mature green
+    ],
+    daysToMature: 3,
+    yieldQuantity: 3,
+  },
+  sunflower: {
+    id: 'sunflower',
+    name: 'Girassol',
+    stages: [
+      { index: 0, daysInStage: 1, color: '#5a4a2a' },
+      { index: 1, daysInStage: 1, color: '#9bbf52' },
+      { index: 2, daysInStage: 2, color: '#e8c34a' },
+      { index: 3, daysInStage: 2, color: '#ffc800' }, // ripe yellow
+    ],
+    daysToMature: 6,
+    yieldQuantity: 2,
   },
 };
 
