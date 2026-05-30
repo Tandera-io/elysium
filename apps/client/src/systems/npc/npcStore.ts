@@ -5,11 +5,19 @@ import bentoJson from '../../content/npcs/bento.json';
 import luciaJson from '../../content/npcs/lucia.json';
 import dorinhaJson from '../../content/npcs/dorinha.json';
 import ninaJson from '../../content/npcs/nina.json';
+import dorinhaSprite from '../../assets/npcs/dorinha.png';
+
+/** Maps NPC id → committed source sprite URL (Vite-processed, cache-busted). */
+export const NPC_SPRITES: Partial<Record<string, string>> = {
+  dorinha: dorinhaSprite,
+};
 
 export interface NpcStateEntry {
   def: NpcDef;
   /** Live world-space position; may differ from def.position once schedules run (Phase 11). */
   worldPos: { x: number; z: number };
+  /** Source sprite URL for this NPC (if a committed asset exists). */
+  spriteUrl?: string;
 }
 
 export interface NpcState {
@@ -31,7 +39,7 @@ function loadBootstrap(): NpcState {
   ];
   for (const def of defs) {
     const pos = def.position ?? { x: 0, z: 0 };
-    npcs[def.id] = { def, worldPos: { x: pos.x, z: pos.z } };
+    npcs[def.id] = { def, worldPos: { x: pos.x, z: pos.z }, spriteUrl: NPC_SPRITES[def.id] };
   }
   return { npcs };
 }
