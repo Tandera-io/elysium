@@ -10,8 +10,10 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
-import { useTimeStore } from './systems/time/timeStore';
+import { useTimeStore, currentSeason } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { useWeatherStore } from './systems/weather/weatherStore';
+import { WeatherDisplay } from './components/WeatherDisplay';
 
 type FetchState =
   | { kind: 'loading' }
@@ -49,6 +51,11 @@ export function App() {
     // Pause the in-game clock while the title screen is up so the first day
     // doesn't auto-roll while the player is still on the menu.
     useTimeStore.getState().setPaused(titleOpen);
+    if (!titleOpen) {
+      // Seed weather once when the player starts the game.
+      const timeState = useTimeStore.getState();
+      useWeatherStore.getState().initWeather(currentSeason(timeState));
+    }
   }, [titleOpen]);
 
   useEffect(() => {
@@ -93,6 +100,7 @@ export function App() {
           </span>
         )}
       </aside>
+      <WeatherDisplay />
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />

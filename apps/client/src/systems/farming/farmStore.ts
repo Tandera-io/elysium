@@ -2,6 +2,11 @@ import { create } from 'zustand';
 import { CROPS, type CropId } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
+import {
+  useWeatherStore,
+  WEATHER_GROWTH_MULTIPLIER,
+  WEATHER_WATERS_CROPS,
+} from '../weather/weatherStore';
 
 export type TileState =
   | { kind: 'empty' }
@@ -94,13 +99,25 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
   },
   advanceDay: () => {
     set((s) => {
+      const { today } = useWeatherStore.getState();
+      const growthMult = WEATHER_GROWTH_MULTIPLIER[today];
+      const rainWaters = WEATHER_WATERS_CROPS[today];
       const nextDay = s.day + 1;
-      const nextTiles: Record<string, TileState> = { ...s.tiles };
+      const nextTiles: Record<string, TileState> = {};
       for (const [k, t] of Object.entries(s.tiles)) {
-        if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+        if (t.kind === 'tilled') {
+          // Rain auto-waters tilled soil
+          nextTiles[k] = rainWaters ? { ...t, watered: true } : t;
+        } else if (t.kind === 'planted') {
+          // Crops always grow each day; weather multiplier adjusts the rate.
+          // Rain also updates the last-watered marker for display purposes.
+          nextTiles[k] = {
+            ...t,
+            lastWateredOnDay: rainWaters ? s.day : t.lastWateredOnDay,
+            daysGrown: t.daysGrown + growthMult,
+          };
+        } else {
+          nextTiles[k] = t;
         }
       }
       return { day: nextDay, tiles: nextTiles };
