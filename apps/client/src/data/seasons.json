@@ -1,0 +1,74 @@
+{
+  "spring": {
+    "label": "Primavera",
+    "daysPerSeason": 7,
+    "description": "Mild temperatures and frequent rain make spring ideal for most crops.",
+    "ambientColor": "rgb(180, 220, 140)",
+    "weatherPatterns": [
+      { "type": "sunny", "probability": 0.4, "label": "Ensolarado" },
+      { "type": "cloudy", "probability": 0.25, "label": "Nublado" },
+      { "type": "rainy", "probability": 0.3, "label": "Chuvoso" },
+      { "type": "stormy", "probability": 0.05, "label": "Tempestade" }
+    ],
+    "cropEffects": {
+      "growthRateMultiplier": 1.0,
+      "waterNeedMultiplier": 1.0,
+      "rainWatersTiles": true,
+      "inSeasonCrops": ["wheat", "lettuce", "tomato"]
+    }
+  },
+  "summer": {
+    "label": "Verão",
+    "daysPerSeason": 7,
+    "description": "Hot and dry. Crops grow fast but need daily watering or they wilt.",
+    "ambientColor": "rgb(255, 220, 80)",
+    "weatherPatterns": [
+      { "type": "sunny", "probability": 0.6, "label": "Ensolarado" },
+      { "type": "cloudy", "probability": 0.2, "label": "Nublado" },
+      { "type": "rainy", "probability": 0.1, "label": "Chuva leve" },
+      { "type": "stormy", "probability": 0.1, "label": "Tempestade" }
+    ],
+    "cropEffects": {
+      "growthRateMultiplier": 1.25,
+      "waterNeedMultiplier": 1.5,
+      "rainWatersTiles": true,
+      "inSeasonCrops": ["corn", "sunflower", "tomato"]
+    }
+  },
+  "autumn": {
+    "label": "Outono",
+    "daysPerSeason": 7,
+    "description": "Cool air and frequent rain. A good harvest season before winter.",
+    "ambientColor": "rgb(220, 140, 60)",
+    "weatherPatterns": [
+      { "type": "sunny", "probability": 0.2, "label": "Ensolarado" },
+      { "type": "cloudy", "probability": 0.35, "label": "Nublado" },
+      { "type": "rainy", "probability": 0.35, "label": "Chuvoso" },
+      { "type": "stormy", "probability": 0.1, "label": "Tempestade" }
+    ],
+    "cropEffects": {
+      "growthRateMultiplier": 0.9,
+      "waterNeedMultiplier": 0.75,
+      "rainWatersTiles": true,
+      "inSeasonCrops": ["wheat", "lettuce"]
+    }
+  },
+  "winter": {
+    "label": "Inverno",
+    "daysPerSeason": 7,
+    "description": "Frost kills most crops. Only hardy varieties survive. Rest and prepare for spring.",
+    "ambientColor": "rgb(180, 200, 240)",
+    "weatherPatterns": [
+      { "type": "cloudy", "probability": 0.4, "label": "Nublado" },
+      { "type": "sunny", "probability": 0.2, "label": "Frio e seco" },
+      { "type": "snowy", "probability": 0.3, "label": "Nevando" },
+      { "type": "stormy", "probability": 0.1, "label": "Nevasca" }
+    ],
+    "cropEffects": {
+      "growthRateMultiplier": 0.0,
+      "waterNeedMultiplier": 0.5,
+      "rainWatersTiles": false,
+      "inSeasonCrops": []
+    }
+  }
+}
