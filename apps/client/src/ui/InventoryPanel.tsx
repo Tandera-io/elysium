@@ -5,15 +5,23 @@ import { CROPS, type CropId } from '../systems/farming/CropDefs';
 const ITEM_ICON: Record<string, string> = {
   seed_wheat: '🌾',
   seed_tomato: '🍅',
+  seed_corn: '🌽',
   wheat: '🌾',
   tomato: '🍅',
+  pumpkin: '🎃',
+  corn: '🌽',
+  strawberry: '🍓',
 };
 
 const ITEM_NAME: Record<string, string> = {
   seed_wheat: 'Sementes de trigo',
   seed_tomato: 'Sementes de tomate',
+  seed_corn: 'Sementes de milho',
   wheat: 'Trigo colhido',
   tomato: 'Tomate colhido',
+  pumpkin: 'Abóbora colhida',
+  corn: 'Milho colhido',
+  strawberry: 'Morango colhido',
 };
 
 function nameOf(id: string): string {
@@ -27,9 +35,11 @@ export function InventoryPanel() {
   const [hoverOver, setHoverOver] = useState<number | null>(null);
 
   return (
-    <aside className="absolute top-20 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 min-w-[200px]">
-      <h2 className="text-sm font-semibold text-slate-300 mb-2">Inventário</h2>
-      <div className="grid grid-cols-4 gap-1">
+    <aside className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-slate-900/85 backdrop-blur rounded-xl px-3 py-2 text-xs text-slate-200 flex flex-col items-center">
+      <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1.5 font-mono">
+        Inventário
+      </p>
+      <div className="flex gap-1 flex-wrap justify-center max-w-[calc(12*2.75rem)]">
         {slots.map((slot, i) => (
           <Slot
             key={i}
@@ -111,11 +121,9 @@ function Slot({
       {item && (
         <>
           <span aria-hidden>{ITEM_ICON[item.id] ?? '?'}</span>
-          {item.qty > 1 && (
-            <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
-              {item.qty}
-            </span>
-          )}
+          <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
+            {item.qty}
+          </span>
           {showTip && (
             <div className="absolute top-full mt-1 right-0 z-10 bg-slate-950 border border-slate-700 rounded px-2 py-1 whitespace-nowrap text-xs text-slate-200 pointer-events-none">
               <div className="font-semibold">{nameOf(item.id)}</div>
