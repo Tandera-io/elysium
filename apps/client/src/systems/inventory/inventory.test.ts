@@ -4,24 +4,24 @@ import { INVENTORY_SIZE, useInventoryStore } from './inventoryStore';
 describe('inventoryStore (slot-based)', () => {
   beforeEach(() => useInventoryStore.getState().reset());
 
-  it('starts with INVENTORY_SIZE slots, two filled', () => {
+  it('starts with INVENTORY_SIZE slots, four filled', () => {
     const slots = useInventoryStore.getState().slots;
     expect(slots).toHaveLength(INVENTORY_SIZE);
-    expect(slots.filter((s) => s !== null)).toHaveLength(2);
+    expect(slots.filter((s) => s !== null)).toHaveLength(4);
   });
 
   it('add stacks into an existing slot of same id', () => {
     useInventoryStore.getState().add('seed_wheat', 3);
     expect(useInventoryStore.getState().count('seed_wheat')).toBe(9);
-    // still 2 non-null slots
-    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(2);
+    // still 4 non-null slots
+    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(4);
   });
 
   it('add a new id goes to the first empty slot', () => {
     useInventoryStore.getState().add('wheat', 5);
     const slots = useInventoryStore.getState().slots;
-    // wheat in slot index 2 (after seed_wheat=0, seed_tomato=1)
-    expect(slots[2]).toEqual({ id: 'wheat', qty: 5 });
+    // wheat in slot index 4 (after seed_wheat=0, seed_tomato=1, seed_corn=2, hoe=3)
+    expect(slots[4]).toEqual({ id: 'wheat', qty: 5 });
   });
 
   it('add up to STACK_MAX then spills into next empty', () => {
