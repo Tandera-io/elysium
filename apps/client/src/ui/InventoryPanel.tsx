@@ -1,19 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInventoryStore, type SlotItem } from '../systems/inventory/inventoryStore';
 import { CROPS, type CropId } from '../systems/farming/CropDefs';
 
 const ITEM_ICON: Record<string, string> = {
+  // Seeds
   seed_wheat: '🌾',
   seed_tomato: '🍅',
+  seed_corn: '🌽',
+  seed_pumpkin: '🎃',
+  seed_strawberry: '🍓',
+  // Crops
   wheat: '🌾',
   tomato: '🍅',
+  corn: '🌽',
+  pumpkin: '🎃',
+  strawberry: '🍓',
+  // Tools
+  watering_can: '💧',
+  hoe: '⛏️',
+  basket: '🧺',
 };
 
 const ITEM_NAME: Record<string, string> = {
+  // Seeds
   seed_wheat: 'Sementes de trigo',
   seed_tomato: 'Sementes de tomate',
+  seed_corn: 'Sementes de milho',
+  seed_pumpkin: 'Sementes de abóbora',
+  seed_strawberry: 'Sementes de morango',
+  // Crops
   wheat: 'Trigo colhido',
   tomato: 'Tomate colhido',
+  corn: 'Milho colhido',
+  pumpkin: 'Abóbora colhida',
+  strawberry: 'Morango colhido',
+  // Tools
+  watering_can: 'Regador',
+  hoe: 'Enxada',
+  basket: 'Cesto',
 };
 
 function nameOf(id: string): string {
@@ -22,14 +46,59 @@ function nameOf(id: string): string {
 
 export function InventoryPanel() {
   const slots = useInventoryStore((s) => s.slots);
+  const gold = useInventoryStore((s) => s.gold);
   const swap = useInventoryStore((s) => s.swap);
+  const [open, setOpen] = useState(false);
   const [draggingFrom, setDraggingFrom] = useState<number | null>(null);
   const [hoverOver, setHoverOver] = useState<number | null>(null);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === 'KeyI' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        // Don't toggle when typing in input fields
+        const tag = (e.target as HTMLElement).tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="absolute top-20 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-400 hover:text-slate-200 transition"
+        title="Abrir inventário [I]"
+      >
+        🎒 Inventário [I]
+      </button>
+    );
+  }
+
+  const filledCount = slots.filter(Boolean).length;
+
   return (
-    <aside className="absolute top-20 right-4 bg-slate-900/80 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 min-w-[200px]">
-      <h2 className="text-sm font-semibold text-slate-300 mb-2">Inventário</h2>
-      <div className="grid grid-cols-4 gap-1">
+    <aside className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur rounded-xl border border-slate-700 shadow-2xl p-4 text-xs text-slate-200 w-[300px]">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <h2 className="text-sm font-bold text-slate-100">Inventário</h2>
+          <p className="text-slate-500 text-[10px]">
+            {filledCount}/{slots.length} slots · 🪙 {gold}g
+          </p>
+        </div>
+        <button
+          onClick={() => setOpen(false)}
+          className="text-slate-500 hover:text-slate-200 text-lg leading-none"
+          title="Fechar [I]"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="grid grid-cols-6 gap-1">
         {slots.map((slot, i) => (
           <Slot
             key={i}
@@ -51,6 +120,10 @@ export function InventoryPanel() {
           />
         ))}
       </div>
+
+      <p className="mt-3 text-[10px] text-slate-600 text-center">
+        Arraste para reorganizar · Pressione [I] para fechar
+      </p>
     </aside>
   );
 }
@@ -85,7 +158,7 @@ function Slot({
           : isDraggingFrom
             ? 'border-slate-500 bg-slate-800/40 opacity-50'
             : item
-              ? 'border-slate-700 bg-slate-800 cursor-grab'
+              ? 'border-slate-600 bg-slate-800 cursor-grab hover:border-slate-400'
               : 'border-slate-800 bg-slate-900/40'
       }`}
       draggable={item !== null}
@@ -112,12 +185,12 @@ function Slot({
         <>
           <span aria-hidden>{ITEM_ICON[item.id] ?? '?'}</span>
           {item.qty > 1 && (
-            <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
+            <span className="absolute bottom-0 right-0.5 text-[9px] font-mono text-amber-300 leading-none">
               {item.qty}
             </span>
           )}
           {showTip && (
-            <div className="absolute top-full mt-1 right-0 z-10 bg-slate-950 border border-slate-700 rounded px-2 py-1 whitespace-nowrap text-xs text-slate-200 pointer-events-none">
+            <div className="absolute top-full mt-1 right-0 z-20 bg-slate-950 border border-slate-700 rounded px-2 py-1 whitespace-nowrap text-xs text-slate-200 pointer-events-none shadow-lg">
               <div className="font-semibold">{nameOf(item.id)}</div>
               <div className="text-slate-500">qtd {item.qty}</div>
             </div>
