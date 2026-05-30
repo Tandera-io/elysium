@@ -4,6 +4,8 @@ import { Scene } from './engine/scene/Scene';
 import { Hotbar } from './ui/Hotbar';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { DialogueBox } from './ui/DialogueBox';
+import { NPCDialog } from './components/NPCDialog';
+import { FarmPlotManager } from './components/FarmPlotManager';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
@@ -96,6 +98,11 @@ export function App() {
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
+      {/* NPCDialog handles tree-mode conversations (Nina, Dorinha).
+          When the player switches to free text, it hides itself and
+          DialogueBox takes over with the full AI chat + quest panel. */}
+      <NPCDialog />
+      <FarmPlotManager />
       <DialogueBox />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
