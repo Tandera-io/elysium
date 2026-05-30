@@ -15,8 +15,11 @@ export const SPRITES = {
   marina: 'sprites/cache/8db8c640fad3595a.png',
   bento: 'sprites/cache/c8ceff3648e5624c.png',
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
-  dorinha: 'sprites/cache/7ca40c4410ad1460.png',
-  nina: 'sprites/cache/e1f80277e6826d74.png',
+  dorinha: 'assets/npcs/dorinha.png',
+  nina: 'assets/npcs/nina.png',
+  'padre-pedro': 'assets/npcs/padre-pedro.png',
+  arnaldo: 'assets/npcs/arnaldo.png',
+  sofia: 'assets/npcs/sofia.png',
 } as const;
 
 /** Walk animation frames — generated via /images/edits using the idle sprite
@@ -30,12 +33,19 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
     'sprites/cache/368ae9f815b40a8a.png', // walk 2 (right leg forward)
   ],
   dorinha: [
-    'sprites/cache/7ca40c4410ad1460.png', // idle (frame 0)
-    'sprites/cache/c2daeecd8b188ac4.png', // walk frame
+    'assets/npcs/dorinha.png', // idle (frame 0)
   ],
   nina: [
-    'sprites/cache/e1f80277e6826d74.png', // idle (frame 0)
-    'sprites/cache/0c5784a31d4297dd.png', // walk frame
+    'assets/npcs/nina.png', // idle (frame 0)
+  ],
+  'padre-pedro': [
+    'assets/npcs/padre-pedro.png', // idle (frame 0)
+  ],
+  arnaldo: [
+    'assets/npcs/arnaldo.png', // idle (frame 0)
+  ],
+  sofia: [
+    'assets/npcs/sofia.png', // idle (frame 0)
   ],
 };
 

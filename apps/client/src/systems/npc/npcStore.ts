@@ -5,6 +5,9 @@ import bentoJson from '../../content/npcs/bento.json';
 import luciaJson from '../../content/npcs/lucia.json';
 import dorinhaJson from '../../content/npcs/dorinha.json';
 import ninaJson from '../../content/npcs/nina.json';
+import padrePedroJson from '../../content/npcs/padre-pedro.json';
+import arnaldoJson from '../../content/npcs/arnaldo.json';
+import sofiaJson from '../../content/npcs/sofia.json';
 
 export interface NpcStateEntry {
   def: NpcDef;
@@ -28,6 +31,9 @@ function loadBootstrap(): NpcState {
     luciaJson as NpcDef,
     dorinhaJson as NpcDef,
     ninaJson as NpcDef,
+    padrePedroJson as NpcDef,
+    arnaldoJson as NpcDef,
+    sofiaJson as NpcDef,
   ];
   for (const def of defs) {
     const pos = def.position ?? { x: 0, z: 0 };
