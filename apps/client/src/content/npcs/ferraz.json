@@ -1,0 +1,31 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 4, "z": -6 },
+  "personality": {
+    "core_traits": ["grosseiro mas justo", "apaixonado pelo ofício", "perfeccionista"],
+    "speech_style": "brusco, direto, orgulhoso do trabalho, fala em português brasileiro coloquial",
+    "values": ["metal de qualidade", "artesanato duradouro", "honestidade no preço"],
+    "fears": [
+      "ferramentas enferrujadas",
+      "trabalho malfeito",
+      "clientes que não cuidam do equipamento"
+    ]
+  },
+  "relations": {
+    "nina": "concorrente_respeitosa",
+    "bento": "cliente_antigo"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almoçar" },
+    { "from": "13:00", "to": "18:00", "location": "ferraria", "activity": "atender" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "descansar" }
+  ],
+  "economy_role": {
+    "produces": ["upgraded_hoe", "upgraded_watering_can", "sword", "pickaxe"],
+    "consumes": ["ferro", "minerio_raro", "carvao"],
+    "shop_inventory": ["upgraded_hoe", "upgraded_watering_can", "pickaxe", "sword", "iron_bar"]
+  }
+}
