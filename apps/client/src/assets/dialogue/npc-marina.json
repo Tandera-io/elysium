@@ -1,0 +1,152 @@
+{
+  "id": "marina",
+  "greetings": [
+    { "label": "Oi, Marina!", "input": "Oi, Marina! Tudo bem com você?" },
+    { "label": "Quero pão", "input": "Você tem pão fresquinho para vender hoje?" },
+    { "label": "Tenho trigo", "input": "Marina, trouxe trigo para você. Aceita?" },
+    { "label": "Que cheiro bom!", "input": "Marina, que cheiro maravilhoso vindo da padaria!" }
+  ],
+  "topics": {
+    "receitas": [
+      { "label": "Receita de bolo fubá", "input": "Você pode me ensinar a receita do bolo fubá?" },
+      { "label": "Ingredientes especiais", "input": "Você usa algum ingrediente especial nos seus pães?" },
+      { "label": "Pão mais difícil", "input": "Qual é o pão mais difícil de fazer?" }
+    ],
+    "ingredientes": [
+      { "label": "Precisa de trigo?", "input": "Você está precisando de trigo? Posso trazer da minha roça." },
+      { "label": "Compra ovos?", "input": "Você compra ovos? Tenho galinhas em casa." },
+      { "label": "Aceita leite?", "input": "Aceita leite fresco? A Lucia tem bastante." }
+    ],
+    "conversa": [
+      { "label": "Sobre a padaria", "input": "Como está indo a padaria? Movimento bom?" },
+      { "label": "Sobre o Bento", "input": "Você e o Bento se dão bem? Ele parece tão carrancudo..." },
+      { "label": "Vida no vilarejo", "input": "Como é morar aqui no vilarejo há tanto tempo?" }
+    ]
+  },
+  "shopTriggerPhrases": [
+    "abrir a padaria",
+    "posso te mostrar o que tenho",
+    "dá uma olhada no que assei",
+    "pode escolher um pão",
+    "olha o que saiu do forno"
+  ],
+  "dialogues": {
+    "greeting": {
+      "first_time": [
+        "Ah, que bom! Um rosto novo! Seja bem-vindo! Sou a Marina, da padaria. O cheirinho que você sentiu veio de um pão que acabei de tirar do forno!",
+        "Oi! Nunca te vi por aqui antes. Sou a Marina. Se quiser pão quentinho ou bolo fubá, pode me procurar!"
+      ],
+      "repeat_early": [
+        "Voltou! Fico feliz de ver! Tô acabando de assar uma fornada nova, chegou na hora certa.",
+        "Que saudade! Entra, entra. Tenho pão fresquinho esperando por você.",
+        "Oi, oi! Hoje cedo acordei inspirada e fiz uma receita nova. Quer experimentar?"
+      ],
+      "repeat_regular": [
+        "Meu cliente favorito! O pão de hoje ficou especialmente bom, você vai ver.",
+        "Olha quem apareceu! Já sabia que você ia aparecer hoje — fiz um bolo extra só por pressentimento.",
+        "Que bom te ver de novo! Como está a roça? Tô com saudade de uma boa conversa."
+      ],
+      "friend": [
+        "Meu amigo! Tenho guardado um pão especial pra você desde cedo. Sabia que você viria!",
+        "Aaaai, chegou! Tava até preocupada. Aprendi uma receita nova e preciso de opinião honesta.",
+        "Você é praticamente da família! Já até deixo a porta de fundo aberta quando te vejo chegando."
+      ]
+    },
+    "time_of_day": {
+      "early_morning": [
+        "Boa madrugada! Só pode ser lavrador que acorda cedo igual a mim. O forno já tá quente!",
+        "Nossa, tão cedo! Estou na primeira fornada do dia. Quer um pão quentinho direto do forno?"
+      ],
+      "morning": [
+        "Bom dia! Acabei de tirar o pão do forno. Chega mais, está quentinho!",
+        "Bom dia! Manhã boa essa, né? O pão ficou lindo hoje — todo douradinho.",
+        "Bom dia! Já estou aqui desde as cinco da manhã. Mas olha que resultado!"
+      ],
+      "afternoon": [
+        "Boa tarde! A padaria tá mais tranquila agora. É o melhor horário pra conversar com calma.",
+        "Boa tarde! Já vendi muito hoje, mas ainda tenho bolo fubá. Quer um pedaço?",
+        "Boa tarde! Tô organizando o estoque e fazendo conta. Veio me distrair? Que bom!"
+      ],
+      "evening": [
+        "Boa noite! Já terminei de assar por hoje. Mas ainda tenho uns pães do final da tarde.",
+        "Boa noite! Tô aproveitando a praça depois de um dia longo. Sente aqui comigo!",
+        "Boa noite! Essa hora é minha favorita — a praça fica tão animada. E você, como foi o dia?"
+      ]
+    },
+    "season": {
+      "spring": [
+        "A primavera deixa o trigo mais perfumado. O pão dessa época tem um sabor especial!",
+        "Com a primavera, estou experimentando pão com ervas frescas. Quer provar?",
+        "Nessa época eu faço meu pão de ervas. O alecrim e o manjericão crescem bem aqui perto!"
+      ],
+      "summer": [
+        "No verão o forno parece ainda mais quente. Mas o pão fica mais crocante, compensa!",
+        "Verão é época de menos trigo, mas o milho tá bom. Tô fazendo bastante bolo fubá.",
+        "Com esse calor, abri mais cedo e fecho antes do meio-dia. O pão de cedo é melhor mesmo!"
+      ],
+      "autumn": [
+        "Outono é minha estação favorita! O trigo da colheita é sempre o melhor do ano.",
+        "Com o outono chegando, vou fazendo estoque de farinha. Precisa de muito trigo!",
+        "Esse tempo gostoso de outono deixa tudo mais saboroso. Até o pão parece diferente!"
+      ],
+      "winter": [
+        "No inverno, o forno vira sala de estar. Todo mundo passa aqui pra esquentar!",
+        "Inverno é a melhor época para pão quentinho. Vendo mais do que o ano todo!",
+        "Com esse frio, fiz uma receita de pão recheado com queijo. Vende que é uma beleza!"
+      ]
+    },
+    "player_actions": {
+      "gave_wheat": [
+        "Trigo! Você é uma benção! Esse aqui tá bonito, pesado. Vai fazer uns pães ótimos.",
+        "Ai, que maravilha! Trigo fresquinho! Já vou separar para a próxima fornada. Muito obrigada!",
+        "Esse trigo é lindo! Vou fazer um pão especial com ele e guardo um para você."
+      ],
+      "gave_honey": [
+        "Mel! Ih, agora tô inspirada. Vou fazer pão de mel pra você na próxima fornada!",
+        "Que presente precioso! Mel puro assim é raro. Vou usar só nas melhores receitas.",
+        "Mel de verdade! Fico tão feliz quando recebo ingrediente de qualidade. Muito obrigada!"
+      ],
+      "gave_disliked": [
+        "Eita... Não sei bem o que fazer com isso aqui. Mas obrigada pela intenção, querido!",
+        "Hmm... Não é bem do que precisava, mas o gesto foi muito bonito. Valeu!"
+      ],
+      "sold_crops": [
+        "Que colheita linda você trouxe! Vou guardar o melhor pra usar na padaria.",
+        "Ótimo! Com esse ingrediente fresco, meus pães vão ficar ainda melhores.",
+        "Obrigada! Produto de qualidade é o que faz a diferença na padaria."
+      ],
+      "completed_quest": [
+        "Você conseguiu! Eu sabia que podia contar com você. Fica com esse pão quentinho, é meu presente!",
+        "Que alívio! Você é incrível. Muito obrigada de coração. Fiz um bolo especial para celebrar!",
+        "Perfeito! Você merece muito. Tem pão fresquinho esperando por você como recompensa."
+      ],
+      "accepted_quest": [
+        "Obrigada por aceitar! Se você me trouxer isso, fico muito grata. Pode contar que te recompenso bem!",
+        "Que bom! Sabia que podia contar com você. Tô na torcida!"
+      ],
+      "harvested_crops": [
+        "Olha a safra! Que bonito. Você tem mãos de agricultor de verdade.",
+        "Que colheita boa! Com ingrediente assim, qualquer receita fica especial.",
+        "Que orgulho de ver uma colheita bonita assim! Você caprichou."
+      ]
+    },
+    "relationship": {
+      "stranger": [
+        "Ainda não nos conhecemos direito, mas já gosto de você. Parece uma boa pessoa.",
+        "Pode chamar de Marina. Qualquer dúvida sobre a padaria ou o vilarejo, me fala."
+      ],
+      "acquaintance": [
+        "Já estou te reconhecendo! Todo dia aparece por aqui. Que bom!",
+        "Você é cliente fiel, hein? Adoro quem valoriza um pão bom."
+      ],
+      "friend": [
+        "Você já é como da família por aqui. Qualquer dia desses te convido para ver o processo de fazer pão!",
+        "Com amigos assim, qualquer dia é especial. Você faz parte do vilarejo de verdade."
+      ],
+      "close_friend": [
+        "Você é uma das pessoas mais especiais que conheço. Fico feliz que veio morar aqui.",
+        "Tenho segredos de receita que nunca contei pra ninguém. Mas pra você... talvez um dia!"
+      ]
+    }
+  }
+}

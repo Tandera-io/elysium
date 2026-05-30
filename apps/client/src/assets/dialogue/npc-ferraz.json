@@ -1,0 +1,172 @@
+{
+  "npc_id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "dialogues": {
+    "greeting": {
+      "first_time": [
+        "Bem? Precisa de alguma coisa consertada? Ou veio só olhar a forja? Os dois atrapalham.",
+        "Novo por aqui, hein. Pode chamar de Ferraz. Se quiser ferramenta boa ou melhoramento de equipamento, sabe onde me achar."
+      ],
+      "repeat_early": [
+        "Voltou. Bom. Quem volta sabe o que quer.",
+        "Apareceu cedo. Gosto disso. A forja tá quente desde as seis da manhã."
+      ],
+      "repeat_regular": [
+        "Já tô te reconhecendo. Isso é bom sinal — significa que cuida do equipamento.",
+        "De novo aqui. Tem algo pra melhorar, ou só veio bater papo? Tudo bem pelos dois.",
+        "Ah, é você. Tava terminando uma enxada agora. Dá um minuto."
+      ],
+      "friend": [
+        "Olha quem chegou. Separei um pedaço de minério de cobre pra você. Achei que ia precisar.",
+        "Você de novo. Que bom. Tô fazendo algo especial, dá uma olhada depois.",
+        "Chega, chega. Tenho novidade na bancada — acho que você vai gostar."
+      ]
+    },
+    "time_of_day": {
+      "early_morning": [
+        "Você acorda cedo. Respeito isso. A forja já tá no ponto — melhor hora do dia pra trabalhar.",
+        "Madrugada de verdade. Só trabalhador aparece a essa hora. O que precisa?"
+      ],
+      "morning": [
+        "Bom dia. Tô no meio de uma peça, mas fala. Posso ouvir e trabalhar ao mesmo tempo.",
+        "Manhã boa pra forjar. O metal aquece mais rápido com o dia fresco. Precisa de alguma coisa?",
+        "Cedo assim? Não reclamo. Gente que madruga sabe o valor do trabalho."
+      ],
+      "afternoon": [
+        "Tarde. Peça da manhã já tá pronta. Agora é hora de atender. Fala o que precisa.",
+        "Boa tarde. Acabei de almoçar. Tô no ritmo de trabalhar até anoitecer. O que quer?",
+        "Essa hora é boa pra conversar. Forjaria tá mais tranquila agora."
+      ],
+      "evening": [
+        "Boa noite. Tô terminando o último pedido do dia. Logo a forja apaga.",
+        "Noite. Quase fechando. Mas se for rápido, ainda dá tempo.",
+        "Essa hora ainda pego se precisar. Só não faz virar rotina — preciso descansar também."
+      ]
+    },
+    "season": {
+      "spring": [
+        "Primavera. Todo mundo comprando semente, mas ferramentas velhas. Quase sempre aparecem aqui depois que a enxada quebra no meio do plantio.",
+        "Com a primavera vem o rush. Gente que passou o inverno sem cuidar do equipamento. Não deixa chegar nesse ponto."
+      ],
+      "summer": [
+        "Verão é bom pra forja. Temperatura ajuda o metal a trabalhar. Mas é duro pra quem fica perto do fogo.",
+        "No verão vendo mais picareta. Acho que o calor bota todo mundo com vontade de cavar."
+      ],
+      "autumn": [
+        "Outono é minha estação favorita. Colheita acabou, as pessoas trazem as ferramentas pra afiar e melhorar antes do inverno.",
+        "Com o outono chega minério de boa qualidade do comércio. Estou aproveitando pra fazer estoque."
+      ],
+      "winter": [
+        "Inverno desacelera, mas não para. Aproveito pra fazer trabalho de detalhes. Metal no frio precisa de mais cuidado.",
+        "No inverno todo mundo esquece que a forja continua aberta. Mas quem aparece, atendo bem. Menos gente, melhor atenção."
+      ]
+    },
+    "player_actions": {
+      "gave_iron_ore": [
+        "Minério de ferro. Bom lote — dá pra ver pela cor. Posso usar isso em algo útil pra você.",
+        "Isso é o que eu precisava. Minério de qualidade. Não desperdiço nem um grama disso.",
+        "Ferro bom. Obrigado. Vai virar ferramenta de verdade, pode ter certeza."
+      ],
+      "gave_copper_ore": [
+        "Cobre! Ótimo pra reforço. Com isso posso afinar o gume de qualquer ferramenta sua.",
+        "Não é fácil achar cobre bom por aqui. Você sabe o que está fazendo.",
+        "Cobre de qualidade. Vou guardar pra quando você precisar de melhoramento especial."
+      ],
+      "gave_disliked": [
+        "Isso aqui não serve muito pra ferraria. Mas o gesto conta. Obrigado de qualquer jeito.",
+        "Não é bem o que uso, mas aprecio você ter pensado nisso."
+      ],
+      "upgraded_tool": [
+        "Ferramenta melhorada. Agora cuida dela — não quero ver de volta aqui enferrujada.",
+        "Pronto. Esse upgrage vai durar anos se você mantiver limpa e seca. Entendido?",
+        "Feito. Essa é a melhor versão que consigo fazer com o material disponível. Cuida bem."
+      ],
+      "completed_quest": [
+        "Entregou tudo certinho. Gosto de pessoa que cumpre palavra. Aqui, tem isso de graça.",
+        "Missão cumprida. Você é de confiança. Isso vale muito mais do que parece.",
+        "Fez o que prometeu. Bom. Gente que honra compromisso merece o melhor trabalho que tenho."
+      ],
+      "accepted_quest": [
+        "Então tá. Traga o que pedi e faço o trabalho direito. Não aceito material ruim.",
+        "Bom. Conta que quando você trouxer o minério, vai na frente da fila."
+      ],
+      "bought_item": [
+        "Boa escolha. Esse aqui foi feito com cuidado. Não vai te decepcionar.",
+        "Cuida bem. Ferramenta boa dura décadas com a manutenção certa.",
+        "Trata com respeito que ela retribui. É assim que funciona."
+      ]
+    },
+    "relationship": {
+      "stranger": [
+        "Ainda não sei muito de você, mas qualquer um que respeita ferramenta boa é bem-vindo aqui.",
+        "Novo por aqui? Pode me procurar quando precisar de algo forjado ou consertado."
+      ],
+      "acquaintance": [
+        "Já te reconheço de cara agora. Aparece bastante. Isso é sinal de quem cuida do equipamento.",
+        "Você e eu já temos um entendimento. Fico feliz com isso."
+      ],
+      "friend": [
+        "Você já é de casa aqui. Quando precisar de algo especial, fala que dou um jeito.",
+        "Tem gente que aparece só quando precisa. Você aparece porque gosta do ofício. Isso faz diferença."
+      ],
+      "close_friend": [
+        "Poucas pessoas entendem por que faço esse trabalho. Você é uma delas. Isso vale muito.",
+        "Aprendi a forjar com meu mestre depois de rodar por aí sem rumo. Esse ofício me salvou. Você me lembra ele — alguém que sabe o valor do esforço."
+      ]
+    },
+    "special": {
+      "birthday": [
+        "Aniversário hoje. Fiz uma faca decorativa de presente pra mim mesmo. Não precisa de parabéns, só de respeito ao ofício.",
+        "Mais um ano. Meu mestre dizia: cada ano na forja é um ano aprendendo. Ainda tenho muito a aprender."
+      ],
+      "rain": [
+        "Chuva boa. O barulho bate bem com o ruído do martelo. Trabalho melhor com chuva.",
+        "Dia de chuva todo mundo fica dentro de casa. Eu continuo aqui. Forja não para por causa de água."
+      ],
+      "first_forge": [
+        "Você ajudou na primeira peça? Isso não esquece. Bem-vindo ao ofício.",
+        "Primeira forja. Guarda a sensação — é diferente de qualquer outra coisa."
+      ],
+      "festival": [
+        "Festival. Apareço só pra comprar mantimento e volto pra cá. Não é do meu feitio essas festas.",
+        "Deixo o festival pra quem gosta. Aqui na ferraria é meu festival."
+      ]
+    },
+    "talk_topics": {
+      "about_blacksmithing": [
+        "O segredo da forja boa é paciência. Metal que você apressar vai quebrar na hora errada. Nunca na hora certa.",
+        "Aprendi esse ofício rodando. Trabalhei com um mestre ferreiro itinerante por três anos. Ele me ensinou mais em três meses do que eu aprendi sozinho em dez.",
+        "O martelo não faz a peça — o calor faz. O martelo só guia. Muita gente confunde onde fica o trabalho real.",
+        "Ferramenta ruim vai fazer você trabalhar o dobro e durar metade. Vale o investimento na qualidade. Sempre."
+      ],
+      "about_ore": [
+        "Minério de ferro da região é bom mas não excepcional. Pra trabalho fino preciso de ferro de fora. Caro, mas necessário.",
+        "Cobre é o que mais falta por aqui. Quem me traz cobre bom ganha meu respeito imediato.",
+        "Tem gente que chega aqui com minério misturado com pedra ruim. Dá pra ver de longe. Não aceito material que vai estragar a peça."
+      ],
+      "about_tools": [
+        "Ferramenta é extensão da mão. Tem que encaixar certo, pesar certo, responder certo. Não é só metal.",
+        "Enxada boa dura geração. Vi enxada de avô ainda cortando terra. É isso que quero fazer.",
+        "Picareta é subestimada. Parece simples, mas o equilíbrio certo é arte. Cabeça pesada demais cansa o braço. Leve demais não penetra."
+      ],
+      "about_village": [
+        "Vilarejo cresceu enquanto eu ficava aqui dentro. Mas todo mundo ainda precisa de ferramenta. Isso não muda.",
+        "A Nina vende ferramentas de fora. Não reclamo — ela atende uma clientela que não é a minha. Mas quem quer qualidade real aparece aqui.",
+        "Conheço todo mundo pelo equipamento que traz. Você aprende muito sobre uma pessoa pela condição das ferramentas dela."
+      ]
+    },
+    "goodbye": {
+      "generic": [
+        "Cuida das ferramentas. Até a próxima.",
+        "Tchau. Qualquer problema com equipamento, já sabe onde me achar.",
+        "Vai com cuidado. E não deixa a ferramenta enferrujar."
+      ],
+      "friend": [
+        "Até logo. Vai um pedaço de cobre de presente — guarda pra quando precisar.",
+        "Vai lá. Sabe que quando precisar de algo especial, eu faço.",
+        "Tchau. Você é de confiança. Isso é raro por aqui."
+      ]
+    }
+  }
+}
