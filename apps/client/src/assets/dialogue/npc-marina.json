@@ -1,0 +1,186 @@
+{
+  "npc_id": "marina",
+  "name": "Marina",
+  "role": "padeira",
+  "dialogues": {
+    "greeting": {
+      "first_time": [
+        "Ah, que bom! Um rosto novo! Seja bem-vindo! Sou a Marina, da padaria. O cheirinho que você sentiu veio de um pão que acabei de tirar do forno!",
+        "Oi! Nunca te vi por aqui antes. Sou a Marina. Se quiser pão quentinho ou bolo fubá, pode me procurar!"
+      ],
+      "repeat_early": [
+        "Voltou! Fico feliz de ver! Tô acabando de assar uma fornada nova, chegou na hora certa.",
+        "Que saudade! Entra, entra. Tenho pão fresquinho esperando por você.",
+        "Oi, oi! Hoje cedo acordei inspirada e fiz uma receita nova. Quer experimentar?"
+      ],
+      "repeat_regular": [
+        "Meu cliente favorito! O pão de hoje ficou especialmente bom, você vai ver.",
+        "Olha quem apareceu! Já sabia que você ia aparecer hoje — fiz um bolo extra só por pressentimento.",
+        "Que bom te ver de novo! Como está a roça? Tô com saudade de uma boa conversa."
+      ],
+      "friend": [
+        "Meu amigo! Tenho guardado um pão especial pra você desde cedo. Sabia que você viria!",
+        "Aaaai, chegou! Tava até preocupada. Tô com novidade: aprendi uma receita nova e preciso de opinião honesta.",
+        "Você é praticamente da família! Já até deixo a porta de fundo aberta quando te vejo chegando."
+      ]
+    },
+    "time_of_day": {
+      "early_morning": [
+        "Boa madrugada! Só pode ser lavrador que acorda cedo igual a mim. O forno já tá quente!",
+        "Nossa, tão cedo! Estou na primeira fornada do dia. Quer um pão quentinho direto do forno?"
+      ],
+      "morning": [
+        "Bom dia! Acabei de tirar o pão do forno. Chega mais, está quentinho!",
+        "Bom dia! Manhã boa essa, né? O pão ficou lindo hoje — todo douradinho.",
+        "Bom dia! Já estou aqui desde as cinco da manhã. Mas olha que resultado!"
+      ],
+      "afternoon": [
+        "Boa tarde! A padaria tá mais tranquila agora. É o melhor horário pra conversar com calma.",
+        "Boa tarde! Já vendi muito hoje, mas ainda tenho bolo fubá. Quer um pedaço?",
+        "Boa tarde! Tô organizando o estoque e fazendo conta. Veio me distrair? Que bom!"
+      ],
+      "evening": [
+        "Boa noite! Já terminei de assar por hoje. Mas ainda tenho uns pães do final da tarde.",
+        "Boa noite! Tô aproveitando a praça depois de um dia longo. Sente aqui comigo!",
+        "Boa noite! Essa hora é minha favorita — a praça fica tão animada. E você, como foi o dia?"
+      ]
+    },
+    "season": {
+      "spring": [
+        "A primavera deixa o trigo mais perfumado. O pão dessa época tem um sabor especial!",
+        "Com a primavera, estou experimentando pão com ervas frescas. Quer provar?",
+        "Nessa época eu faço meu pão de ervas. O alecrim e o manjericão crescem bem aqui perto!"
+      ],
+      "summer": [
+        "No verão o forno parece ainda mais quente. Mas o pão fica mais crocante, compensa!",
+        "Verão é época de menos trigo, mas o milho tá bom. Tô fazendo bastante bolo fubá.",
+        "Com esse calor, abri mais cedo e fecho antes do meio-dia. O pão de cedo é melhor mesmo!"
+      ],
+      "autumn": [
+        "Outono é minha estação favorita! O trigo da colheita é sempre o melhor do ano.",
+        "Com o outono chegando, vou fazendo estoque de farinha. Precisa de muito trigo!",
+        "Esse tempo gostoso de outono deixa tudo mais saboroso. Até o pão parece diferente!"
+      ],
+      "winter": [
+        "No inverno, o forno vira sala de estar. Todo mundo passa aqui pra esquentar!",
+        "Inverno é a melhor época para pão quentinho. Vendo mais do que o ano todo!",
+        "Com esse frio, fiz uma receita de pão recheado com queijo. Vende que é uma beleza!"
+      ]
+    },
+    "player_actions": {
+      "gave_wheat": [
+        "Trigo! Você é uma benção! Esse aqui tá bonito, pesado. Vai fazer uns pães ótimos.",
+        "Ai, que maravilha! Trigo fresquinho! Já vou separar para a próxima fornada. Muito obrigada!",
+        "Esse trigo é lindo! Vou fazer um pão especial com ele e guardo um para você."
+      ],
+      "gave_honey": [
+        "Mel! Ih, agora tô inspirada. Vou fazer pão de mel pra você na próxima fornada!",
+        "Que presente precioso! Mel puro assim é raro. Vou usar só nas melhores receitas.",
+        "Mel de verdade! Fico tão feliz quando recebo ingrediente de qualidade. Muito obrigada!"
+      ],
+      "gave_disliked": [
+        "Eita... Não sei bem o que fazer com isso aqui. Mas obrigada pela intenção, querido!",
+        "Hmm... Não é bem do que precisava, mas o gesto foi muito bonito. Valeu!"
+      ],
+      "sold_crops": [
+        "Que colheita linda você trouxe! Vou guardar o melhor pra usar na padaria.",
+        "Ótimo! Com esse ingrediente fresco, meus pães vão ficar ainda melhores.",
+        "Obrigada! Produto de qualidade é o que faz a diferença na padaria."
+      ],
+      "completed_quest": [
+        "Você conseguiu! Eu sabia que podia contar com você. Fica com esse pão quentinho, é meu presente!",
+        "Que alívio! Você é incrível. Muito obrigada de coração. Fiz um bolo especial para celebrar!",
+        "Perfeito! Você merece muito. Agora, como promessa é dívida, tem pão fresquinho esperando por você."
+      ],
+      "accepted_quest": [
+        "Obrigada por aceitar! Se você me trouxer isso, fico muito grata. Pode contar que te recompenso bem!",
+        "Que bom! Sabia que podia contar com você. Tô na torcida!"
+      ],
+      "bought_bread": [
+        "Espero que goste! Esse aqui saiu quentinho hoje cedo.",
+        "Boa escolha! Esse é o melhor do dia, pode ter certeza.",
+        "Vai com saúde! Pão bom é pão feito com amor."
+      ],
+      "fishing": [
+        "Pescou? Que bom! Peixe fresco com pão é uma das melhores refeições do mundo.",
+        "Nossa, veio do rio? Isso me dá vontade de fazer pão de peixe. Hm, deixa eu pensar numa receita..."
+      ],
+      "harvested_crops": [
+        "Olha a safra! Que bonito. Você tem mãos de agricultor de verdade.",
+        "Que colheita boa! Com ingrediente assim, qualquer receita fica especial.",
+        "Que orgulho de ver uma colheita bonita assim! Você caprichou."
+      ]
+    },
+    "relationship": {
+      "stranger": [
+        "Ainda não nos conhecemos direito, mas já gosto de você. Parece uma boa pessoa.",
+        "Pode chamar de Marina. Qualquer dúvida sobre a padaria ou o vilarejo, me fala."
+      ],
+      "acquaintance": [
+        "Já estou te reconhecendo! Todo dia aparece por aqui. Que bom!",
+        "Você é cliente fiel, hein? Adoro quem valoriza um pão bom."
+      ],
+      "friend": [
+        "Você já é como da família por aqui. Qualquer dia desses te convido para ver o processo de fazer pão!",
+        "Com amigos assim, qualquer dia é especial. Você faz parte do vilarejo de verdade."
+      ],
+      "close_friend": [
+        "Você é uma das pessoas mais especiais que conheço. Fico feliz que veio morar aqui.",
+        "Tenho guarda segredos de receita que nunca contei pra ninguém. Mas pra você... talvez um dia!"
+      ]
+    },
+    "special": {
+      "birthday": [
+        "Hoje é meu aniversário! Fiz bolo para todo mundo. Pode pegar um pedaço, é de graça!",
+        "Que dia especial! Hoje eu assei meu bolo favorito. O tio Bento sempre esquece a data, mas a Dorinha nunca falha."
+      ],
+      "rain": [
+        "Que chuva boa essa! O barulho da chuva combinado com o forno aceso é a coisa mais aconchegante do mundo.",
+        "Dia de chuva é dia de fazer mais pão! As pessoas ficam com fome quando chove, você não nota isso?"
+      ],
+      "first_harvest": [
+        "Primeira colheita! Que conquista! Vou fazer um pão especial para celebrar com você.",
+        "Sua primeira safra! Lembro da minha primeira vez que trouxe ingrediente próprio para a padaria. Que emoção!"
+      ],
+      "festival": [
+        "Festival é minha época favorita! Faço o dobro de pão e vendo tudo em poucas horas.",
+        "Que animação! Festival é tradição do vilarejo. Já fiz a receita especial que só faço nessa época."
+      ]
+    },
+    "talk_topics": {
+      "about_baking": [
+        "O segredo do bom pão é o fermento natural. Tenho um que cultivo faz quinze anos. Nunca deixo morrer!",
+        "Aprendi a fazer pão com minha mãe. Ela dizia: 'Marina, pão bom precisa de tempo e de amor.' Nunca esqueci.",
+        "Cada farinha tem uma personalidade diferente. Trigo local é mais suave, absorve menos água. Aprendi testando.",
+        "O forno a lenha faz uma casca diferente. Elétrico não tem segredo, mas lenha faz uma crocância especial."
+      ],
+      "about_village": [
+        "Esse vilarejo é minha vida inteira. Nasci aqui, cresci aqui, e pretendo ficar até o fim.",
+        "O Lucas, meu vizinho, vive reclamando que o cheiro de pão acorda ele cedo. Mas ele é o primeiro a aparecer quando saiu do forno!",
+        "A Dorinha e eu crescemos juntas. Ela me comprando trigo, eu fazendo pão. Uma troca que dura décadas."
+      ],
+      "about_bento": [
+        "O tio Bento parece seco, mas tem um coração de ouro. Me ensinou muito sobre qualidade de ingrediente.",
+        "O Bento reclama de tudo, mas ama o pão. Todo dia de manhã ele está aqui, sem falta.",
+        "Tio Bento e eu brigamos bastante, mas é de família mesmo. No fundo, dependemos um do outro."
+      ],
+      "about_ingredients": [
+        "Trigo bom é a base de tudo. Se o trigo for de má qualidade, não tem receita que salve.",
+        "Ovos frescos deixam o bolo muito mais gostoso. A Lucia tem as melhores galinhas do vilarejo.",
+        "Leite integral faz uma diferença enorme no pão de forma. Qualidade se vê no resultado."
+      ]
+    },
+    "goodbye": {
+      "generic": [
+        "Até mais! Volta logo. Tem pão fresco todo dia cedo!",
+        "Tchau! Cuida-se. E não esquece: pão bom esperando aqui todo dia.",
+        "Vai com Deus! Volta sempre que quiser conversar ou comprar alguma coisa."
+      ],
+      "friend": [
+        "Tchau, amigo! Já vou deixar pão separado pra amanhã. Sei que você vai voltar!",
+        "Cuida-se! E vem me visitar, tá? A padaria fica triste quando você não aparece.",
+        "Até amanhã! Vou pensar numa receita nova pra te surpreender na próxima visita."
+      ]
+    }
+  }
+}

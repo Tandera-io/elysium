@@ -1,0 +1,26 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 10, "z": -6 },
+  "personality": {
+    "core_traits": ["prático", "orgulhoso do ofício", "direto", "apaixonado por artesanato"],
+    "speech_style": "direto e seco, sem rodeios, usa termos técnicos de ferraria, fala em português brasileiro coloquial",
+    "values": ["qualidade", "trabalho honesto", "artesanato bem-feito", "durabilidade"],
+    "fears": ["trabalho mal-feito", "ferramenta de baixa qualidade", "desperdício de bom minério"]
+  },
+  "relations": {
+    "arnaldo": "parceiro_de_trabalho"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "ferraria", "activity": "acender_forja" },
+    { "from": "09:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "20:00", "location": "ferraria", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": ["hoe_upgraded", "pickaxe", "sword"],
+    "consumes": ["iron_ore", "copper_ore"],
+    "shop_inventory": ["hoe_upgraded", "pickaxe", "sword"]
+  }
+}
