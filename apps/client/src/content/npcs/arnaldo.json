@@ -1,0 +1,26 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "armazenista",
+  "position": { "x": 10, "z": -8 },
+  "personality": {
+    "core_traits": ["metódico", "honesto", "negociante experiente"],
+    "speech_style": "formal mas amigável, fala pausado, gosta de números e inventário",
+    "values": ["honestidade comercial", "organização", "comunidade próspera"],
+    "fears": ["prejuízo no estoque", "falta de fornecedores confiáveis"]
+  },
+  "relations": {
+    "dorinha": "fornecedora_principal",
+    "bento": "parceiro_comercial"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "armazem", "activity": "atender" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "armazem", "activity": "estoque" }
+  ],
+  "economy_role": {
+    "produces": ["farinha", "feijao"],
+    "consumes": ["trigo", "milho"],
+    "shop_inventory": ["farinha", "feijao", "milho"]
+  }
+}
