@@ -1,0 +1,27 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 6, "z": -4 },
+  "personality": {
+    "core_traits": ["trabalhador", "conhecedor da terra", "prestativo"],
+    "speech_style": "direto, usa metáforas da lavoura, fala em português brasileiro coloquial",
+    "values": ["boas ferramentas", "terra fértil", "colheita abundante"],
+    "fears": ["ferramentas quebrando na época de plantio", "solo ruim"]
+  },
+  "relations": {
+    "arnaldo": "parceiro_de_oficio",
+    "nina": "colega"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "17:00", "location": "ferraria", "activity": "atender" },
+    { "from": "17:00", "to": "19:00", "location": "fazenda", "activity": "conversar" }
+  ],
+  "economy_role": {
+    "produces": ["hoe", "watering_can", "pickaxe"],
+    "consumes": ["ferro", "carvao"],
+    "shop_inventory": ["hoe", "watering_can", "pickaxe", "fertilizer"]
+  }
+}
