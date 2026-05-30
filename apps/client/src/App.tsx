@@ -10,8 +10,10 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
-import { useTimeStore } from './systems/time/timeStore';
+import { useTimeStore, formatClock } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { useTimeSystem } from './systems/time/TimeSystem';
+import { NightOverlay } from './ui/NightOverlay';
 
 type FetchState =
   | { kind: 'loading' }
@@ -23,6 +25,8 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+  const timeHour = useTimeStore((s) => s.hour);
+  const { phase } = useTimeSystem();
 
   useEffect(() => {
     let cancelled = false;
@@ -72,6 +76,9 @@ export function App() {
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
         <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
+        <p className="text-sky-300 text-xs font-mono">
+          {formatClock(timeHour)} · {phase}
+        </p>
         <button
           onClick={() => setSaveOpen(true)}
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
@@ -100,6 +107,7 @@ export function App() {
       <DialogueBox />
       <NPCInteractions />
       <NPCShopModal />
+      <NightOverlay />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
