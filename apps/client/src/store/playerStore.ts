@@ -8,6 +8,8 @@ export interface PlayerState {
   path: TileCoord[];
   /** Movement speed in tiles per second. */
   speed: number;
+  /** Whether the crafting menu is open. */
+  craftingMenuOpen: boolean;
 }
 
 export interface PlayerActions {
@@ -15,16 +17,19 @@ export interface PlayerActions {
   setPath: (path: TileCoord[]) => void;
   consumeWaypoint: () => void;
   clearPath: () => void;
+  setCraftingMenuOpen: (open: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState & PlayerActions>((set) => ({
   position: { x: 0, y: 0, z: 0 },
   path: [],
   speed: 4,
+  craftingMenuOpen: false,
   setPosition: (position) => set({ position }),
   setPath: (path) => set({ path }),
   consumeWaypoint: () => set((s) => ({ path: s.path.length > 0 ? s.path.slice(1) : s.path })),
   clearPath: () => set({ path: [] }),
+  setCraftingMenuOpen: (open) => set({ craftingMenuOpen: open }),
 }));
 
 if (import.meta.env.DEV) {

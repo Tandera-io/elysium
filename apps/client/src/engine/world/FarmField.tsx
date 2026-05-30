@@ -5,6 +5,7 @@ import { useFarmStore } from '../../systems/farming/farmStore';
 import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
 import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
 import { BillboardSprite } from '../loader/BillboardSprite';
+import { CropGrowthAnimation } from '../../components/Crops/CropGrowthAnimation';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
 
@@ -52,6 +53,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let texture = tilledTex;
         let mature = false;
         let stageColor: string | null = null;
+        let stageIndex = 0;
         let cropId: keyof typeof CROP_SPRITES | null = null;
 
         if (tile.kind === 'tilled') {
@@ -61,6 +63,7 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           const def = CROPS[tile.crop];
           const stage = stageForDayCount(def, tile.daysGrown);
           stageColor = stage.color;
+          stageIndex = stage.index;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
         }
@@ -72,14 +75,15 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
+            {/* Animated growth stages for pre-mature plants */}
             {stageColor && !mature && (
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.4, 6]} />
-                <meshStandardMaterial color={stageColor} />
-              </mesh>
+              <CropGrowthAnimation
+                stageIndex={stageIndex}
+                stageColor={stageColor}
+                isHarvestable={false}
+              />
             )}
-            {/* Mature plant sprite */}
+            {/* Mature plant sprite with harvestable pulse */}
             {mature && cropId && CROP_SPRITES[cropId] && (
               <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
             )}
