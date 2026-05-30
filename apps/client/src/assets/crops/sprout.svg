@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Stage 1: Sprout — a tiny green shoot emerging from soil -->
+  <rect width="64" height="64" fill="#5a4a2a"/>
+  <!-- Soil lines -->
+  <line x1="8" y1="44" x2="56" y2="44" stroke="#4a3a1a" stroke-width="2"/>
+  <line x1="8" y1="52" x2="56" y2="52" stroke="#4a3a1a" stroke-width="2"/>
+  <!-- Stem -->
+  <rect x="30" y="20" width="4" height="24" fill="#6a9b3c"/>
+  <!-- First leaf pair -->
+  <ellipse cx="22" cy="28" rx="9" ry="5" fill="#7caf3e" transform="rotate(-20 22 28)"/>
+  <ellipse cx="42" cy="28" rx="9" ry="5" fill="#7caf3e" transform="rotate(20 42 28)"/>
+</svg>

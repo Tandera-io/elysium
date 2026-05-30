@@ -99,3 +99,29 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
 }
+
+/**
+ * Normalized growth stage label (0–3) for visual display, independent of how
+ * many crop-specific sub-stages exist.
+ *
+ *   0 = seed      (just planted, daysGrown < 25% of daysToMature)
+ *   1 = sprout    (25%–50% grown)
+ *   2 = growing   (50%–100% grown, not yet mature)
+ *   3 = ready     (daysGrown >= daysToMature — harvestable)
+ */
+export type NormalizedGrowthStage = 0 | 1 | 2 | 3;
+
+export const NORMALIZED_STAGE_LABELS: Record<NormalizedGrowthStage, string> = {
+  0: 'seed',
+  1: 'sprout',
+  2: 'growing',
+  3: 'ready',
+};
+
+export function normalizedGrowthStage(crop: CropDef, daysGrown: number): NormalizedGrowthStage {
+  if (daysGrown >= crop.daysToMature) return 3;
+  const pct = daysGrown / crop.daysToMature;
+  if (pct < 0.25) return 0;
+  if (pct < 0.5) return 1;
+  return 2;
+}

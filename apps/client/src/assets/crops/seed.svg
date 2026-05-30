@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Stage 0: Seed — a small brown oval in dark soil -->
+  <rect width="64" height="64" fill="#5a4a2a"/>
+  <!-- Soil lines -->
+  <line x1="8" y1="44" x2="56" y2="44" stroke="#4a3a1a" stroke-width="2"/>
+  <line x1="8" y1="52" x2="56" y2="52" stroke="#4a3a1a" stroke-width="2"/>
+  <!-- Seed kernel -->
+  <ellipse cx="32" cy="36" rx="8" ry="6" fill="#c8a870"/>
+  <ellipse cx="32" cy="35" rx="5" ry="3" fill="#d4b882" opacity="0.6"/>
+</svg>
