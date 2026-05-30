@@ -47,6 +47,18 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
       if (inv.count('seed_tomato') > 0 && farm.plant(goal, 'tomato')) {
         inv.remove('seed_tomato', 1);
       }
+    } else if (tool === 'seed_corn') {
+      if (inv.count('seed_corn') > 0 && farm.plant(goal, 'corn')) {
+        inv.remove('seed_corn', 1);
+      }
+    } else if (tool === 'seed_lettuce') {
+      if (inv.count('seed_lettuce') > 0 && farm.plant(goal, 'lettuce')) {
+        inv.remove('seed_lettuce', 1);
+      }
+    } else if (tool === 'seed_sunflower') {
+      if (inv.count('seed_sunflower') > 0 && farm.plant(goal, 'sunflower')) {
+        inv.remove('seed_sunflower', 1);
+      }
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
       if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
