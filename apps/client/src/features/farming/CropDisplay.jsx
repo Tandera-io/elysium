@@ -295,7 +295,7 @@ function PlotTile({ plot, currentSeason, weather, compact, onHarvest, onWater, o
  * @param {{ weather: string }} props
  */
 function WeatherBanner({ weather }) {
-  const rate = WEATHER_GROWTH_RATE[weather] ?? 1.0;
+  const _rate = WEATHER_GROWTH_RATE[weather] ?? 1.0;
   const label =
     weather === 'rainy'
       ? 'Rainy — crops grow faster (×1.5 base)'
