@@ -22,6 +22,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [inventoryOpen, setInventoryOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -58,12 +59,23 @@ export function App() {
         setSaveOpen(true);
       }
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
-        setSaveOpen(true);
+        if (inventoryOpen) {
+          setInventoryOpen(false);
+        } else {
+          setSaveOpen(true);
+        }
+      }
+      if (e.code === 'KeyI' && !titleOpen && !saveOpen) {
+        setInventoryOpen((prev) => !prev);
+      }
+      if (e.code === 'Tab' && !titleOpen && !saveOpen) {
+        e.preventDefault();
+        setInventoryOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [titleOpen, saveOpen]);
+  }, [titleOpen, saveOpen, inventoryOpen]);
 
   return (
     <main className="h-screen w-screen overflow-hidden relative bg-slate-900">
@@ -77,6 +89,12 @@ export function App() {
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"
         >
           📁 menu (Esc · Ctrl+S)
+        </button>
+        <button
+          onClick={() => setInventoryOpen((prev) => !prev)}
+          className="mt-0.5 text-[10px] text-slate-400 hover:text-slate-200 block"
+        >
+          🎒 inventário (I · Tab)
         </button>
       </header>
       <aside
@@ -93,7 +111,7 @@ export function App() {
           </span>
         )}
       </aside>
-      <InventoryPanel />
+      <InventoryPanel open={inventoryOpen} />
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
