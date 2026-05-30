@@ -2,9 +2,8 @@ import { useLoader } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { NearestFilter, TextureLoader } from 'three';
 import { useFarmStore } from '../../systems/farming/farmStore';
-import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
+import { CROPS, stageForDayCount, isMature } from '../../systems/farming/CropDefs';
 import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
-import { BillboardSprite } from '../loader/BillboardSprite';
 import { CropGrowthAnimation } from '../../components/Crops/CropGrowthAnimation';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
@@ -51,10 +50,11 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         const world = tileToWorld({ x: tileX, z: tileZ }, grid);
 
         let texture = tilledTex;
-        let mature = false;
         let stageColor: string | null = null;
         let stageIndex = 0;
-        let cropId: keyof typeof CROP_SPRITES | null = null;
+        let harvestable = false;
+        let planted = false;
+        let cropSpriteId: keyof typeof CROP_SPRITES | undefined;
 
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
@@ -64,8 +64,10 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           const stage = stageForDayCount(def, tile.daysGrown);
           stageColor = stage.color;
           stageIndex = stage.index;
-          mature = tile.daysGrown >= def.daysToMature;
-          cropId = tile.crop as keyof typeof CROP_SPRITES;
+          harvestable = isMature(def, tile.daysGrown);
+          cropSpriteId =
+            tile.crop in CROP_SPRITES ? (tile.crop as keyof typeof CROP_SPRITES) : undefined;
+          planted = true;
         }
 
         return (
@@ -75,17 +77,14 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Animated growth stages for pre-mature plants */}
-            {stageColor && !mature && (
+            {/* CropGrowthAnimation handles all planted stages: growing cone → harvestable sprite */}
+            {planted && stageColor && (
               <CropGrowthAnimation
                 stageIndex={stageIndex}
                 stageColor={stageColor}
-                isHarvestable={false}
+                isHarvestable={harvestable}
+                cropId={cropSpriteId}
               />
-            )}
-            {/* Mature plant sprite with harvestable pulse */}
-            {mature && cropId && CROP_SPRITES[cropId] && (
-              <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
             )}
           </group>
         );

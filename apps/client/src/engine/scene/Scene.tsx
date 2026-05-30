@@ -8,6 +8,7 @@ import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
+import { Building } from '../../components/Building';
 
 export function Scene() {
   return (
@@ -26,6 +27,8 @@ export function Scene() {
       <FarmField />
       <StaticProps />
       <NpcView />
+      {/* Farmhouse — north-west corner of the farm */}
+      <Building />
       <Floor />
       <PlayerController />
     </Canvas>
