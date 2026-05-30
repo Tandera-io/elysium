@@ -39,6 +39,16 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
   ],
 };
 
+/**
+ * Per-stage wheat sprites for growth animation (stages 0-2).
+ * Stage 3 (mature/harvestable) is covered by CROP_SPRITES.wheat.
+ */
+export const WHEAT_STAGE_SPRITES = [
+  'sprites/cache/a1b2c3d4e5f60001.png', // stage 0 – seed in soil
+  'sprites/cache/a1b2c3d4e5f60002.png', // stage 1 – sprout
+  'sprites/cache/a1b2c3d4e5f60003.png', // stage 2 – growing / young plant
+] as const;
+
 /** Ripe crop sprites — used by FarmField when a planted tile reaches mature. */
 export const CROP_SPRITES = {
   wheat: 'sprites/cache/8dcc7821fa994510.png',
