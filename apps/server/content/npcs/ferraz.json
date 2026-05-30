@@ -1,0 +1,29 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "asset": "assets/cache/ferraz.glb",
+  "position": { "x": 12, "z": -8 },
+  "personality": {
+    "core_traits": ["prático", "perfeccionista artesão", "seco mas leal"],
+    "speech_style": "direto, técnico, poucas palavras, deixa o trabalho falar por ele, respeita quem trabalha duro",
+    "values": ["qualidade", "honestidade no trabalho", "artesanato duradouro"],
+    "fears": ["vender peça defeituosa", "ver boas ferramentas desperdiçadas por descuido"]
+  },
+  "relations": {
+    "arnaldo": "parceiro_oficio",
+    "bento": "cliente_antigo"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "09:00", "location": "ferraria", "activity": "preparar_forja" },
+    { "from": "09:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "14:00", "location": "ferraria", "activity": "atender_clientes" },
+    { "from": "14:00", "to": "18:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "18:00", "to": "20:00", "location": "ferraria", "activity": "fechar_ferraria" }
+  ],
+  "economy_role": {
+    "produces": ["enxada_cobre", "regador_cobre", "picareta_ferro", "machado_ferro"],
+    "consumes": ["minerio_ferro", "minerio_cobre", "carvao"],
+    "shop_inventory": ["enxada_basica", "regador_basico", "picareta_basica", "machado_basico"]
+  }
+}
