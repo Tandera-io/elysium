@@ -1,7 +1,31 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn' | 'watering_can';
+
+/**
+ * Items that can be "used" by the player. Usable items are consumed or triggered
+ * when the player invokes useItem(). The actual effect is applied by the caller
+ * (e.g. farm tile watering, crop planting) — the store only tracks selection state.
+ */
+export const USABLE_ITEMS: ReadonlySet<ItemId> = new Set<ItemId>([
+  'watering_can',
+  'seed_wheat',
+  'seed_tomato',
+  'seed_corn',
+]);
+
+/** Returns true if the given item is a seed variant. */
+export function isSeedItem(id: ItemId): id is 'seed_wheat' | 'seed_tomato' | 'seed_corn' {
+  return id === 'seed_wheat' || id === 'seed_tomato' || id === 'seed_corn';
+}
+
+/** Maps a seed item id to its corresponding crop id. */
+export const SEED_TO_CROP: Record<'seed_wheat' | 'seed_tomato' | 'seed_corn', CropId> = {
+  seed_wheat: 'wheat',
+  seed_tomato: 'tomato',
+  seed_corn: 'corn',
+};
 
 export interface SlotItem {
   id: ItemId;
@@ -14,6 +38,8 @@ const STACK_MAX = 99;
 export interface InventoryState {
   slots: (SlotItem | null)[];
   gold: number;
+  /** Index of the currently selected slot, or null if nothing selected. */
+  selectedSlot: number | null;
 }
 
 export interface InventoryActions {
@@ -27,13 +53,31 @@ export interface InventoryActions {
   addGold: (amount: number) => void;
   /** Returns false if player has insufficient gold. */
   removeGold: (amount: number) => boolean;
+  /**
+   * Selects the given slot index as the active/held item.
+   * Passing the already-selected index deselects it (toggles).
+   * Passing null explicitly deselects.
+   */
+  selectSlot: (index: number | null) => void;
+  /**
+   * Returns the item in the currently selected slot, or null if no slot is
+   * selected or the slot is empty.
+   */
+  selectedItem: () => SlotItem | null;
+  /**
+   * Consume one unit of the selected item (for watering can: does not consume;
+   * for seeds: removes 1 from stack). Returns the item that was used, or null
+   * if nothing is selected / item is not usable.
+   */
+  useItem: () => SlotItem | null;
 }
 
 function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
   slots[0] = { id: 'seed_wheat', qty: 6 };
   slots[1] = { id: 'seed_tomato', qty: 4 };
-  return { slots, gold: 500 };
+  slots[2] = { id: 'watering_can', qty: 1 };
+  return { slots, gold: 500, selectedSlot: null };
 }
 
 export const useInventoryStore = create<InventoryState & InventoryActions>((set, get) => ({
@@ -106,6 +150,38 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
     if (get().gold < amount) return false;
     set((s) => ({ gold: s.gold - amount }));
     return true;
+  },
+  selectSlot: (index) => {
+    if (index === null) {
+      set({ selectedSlot: null });
+      return;
+    }
+    // Toggle deselect if already selected
+    const cur = get().selectedSlot;
+    set({ selectedSlot: cur === index ? null : index });
+  },
+  selectedItem: () => {
+    const { slots, selectedSlot } = get();
+    if (selectedSlot === null) return null;
+    return slots[selectedSlot] ?? null;
+  },
+  useItem: () => {
+    const { selectedSlot, slots } = get();
+    if (selectedSlot === null) return null;
+    const item = slots[selectedSlot];
+    if (!item) return null;
+    if (!USABLE_ITEMS.has(item.id)) return null;
+
+    // Watering can is reusable — does not deplete from inventory
+    if (item.id === 'watering_can') return item;
+
+    // Seeds and other consumables: remove 1 from stack
+    const newQty = item.qty - 1;
+    const newSlots = [...slots];
+    newSlots[selectedSlot] = newQty === 0 ? null : { ...item, qty: newQty };
+    // If slot becomes empty, deselect
+    set({ slots: newSlots, selectedSlot: newQty === 0 ? null : selectedSlot });
+    return item;
   },
 }));
 
