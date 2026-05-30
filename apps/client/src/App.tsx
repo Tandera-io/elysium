@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { FarmMap } from './components/FarmMap';
 
 type FetchState =
   | { kind: 'loading' }
@@ -93,6 +94,7 @@ export function App() {
           </span>
         )}
       </aside>
+      <FarmMap layoutId="marisa" />
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
