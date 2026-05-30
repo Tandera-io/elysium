@@ -29,6 +29,7 @@ import {
   WEATHER_GROWTH_RATE,
   WATERING_CAN_BONUS,
 } from './cropGrowth.js';
+import { Crop } from '../../components/Crop.jsx';
 
 // ─── Visual constants ─────────────────────────────────────────────────────────
 
@@ -38,14 +39,6 @@ const STAGE_COLORS = {
   2: '#5e9b2e', // young
   3: '#c2c44a', // mature
   4: '#aacc22', // harvestable
-};
-
-const STAGE_EMOJI = {
-  0: '🌑', // seed (dark circle = buried)
-  1: '🌱', // sprout
-  2: '🌿', // young
-  3: '🌳', // mature
-  4: '✨', // harvestable
 };
 
 const WEATHER_EMOJI = {
@@ -62,37 +55,6 @@ const SEASON_COLOR = {
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-
-/**
- * Thin horizontal progress bar.
- *
- * @param {{ value: number, max: number, color: string }} props
- */
-function GrowthBar({ value, max, color }) {
-  const pct = Math.min(100, Math.round((Math.min(value, max) / Math.max(1, max)) * 100));
-  return (
-    <div
-      style={{
-        width: '100%',
-        height: 5,
-        background: '#2a2215',
-        borderRadius: 3,
-        overflow: 'hidden',
-        marginTop: 3,
-      }}
-    >
-      <div
-        style={{
-          width: `${pct}%`,
-          height: '100%',
-          background: color ?? '#6a9e20',
-          borderRadius: 3,
-          transition: 'width 0.25s ease',
-        }}
-      />
-    </div>
-  );
-}
 
 /**
  * Displays the computed growth-rate modifier for a plot, accounting for
@@ -132,7 +94,8 @@ function GrowthRateBadge({ cropType, currentSeason, weather, wateredToday }) {
 }
 
 /**
- * Single plot tile.  Clickable based on state.
+ * Single plot tile.  Delegates to <Crop> for planted plots; renders an
+ * empty-plot placeholder for bare soil.
  *
  * @param {{ plot: object, currentSeason: string, weather: string, compact: boolean,
  *           onHarvest: Function, onWater: Function, onClear: Function }} props
@@ -142,147 +105,69 @@ function PlotTile({ plot, currentSeason, weather, compact, onHarvest, onWater, o
   const stageIdx = def ? growthStageIndex(plot.daysGrown, def.daysToMature) : 0;
   const stageLbl = plot.cropType ? stageName(stageIdx) : 'empty';
 
-  // Determine interactive state and click handler.
+  // Resolve click handler based on plot state.
   let clickHandler = null;
-  let cursorStyle = 'default';
-  let titleText = '';
-
   if (plot.wilted) {
     clickHandler = () => onClear?.(plot.id);
-    cursorStyle = 'pointer';
-    titleText = 'Click to clear wilted crop';
   } else if (plot.readyToHarvest) {
     clickHandler = () => onHarvest?.(plot.id);
-    cursorStyle = 'pointer';
-    titleText = 'Click to harvest!';
   } else if (plot.cropType && !plot.wateredToday) {
     clickHandler = () => onWater?.(plot.id);
-    cursorStyle = 'pointer';
-    titleText = 'Click to water this crop';
   }
 
-  const borderColor = plot.wilted
-    ? '#8b4513'
-    : plot.readyToHarvest
-      ? '#aacc22'
-      : plot.wateredToday
-        ? '#4a8aaa'
-        : (STAGE_COLORS[stageIdx] ?? '#5a4a2a');
+  // Planted / wilted plots → animated Crop tile.
+  if (plot.cropType || plot.wilted) {
+    return (
+      <>
+        <Crop
+          emoji={def?.emoji ?? '🌱'}
+          name={def?.name ?? ''}
+          stage={stageIdx}
+          stageName={stageLbl}
+          daysGrown={plot.daysGrown}
+          daysToMature={def?.daysToMature ?? 1}
+          wilted={plot.wilted}
+          wateredToday={plot.wateredToday ?? false}
+          readyToHarvest={plot.readyToHarvest}
+          onClick={clickHandler}
+          compact={compact}
+          stageColor={STAGE_COLORS[stageIdx]}
+        />
+        {/* Growth rate badge shown below the Crop tile in full mode */}
+        {!compact && !plot.wilted && (
+          <GrowthRateBadge
+            cropType={plot.cropType}
+            currentSeason={currentSeason}
+            weather={weather}
+            wateredToday={plot.wateredToday ?? false}
+          />
+        )}
+      </>
+    );
+  }
 
-  const bgColor = plot.wilted ? '#2a1510' : plot.readyToHarvest ? '#1e2a08' : '#1a1610';
-
+  // Empty plot.
   const tileSize = compact ? 80 : 100;
-
   return (
     <div
-      onClick={clickHandler}
-      title={titleText}
       style={{
-        background: bgColor,
-        border: `2px solid ${borderColor}`,
+        background: '#1a1610',
+        border: '2px solid #5a4a2a',
         borderRadius: 10,
         padding: compact ? '6px 5px 5px' : '10px 8px 8px',
-        cursor: cursorStyle,
-        userSelect: 'none',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 3,
         minHeight: tileSize,
-        minWidth: tileSize,
-        transition: 'transform 0.1s, box-shadow 0.1s',
-        boxShadow: clickHandler ? '0 2px 8px rgba(0,0,0,0.4)' : 'none',
-        position: 'relative',
-      }}
-      onMouseEnter={(e) => {
-        if (clickHandler) {
-          e.currentTarget.style.transform = 'scale(1.04)';
-          e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.6)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
-        e.currentTarget.style.boxShadow = clickHandler ? '0 2px 8px rgba(0,0,0,0.4)' : 'none';
+        color: '#5a4a2a',
+        fontFamily: 'monospace',
+        fontSize: 10,
       }}
     >
-      {/* Watered indicator dot */}
-      {plot.wateredToday && !plot.wilted && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            width: 7,
-            height: 7,
-            borderRadius: '50%',
-            background: '#4a9acc',
-            boxShadow: '0 0 4px #4a9acc',
-          }}
-          title="Watered today"
-        />
-      )}
-
-      {/* Main emoji */}
-      <span style={{ fontSize: compact ? 22 : 26, lineHeight: 1 }}>
-        {plot.wilted ? '💀' : plot.cropType ? (def?.emoji ?? STAGE_EMOJI[stageIdx] ?? '🌱') : '🟫'}
-      </span>
-
-      {/* Stage emoji */}
-      {plot.cropType && !plot.wilted && (
-        <span style={{ fontSize: compact ? 12 : 14, lineHeight: 1 }}>
-          {STAGE_EMOJI[stageIdx] ?? '🌱'}
-        </span>
-      )}
-
-      {/* Crop name */}
-      <span
-        style={{
-          fontSize: 10,
-          color: plot.wilted ? '#c87a50' : '#d4c090',
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          lineHeight: 1.2,
-        }}
-      >
-        {plot.wilted
-          ? `${def?.name ?? ''} (wilted)`
-          : plot.cropType
-            ? (def?.name ?? '')
-            : '+ plant'}
-      </span>
-
-      {/* Stage label */}
-      {plot.cropType && !plot.wilted && !compact && (
-        <span style={{ fontSize: 9, color: '#7a6a40', fontFamily: 'monospace' }}>{stageLbl}</span>
-      )}
-
-      {/* Growth bar */}
-      {plot.cropType && !plot.wilted && (
-        <GrowthBar
-          value={plot.daysGrown}
-          max={def?.daysToMature ?? 1}
-          color={plot.readyToHarvest ? '#aacc22' : STAGE_COLORS[stageIdx]}
-        />
-      )}
-
-      {/* Days info */}
-      {plot.cropType && !plot.wilted && (
-        <span style={{ fontSize: 9, color: '#8a7a50', fontFamily: 'monospace' }}>
-          {plot.readyToHarvest
-            ? 'Ready!'
-            : `${plot.daysGrown.toFixed(1)}/${def?.daysToMature ?? '?'}d`}
-        </span>
-      )}
-
-      {/* Growth rate badge */}
-      {plot.cropType && !plot.wilted && !compact && (
-        <GrowthRateBadge
-          cropType={plot.cropType}
-          currentSeason={currentSeason}
-          weather={weather}
-          wateredToday={plot.wateredToday ?? false}
-        />
-      )}
+      <span style={{ fontSize: compact ? 22 : 26 }}>🟫</span>
+      <span>+ plant</span>
     </div>
   );
 }
