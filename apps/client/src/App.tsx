@@ -14,6 +14,7 @@ import { NPCDialogue } from './components/NPCDialogue';
 import { Inventory } from './components/Inventory';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { InventoryDisplay } from './components/InventoryDisplay';
 
 type FetchState =
   | { kind: 'loading' }
@@ -24,6 +25,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [invOpen, setInvOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -62,6 +64,9 @@ export function App() {
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
         setSaveOpen(true);
       }
+      if (e.code === 'KeyI' && !titleOpen && !saveOpen) {
+        setInvOpen((v) => !v);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -96,6 +101,7 @@ export function App() {
         )}
       </aside>
       <InventoryPanel />
+      <InventoryDisplay open={invOpen} onClose={() => setInvOpen(false)} />
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />
