@@ -1,0 +1,210 @@
+/* ─── Crop growth stage animations ─────────────────────────────────────────── */
+
+/* seed: buried, subtle heartbeat pulse */
+@keyframes crop-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* sprout / young: gentle left-right sway */
+@keyframes crop-sway {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+/* mature: soft up-down bob */
+@keyframes crop-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* harvestable: golden glow + scale pop */
+@keyframes crop-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px #aacc22aa) brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px #ffe84aee) brightness(1.25);
+    transform: scale(1.08);
+  }
+}
+
+/* wilted: slow droop to 15 deg */
+@keyframes crop-wilt {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(15deg);
+    opacity: 0.55;
+  }
+}
+
+/* watered dot: soft shimmer */
+@keyframes crop-water-shimmer {
+  0%,
+  100% {
+    opacity: 0.7;
+    box-shadow: 0 0 3px #4a9acc;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 7px #7ac8ee;
+  }
+}
+
+/* ─── Base tile ──────────────────────────────────────────────────────────────── */
+
+.crop-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-radius: 10px;
+  padding: 10px 8px 8px;
+  user-select: none;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.crop-tile--interactive {
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.crop-tile--interactive:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+.crop-tile--compact {
+  padding: 6px 5px 5px;
+}
+
+/* ─── Emoji wrapper (animation target) ──────────────────────────────────────── */
+
+.crop-emoji {
+  display: inline-block;
+  transform-origin: bottom center;
+  line-height: 1;
+}
+
+/* Apply stage animations via parent class */
+
+.crop-tile--seed .crop-emoji {
+  animation: crop-pulse 2.2s ease-in-out infinite;
+}
+
+.crop-tile--sprout .crop-emoji {
+  animation: crop-sway 1.9s ease-in-out infinite;
+}
+
+.crop-tile--young .crop-emoji {
+  animation: crop-sway 1.5s ease-in-out infinite;
+  /* slightly wider arc — amplitude set in sway keyframe is fixed,
+     so we scale the element a touch larger to make motion feel bigger */
+  transform-origin: bottom center;
+}
+
+.crop-tile--mature .crop-emoji {
+  animation: crop-bob 1.3s ease-in-out infinite;
+}
+
+.crop-tile--harvestable .crop-emoji {
+  animation: crop-glow 1.1s ease-in-out infinite;
+}
+
+.crop-tile--wilted .crop-emoji {
+  animation: crop-wilt 0.6s ease-out forwards;
+}
+
+/* ─── Stage-transition flash ─────────────────────────────────────────────────── */
+
+@keyframes crop-advance {
+  0% {
+    filter: brightness(2.5) saturate(0);
+  }
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+}
+
+.crop-tile--advancing .crop-emoji {
+  animation: crop-advance 0.5s ease-out forwards !important;
+}
+
+/* ─── Progress bar ───────────────────────────────────────────────────────────── */
+
+.crop-bar-track {
+  width: 100%;
+  height: 5px;
+  background: #2a2215;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 3px;
+}
+
+.crop-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition:
+    width 0.35s ease,
+    background 0.35s ease;
+}
+
+/* ─── Watered indicator dot ──────────────────────────────────────────────────── */
+
+.crop-water-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4a9acc;
+  animation: crop-water-shimmer 2s ease-in-out infinite;
+}
+
+/* ─── Text labels ────────────────────────────────────────────────────────────── */
+
+.crop-name {
+  font-family: monospace;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.crop-stage-label {
+  font-family: monospace;
+  font-size: 9px;
+  color: #7a6a40;
+}
+
+.crop-days {
+  font-family: monospace;
+  font-size: 9px;
+  color: #8a7a50;
+}
