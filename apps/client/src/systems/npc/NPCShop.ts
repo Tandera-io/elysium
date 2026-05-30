@@ -6,6 +6,7 @@ import { create } from 'zustand';
 
 export const DORINHA_SHOP_ID = 'dorinha';
 export const NINA_SHOP_ID = 'nina';
+export const FERRAZ_SHOP_ID = 'ferraz';
 
 export interface NPCShopState {
   openShopId: string | null;
