@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { DialogueResponse, NpcEmotion } from '@elysium/shared';
+import { getRepeatVisitLine } from '../../dialogue/pipeline/index.js';
 
 export interface DialogueTurn {
   who: 'player' | 'npc';
@@ -16,6 +17,8 @@ export interface DialogueState {
   pending: boolean;
   /** Error from last send, if any. */
   error: string | null;
+  /** Tracks how many times the player has opened dialogue with each NPC. */
+  interactionCounts: Record<string, number>;
 }
 
 export interface DialogueActions {
@@ -32,7 +35,19 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
   history: [],
   pending: false,
   error: null,
-  open: (npcId) => set({ npcId, history: [], error: null }),
+  interactionCounts: {},
+  open: (npcId) => {
+    const counts = get().interactionCounts;
+    const count = counts[npcId] ?? 0;
+    const greeting = getRepeatVisitLine(npcId, { interactionCount: count });
+    set({
+      npcId,
+      history: greeting ? [{ who: 'npc', text: greeting, timestamp: Date.now() }] : [],
+      error: null,
+      pending: false,
+      interactionCounts: { ...counts, [npcId]: count + 1 },
+    });
+  },
   close: () => set({ npcId: null, history: [], pending: false, error: null }),
   send: async (input, world) => {
     const npcId = get().npcId;
