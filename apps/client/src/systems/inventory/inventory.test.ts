@@ -4,24 +4,24 @@ import { INVENTORY_SIZE, useInventoryStore } from './inventoryStore';
 describe('inventoryStore (slot-based)', () => {
   beforeEach(() => useInventoryStore.getState().reset());
 
-  it('starts with INVENTORY_SIZE slots, two filled', () => {
+  it('starts with INVENTORY_SIZE slots, five filled (seasonal seeds)', () => {
     const slots = useInventoryStore.getState().slots;
     expect(slots).toHaveLength(INVENTORY_SIZE);
-    expect(slots.filter((s) => s !== null)).toHaveLength(2);
+    expect(slots.filter((s) => s !== null)).toHaveLength(5);
   });
 
   it('add stacks into an existing slot of same id', () => {
     useInventoryStore.getState().add('seed_wheat', 3);
     expect(useInventoryStore.getState().count('seed_wheat')).toBe(9);
-    // still 2 non-null slots
-    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(2);
+    // still 5 non-null slots (stacked, no new slot opened)
+    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(5);
   });
 
   it('add a new id goes to the first empty slot', () => {
     useInventoryStore.getState().add('wheat', 5);
     const slots = useInventoryStore.getState().slots;
-    // wheat in slot index 2 (after seed_wheat=0, seed_tomato=1)
-    expect(slots[2]).toEqual({ id: 'wheat', qty: 5 });
+    // wheat in slot index 5 (after 5 seed slots: seed_wheat=0..seed_carrot=4)
+    expect(slots[5]).toEqual({ id: 'wheat', qty: 5 });
   });
 
   it('add up to STACK_MAX then spills into next empty', () => {
@@ -59,14 +59,14 @@ describe('inventoryStore (slot-based)', () => {
   });
 
   it('swap merges same-id stacks', () => {
-    useInventoryStore.getState().add('wheat', 10); // slot 2
-    useInventoryStore.getState().add('wheat', 5); // stacks into slot 2 — count 15
-    // Manually create a second wheat stack by filling slot 2 to max first
+    useInventoryStore.getState().add('wheat', 10); // slot 5
+    useInventoryStore.getState().add('wheat', 5); // stacks into slot 5 — count 15
+    // Manually create a second wheat stack by filling slot 5 to max first
     useInventoryStore.getState().reset();
-    useInventoryStore.getState().add('wheat', 99); // slot 2 full
-    useInventoryStore.getState().add('wheat', 30); // slot 3 with 30
-    // Now swap slots 2 and 3 — same id, slot 2 already at max so 3 stays
-    useInventoryStore.getState().swap(2, 3);
+    useInventoryStore.getState().add('wheat', 99); // slot 5 full
+    useInventoryStore.getState().add('wheat', 30); // slot 6 with 30
+    // Now swap slots 5 and 6 — same id, slot 5 already at max so 6 stays
+    useInventoryStore.getState().swap(5, 6);
     const slots = useInventoryStore.getState().slots;
     const wheatTotal = slots
       .filter((s) => s?.id === 'wheat')

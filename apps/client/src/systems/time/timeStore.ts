@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { useFarmStore } from '../farming/farmStore';
+import { useWeatherStore } from '../weather/weatherStore';
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 
@@ -71,7 +72,16 @@ export const useTimeStore = create<TimeState & TimeActions>((set, get) => ({
       }
     }
     set({ hour, dayInSeason, seasonIndex, year });
-    if (dayRolled) useFarmStore.getState().advanceDay();
+    if (dayRolled) {
+      // Determine the season that just began (after the roll)
+      const season = SEASONS[seasonIndex] ?? 'spring';
+      // Get today's weather before advancing (it will become yesterday's after advance)
+      const todayWeather = useWeatherStore.getState().today;
+      // Advance farm with season + weather context
+      useFarmStore.getState().advanceDay(season, todayWeather);
+      // Advance weather for next day
+      useWeatherStore.getState().advanceDay(dayInSeason, seasonIndex);
+    }
   },
   setPaused: (paused) => set({ paused }),
   setRealSecondsPerDay: (value) => set({ realSecondsPerDay: Math.max(10, value) }),

@@ -1,9 +1,11 @@
 /**
- * Crop definitions. Each crop has growth stages with day counts.
- * `daysToMature` is the sum of all stage durations.
+ * Crop definitions. Each crop has growth stages with day counts and season
+ * constraints. Crops planted out of season wilt at end-of-day.
  */
 
-export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
+import type { Season } from '../time/timeStore';
+
+export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry' | 'carrot';
 
 export interface CropStage {
   /** 0 = just planted, last index = mature/ready to harvest. */
@@ -20,6 +22,16 @@ export interface CropDef {
   readonly stages: readonly CropStage[];
   readonly daysToMature: number;
   readonly yieldQuantity: number;
+  /**
+   * Seasons in which this crop can grow. Crops planted or surviving outside
+   * these seasons wilt at end-of-day (removed, tile reverts to tilled).
+   * Empty array means the crop grows in all seasons.
+   */
+  readonly seasons: readonly Season[];
+  /**
+   * Gold received per unit when sold via the sell-crops action.
+   */
+  readonly sellPrice: number;
 }
 
 export const CROPS: Record<CropId, CropDef> = {
@@ -34,6 +46,8 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 4,
     yieldQuantity: 2,
+    seasons: ['spring', 'summer'],
+    sellPrice: 8,
   },
   tomato: {
     id: 'tomato',
@@ -47,6 +61,8 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 5,
     yieldQuantity: 3,
+    seasons: ['summer'],
+    sellPrice: 6,
   },
   pumpkin: {
     id: 'pumpkin',
@@ -59,6 +75,8 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 7,
     yieldQuantity: 1,
+    seasons: ['autumn'],
+    sellPrice: 14,
   },
   corn: {
     id: 'corn',
@@ -71,6 +89,8 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 6,
     yieldQuantity: 3,
+    seasons: ['summer'],
+    sellPrice: 10,
   },
   strawberry: {
     id: 'strawberry',
@@ -82,6 +102,21 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 3,
     yieldQuantity: 4,
+    seasons: ['spring'],
+    sellPrice: 12,
+  },
+  carrot: {
+    id: 'carrot',
+    name: 'Cenoura',
+    stages: [
+      { index: 0, daysInStage: 1, color: '#5a4a2a' },
+      { index: 1, daysInStage: 1, color: '#8db454' },
+      { index: 2, daysInStage: 2, color: '#c27a2a' },
+    ],
+    daysToMature: 4,
+    yieldQuantity: 3,
+    seasons: ['spring', 'autumn'],
+    sellPrice: 9,
   },
 };
 
@@ -98,4 +133,15 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
+}
+
+/**
+ * Returns true if a crop can grow in the given season.
+ * Crops with an empty seasons array grow in any season.
+ * When season is undefined (e.g. dev/test contexts), always returns true.
+ */
+export function isInSeason(crop: CropDef, season: Season | undefined): boolean {
+  if (season === undefined) return true;
+  if (crop.seasons.length === 0) return true;
+  return (crop.seasons as Season[]).includes(season);
 }

@@ -3,12 +3,23 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useToolStore } from '../../store/toolStore';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { useInventoryStore } from '../../systems/inventory/inventoryStore';
+import { useTimeStore, currentSeason } from '../../systems/time/timeStore';
 import { findPath } from './pathfinding';
 import { DEFAULT_GRID, type GridConfig, worldToTile } from './WorldGrid';
 
 interface FloorProps {
   grid?: GridConfig;
 }
+
+/** Map from seed tool id to crop id and seed item id */
+const SEED_TOOL_MAP: Record<string, { crop: string; seedItem: string }> = {
+  seed_wheat: { crop: 'wheat', seedItem: 'seed_wheat' },
+  seed_tomato: { crop: 'tomato', seedItem: 'seed_tomato' },
+  seed_corn: { crop: 'corn', seedItem: 'seed_corn' },
+  seed_pumpkin: { crop: 'pumpkin', seedItem: 'seed_pumpkin' },
+  seed_strawberry: { crop: 'strawberry', seedItem: 'seed_strawberry' },
+  seed_carrot: { crop: 'carrot', seedItem: 'seed_carrot' },
+};
 
 /**
  * Invisible interaction plane. Routes pointerdown to either:
@@ -34,22 +45,28 @@ export function Floor({ grid = DEFAULT_GRID }: FloorProps) {
 
     const farm = useFarmStore.getState();
     const inv = useInventoryStore.getState();
+    const timeState = useTimeStore.getState();
+    const season = currentSeason(timeState);
 
     if (tool === 'hoe') {
       farm.till(goal);
     } else if (tool === 'water') {
       farm.water(goal);
-    } else if (tool === 'seed_wheat') {
-      if (inv.count('seed_wheat') > 0 && farm.plant(goal, 'wheat')) {
-        inv.remove('seed_wheat', 1);
-      }
-    } else if (tool === 'seed_tomato') {
-      if (inv.count('seed_tomato') > 0 && farm.plant(goal, 'tomato')) {
-        inv.remove('seed_tomato', 1);
-      }
     } else if (tool === 'harvest') {
       const yieldVal = farm.harvest(goal);
       if (yieldVal) inv.add(yieldVal.crop, yieldVal.quantity);
+    } else {
+      // Handle all seed tools generically
+      const mapping = SEED_TOOL_MAP[tool];
+      if (mapping) {
+        const { crop, seedItem } = mapping;
+        if (inv.count(seedItem as Parameters<typeof inv.count>[0]) > 0) {
+          const planted = farm.plant(goal, crop as Parameters<typeof farm.plant>[1], season);
+          if (planted) {
+            inv.remove(seedItem as Parameters<typeof inv.remove>[0], 1);
+          }
+        }
+      }
     }
   };
 

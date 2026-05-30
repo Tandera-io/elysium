@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CROPS, isMature, stageForDayCount } from './CropDefs';
+import { CROPS, isMature, isInSeason, stageForDayCount } from './CropDefs';
 import { useFarmStore } from './farmStore';
 import { useInventoryStore } from '../inventory/inventoryStore';
 
@@ -22,6 +22,29 @@ describe('CropDefs', () => {
     expect(stageForDayCount(CROPS.wheat, 2).index).toBe(2);
     expect(stageForDayCount(CROPS.wheat, 3).index).toBe(3);
     expect(stageForDayCount(CROPS.wheat, 99).index).toBe(3);
+  });
+
+  it('carrot is in-season in spring and autumn', () => {
+    expect(isInSeason(CROPS.carrot, 'spring')).toBe(true);
+    expect(isInSeason(CROPS.carrot, 'autumn')).toBe(true);
+    expect(isInSeason(CROPS.carrot, 'summer')).toBe(false);
+    expect(isInSeason(CROPS.carrot, 'winter')).toBe(false);
+  });
+
+  it('pumpkin is in-season only in autumn', () => {
+    expect(isInSeason(CROPS.pumpkin, 'autumn')).toBe(true);
+    expect(isInSeason(CROPS.pumpkin, 'spring')).toBe(false);
+  });
+
+  it('strawberry is in-season only in spring', () => {
+    expect(isInSeason(CROPS.strawberry, 'spring')).toBe(true);
+    expect(isInSeason(CROPS.strawberry, 'summer')).toBe(false);
+  });
+
+  it('all crops have a positive sellPrice', () => {
+    for (const crop of Object.values(CROPS)) {
+      expect(crop.sellPrice).toBeGreaterThan(0);
+    }
   });
 });
 
@@ -51,34 +74,48 @@ describe('farmStore', () => {
   it('plant transitions tilled → planted', () => {
     const t = { x: 5, z: 5 };
     useFarmStore.getState().till(t);
-    expect(useFarmStore.getState().plant(t, 'wheat')).toBe(true);
+    expect(useFarmStore.getState().plant(t, 'wheat', 'spring')).toBe(true);
     const tile = useFarmStore.getState().getTile(t);
     expect(tile.kind).toBe('planted');
     if (tile.kind === 'planted') expect(tile.crop).toBe('wheat');
   });
 
   it('plant on empty fails', () => {
-    expect(useFarmStore.getState().plant({ x: 0, z: 0 }, 'wheat')).toBe(false);
+    expect(useFarmStore.getState().plant({ x: 0, z: 0 }, 'wheat', 'spring')).toBe(false);
   });
 
-  it('wheat full grow loop: till → water → plant → 4 advances → harvest', () => {
+  it('plant fails if crop is out of season', () => {
+    const t = { x: 5, z: 5 };
+    useFarmStore.getState().till(t);
+    // pumpkin is autumn-only; trying to plant in spring should fail
+    expect(useFarmStore.getState().plant(t, 'pumpkin', 'spring')).toBe(false);
+  });
+
+  it('plant succeeds when crop is in-season', () => {
+    const t = { x: 5, z: 5 };
+    useFarmStore.getState().till(t);
+    expect(useFarmStore.getState().plant(t, 'pumpkin', 'autumn')).toBe(true);
+  });
+
+  it('wheat full grow loop: till → water → plant → 4 rainy advances → harvest', () => {
     const t = { x: 10, z: 10 };
     const farm = useFarmStore.getState();
     expect(farm.till(t)).toBe(true);
     expect(farm.water(t)).toBe(true);
-    expect(farm.plant(t, 'wheat')).toBe(true);
+    expect(farm.plant(t, 'wheat', 'spring')).toBe(true);
 
+    // Use rainy weather so tiles are auto-watered each day
     // Days 2, 3 → not mature
-    farm.advanceDay();
-    farm.advanceDay();
+    farm.advanceDay('spring', 'rainy');
+    farm.advanceDay('spring', 'rainy');
     expect(useFarmStore.getState().harvest(t)).toBeNull();
 
     // Day 4: still not — daysGrown=3 after 3 advances
-    farm.advanceDay();
+    farm.advanceDay('spring', 'rainy');
     expect(useFarmStore.getState().harvest(t)).toBeNull();
 
     // Day 5: daysGrown=4 → mature
-    farm.advanceDay();
+    farm.advanceDay('spring', 'rainy');
     const yieldVal = useFarmStore.getState().harvest(t);
     expect(yieldVal).toEqual({ crop: 'wheat', quantity: 2 });
 
@@ -90,11 +127,69 @@ describe('farmStore', () => {
     const t = { x: 3, z: 3 };
     const farm = useFarmStore.getState();
     farm.till(t);
-    farm.plant(t, 'tomato'); // 5 days
-    for (let i = 0; i < 4; i++) farm.advanceDay();
+    farm.plant(t, 'tomato', 'summer'); // 5 days
+    // Use rainy weather so tiles water automatically each day
+    for (let i = 0; i < 4; i++) farm.advanceDay('summer', 'rainy');
     expect(useFarmStore.getState().harvest(t)).toBeNull();
-    farm.advanceDay();
+    farm.advanceDay('summer', 'rainy');
     expect(useFarmStore.getState().harvest(t)).toEqual({ crop: 'tomato', quantity: 3 });
+  });
+
+  it('out-of-season crop wilts on advanceDay (tile reverts to tilled)', () => {
+    const t = { x: 7, z: 7 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    // Plant strawberry in spring
+    farm.plant(t, 'strawberry', 'spring');
+    // Grow a couple days in spring
+    farm.advanceDay('spring');
+    farm.advanceDay('spring');
+    expect(useFarmStore.getState().getTile(t).kind).toBe('planted');
+    // Summer arrives — strawberry out of season, should wilt
+    farm.advanceDay('summer');
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('tilled');
+  });
+
+  it('rainy weather auto-waters planted tiles', () => {
+    const t = { x: 2, z: 2 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'wheat', 'spring');
+    // Advance with rainy weather — crop should grow even without manual watering
+    farm.advanceDay('spring', 'rainy');
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('planted');
+    if (tile.kind === 'planted') expect(tile.daysGrown).toBe(1);
+  });
+
+  it('stormy weather suppresses growth', () => {
+    const t = { x: 4, z: 4 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.water(t);
+    farm.plant(t, 'wheat', 'spring');
+    // Even watered, stormy suppresses growth
+    farm.advanceDay('spring', 'stormy');
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('planted');
+    if (tile.kind === 'planted') expect(tile.daysGrown).toBe(0);
+  });
+
+  it('harvestAll returns all mature crop yields and reverts tiles', () => {
+    const farm = useFarmStore.getState();
+    const t1 = { x: 1, z: 1 };
+    const t2 = { x: 2, z: 1 };
+    farm.till(t1);
+    farm.till(t2);
+    farm.plant(t1, 'strawberry', 'spring'); // 3 days
+    farm.plant(t2, 'strawberry', 'spring');
+    for (let i = 0; i < 3; i++) farm.advanceDay('spring', 'rainy');
+    const results = farm.harvestAll();
+    expect(results).toHaveLength(2);
+    expect(results[0]?.crop).toBe('strawberry');
+    expect(useFarmStore.getState().getTile(t1).kind).toBe('tilled');
+    expect(useFarmStore.getState().getTile(t2).kind).toBe('tilled');
   });
 });
 
@@ -106,6 +201,9 @@ describe('inventoryStore', () => {
   it('starts with seeds', () => {
     expect(useInventoryStore.getState().count('seed_wheat')).toBeGreaterThan(0);
     expect(useInventoryStore.getState().count('seed_tomato')).toBeGreaterThan(0);
+    expect(useInventoryStore.getState().count('seed_pumpkin')).toBeGreaterThan(0);
+    expect(useInventoryStore.getState().count('seed_strawberry')).toBeGreaterThan(0);
+    expect(useInventoryStore.getState().count('seed_carrot')).toBeGreaterThan(0);
   });
 
   it('add accumulates quantity', () => {

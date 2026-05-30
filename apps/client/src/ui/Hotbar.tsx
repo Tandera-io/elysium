@@ -3,6 +3,7 @@ import { useFarmStore } from '../systems/farming/farmStore';
 import { useInventoryStore, type ItemId } from '../systems/inventory/inventoryStore';
 import { useToolStore, type ToolId } from '../store/toolStore';
 import { SEASON_LABEL, currentSeason, formatClock, useTimeStore } from '../systems/time/timeStore';
+import { useWeatherStore } from '../systems/weather/weatherStore';
 
 interface ToolButton {
   id: ToolId;
@@ -18,7 +19,11 @@ const TOOLS: readonly ToolButton[] = [
   { id: 'water', label: '💧 regar', hotkey: '3' },
   { id: 'seed_wheat', label: '🌾 trigo', hotkey: '4', countOf: 'seed_wheat' },
   { id: 'seed_tomato', label: '🍅 tomate', hotkey: '5', countOf: 'seed_tomato' },
-  { id: 'harvest', label: '✂️ colher', hotkey: '6' },
+  { id: 'seed_corn', label: '🌽 milho', hotkey: '6', countOf: 'seed_corn' },
+  { id: 'seed_pumpkin', label: '🎃 abóbora', hotkey: '7', countOf: 'seed_pumpkin' },
+  { id: 'seed_strawberry', label: '🍓 morango', hotkey: '8', countOf: 'seed_strawberry' },
+  { id: 'seed_carrot', label: '🥕 cenoura', hotkey: '9', countOf: 'seed_carrot' },
+  { id: 'harvest', label: '✂️ colher', hotkey: '0' },
 ];
 
 export function Hotbar() {
@@ -30,23 +35,26 @@ export function Hotbar() {
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
   const seasonIndex = useTimeStore((s) => s.seasonIndex);
+  const todayWeather = useWeatherStore((s) => s.today);
+
+  const season = currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tool = TOOLS.find((t) => t.hotkey === e.key);
       if (tool) setTool(tool.id);
       if (e.code === 'KeyT' && e.altKey) {
-        // Alt+T advances one day (debug)
-        advanceDay();
+        // Alt+T advances one day (debug) — use current season and weather
+        advanceDay(season, todayWeather);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [setTool, advanceDay]);
+  }, [setTool, advanceDay, season, todayWeather]);
 
   return (
     <div className="pointer-events-auto absolute bottom-4 left-1/2 -translate-x-1/2 flex items-end gap-3">
-      <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 flex gap-1">
+      <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 flex gap-1 flex-wrap justify-center max-w-2xl">
         {TOOLS.map((tool) => {
           const isActive = current === tool.id;
           const count =
@@ -78,11 +86,10 @@ export function Hotbar() {
       <div className="bg-slate-900/80 backdrop-blur rounded-xl px-3 py-2 text-slate-200 text-sm font-mono flex flex-col items-end gap-0.5">
         <div className="text-amber-300">{formatClock(hour)}</div>
         <div className="text-xs">
-          {SEASON_LABEL[currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0])]} ·
-          dia {dayInSeason}
+          {SEASON_LABEL[season]} · dia {dayInSeason}
         </div>
         <button
-          onClick={advanceDay}
+          onClick={() => advanceDay(season, todayWeather)}
           className="text-[10px] text-slate-400 hover:text-slate-200"
           title="Skip 1 farm day (Alt+T) — does not advance clock"
         >
