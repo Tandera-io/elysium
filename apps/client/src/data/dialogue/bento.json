@@ -1,0 +1,55 @@
+{
+  "id": "bento",
+  "name": "Tio Bento",
+  "role": "fazendeiro",
+  "personality": {
+    "core_traits": ["sereno", "trabalhador silencioso", "irônico sutil"],
+    "speech_style": "pausado, vocabulário simples, gosta de provérbios rurais",
+    "values": ["terra", "honestidade", "respeito ao tempo"],
+    "likes": ["terra boa", "clima favorável", "trabalho honesto"],
+    "dislikes": ["seca prolongada", "preguiça", "ferramenta ruim"]
+  },
+  "relations": {
+    "marina": "sobrinha",
+    "lucia": "esposa_amiga"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "11:00", "location": "campo", "activity": "plantar" },
+    { "from": "11:00", "to": "16:00", "location": "campo", "activity": "regar" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "descansar" }
+  ],
+  "greetings": [
+    { "label": "Bom dia, Tio Bento!", "input": "Bom dia, Tio Bento! Como vai o campo?" },
+    { "label": "Como está a safra?", "input": "E aí, Bento? Como está a safra este ano?" },
+    {
+      "label": "Preciso de conselho",
+      "input": "Tio Bento, você tem um conselho para um fazendeiro novo?"
+    },
+    { "label": "O que está plantando?", "input": "O que você está plantando agora, Bento?" }
+  ],
+  "topics": {
+    "general": [
+      { "label": "Sobre a terra", "input": "O que você mais gosta nessa vida no campo?" },
+      { "label": "Sabedoria rural", "input": "Qual o melhor provérbio que seu pai te ensinou?" },
+      { "label": "Sobre o clima", "input": "Como você sabe quando vai chover, Bento?" }
+    ],
+    "farming": [
+      { "label": "Dica de plantio", "input": "Qual a melhor época para plantar trigo por aqui?" },
+      { "label": "Cuidar do solo", "input": "Como você prepara o solo antes de plantar?" },
+      { "label": "Comprar trigo", "input": "Você vende trigo? Quanto você pede?" }
+    ],
+    "tools": [
+      {
+        "label": "Melhor ferramenta",
+        "input": "Qual é a ferramenta mais importante para um fazendeiro?"
+      },
+      { "label": "Conservar ferramentas", "input": "Como você cuida das suas ferramentas, Bento?" },
+      { "label": "Sobre a lenha", "input": "Você tem lenha para vender?" }
+    ]
+  },
+  "economy_role": {
+    "produces": ["trigo", "lenha"],
+    "consumes": ["lenha", "pao_frances"],
+    "shop_inventory": ["trigo"]
+  }
+}

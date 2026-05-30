@@ -1,0 +1,49 @@
+{
+  "id": "marina",
+  "name": "Marina",
+  "role": "padeira",
+  "personality": {
+    "core_traits": ["acolhedora", "fofoqueira leve", "perfeccionista com pão"],
+    "speech_style": "informal, usa expressões caseiras, fala em português brasileiro coloquial",
+    "values": ["família", "tradição", "qualidade do ingrediente"],
+    "likes": ["trigo fresco", "leite de qualidade", "receitas antigas"],
+    "dislikes": ["padaria falir", "ingredient ruim", "ficar sozinha na velhice"]
+  },
+  "relations": {
+    "bento": "tio",
+    "lucia": "amiga_proxima"
+  },
+  "schedule": [
+    { "from": "05:00", "to": "11:00", "location": "padaria", "activity": "assar" },
+    { "from": "11:00", "to": "14:00", "location": "padaria", "activity": "atender" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "socializar" }
+  ],
+  "greetings": [
+    { "label": "Bom dia, Marina!", "input": "Bom dia, Marina! Como você está?" },
+    { "label": "Quero comprar pão", "input": "Você tem pão fresquinho hoje?" },
+    { "label": "Cheira bem aqui!", "input": "Nossa, que cheiro bom! O que você está assando?" },
+    { "label": "Novidades da vila?", "input": "O que está acontecendo por aqui, Marina?" }
+  ],
+  "topics": {
+    "general": [
+      { "label": "Sobre a padaria", "input": "Há quanto tempo você tem a padaria?" },
+      { "label": "Sobre a família", "input": "Me conta um pouco sobre sua família, Marina." },
+      { "label": "Fofoca da vila", "input": "Tem alguma novidade interessante na vila?" }
+    ],
+    "bread": [
+      { "label": "Comprar pão francês", "input": "Quanto custa o pão francês?" },
+      { "label": "Comprar bolo de fubá", "input": "Você tem bolo de fubá? Adoro!" },
+      { "label": "Receita de pão", "input": "Qual é o segredo do seu pão tão gostoso?" }
+    ],
+    "farming": [
+      { "label": "Precisa de trigo", "input": "Você compra trigo, Marina?" },
+      { "label": "Precisa de leite", "input": "Você usa leite nas receitas? Posso vender." },
+      { "label": "Sobre os ingredientes", "input": "De onde vêm os ingredientes da sua padaria?" }
+    ]
+  },
+  "economy_role": {
+    "produces": ["pao_frances", "bolo_fuba"],
+    "consumes": ["trigo", "leite", "ovo", "lenha"],
+    "shop_inventory": ["pao_frances", "bolo_fuba"]
+  }
+}

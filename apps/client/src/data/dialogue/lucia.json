@@ -1,0 +1,49 @@
+{
+  "id": "lucia",
+  "name": "Tia Lúcia",
+  "role": "vaqueira",
+  "personality": {
+    "core_traits": ["calorosa", "maternal", "fala alto"],
+    "speech_style": "afetuosa, chama todos de 'meu bem' e 'meu filho'",
+    "values": ["alimentar os outros", "cuidar dos animais", "hospitalidade"],
+    "likes": ["animais saudáveis", "visitas na fazenda", "compartilhar comida"],
+    "dislikes": ["vaca doente", "ficar sem companhia", "crueldade com animais"]
+  },
+  "relations": {
+    "bento": "marido_amigo",
+    "marina": "amiga_proxima"
+  },
+  "schedule": [
+    { "from": "05:00", "to": "09:00", "location": "estabulo", "activity": "ordenhar" },
+    { "from": "09:00", "to": "17:00", "location": "pasto", "activity": "cuidar" },
+    { "from": "17:00", "to": "19:00", "location": "casa", "activity": "cozinhar" }
+  ],
+  "greetings": [
+    { "label": "Oi, Tia Lúcia!", "input": "Oi, Tia Lúcia! Tudo bem com você?" },
+    { "label": "Como estão os animais?", "input": "Tia Lúcia, como estão as vacas e as galinhas?" },
+    { "label": "Quero comprar leite", "input": "Você tem leite fresco hoje, Tia Lúcia?" },
+    { "label": "Você está bem?", "input": "Você parece animada hoje, Tia Lúcia!" }
+  ],
+  "topics": {
+    "general": [
+      { "label": "Sobre os animais", "input": "Quantos animais você cuida aqui na fazenda?" },
+      { "label": "Sobre o Bento", "input": "O Tio Bento está ajudando com os animais?" },
+      { "label": "Sobre a Marina", "input": "Você e a Marina são amigas há muito tempo?" }
+    ],
+    "products": [
+      { "label": "Comprar leite", "input": "Quanto custa o litro de leite?" },
+      { "label": "Comprar ovos", "input": "Você vende ovos também? Quantos você tem?" },
+      { "label": "Receita com leite", "input": "O que a Marina faz com o seu leite?" }
+    ],
+    "animals": [
+      { "label": "Como cuidar de vaca", "input": "Como você cuida das suas vacas, Tia Lúcia?" },
+      { "label": "Criar galinhas", "input": "É difícil criar galinhas? Me ensina!" },
+      { "label": "Animal favorito", "input": "Qual é o seu animal favorito aqui da fazenda?" }
+    ]
+  },
+  "economy_role": {
+    "produces": ["leite", "ovo"],
+    "consumes": ["pao_frances"],
+    "shop_inventory": ["leite", "ovo"]
+  }
+}
