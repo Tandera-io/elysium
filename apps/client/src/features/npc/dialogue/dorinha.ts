@@ -28,6 +28,20 @@ export const DORINHA_TOPICS: Record<string, DorinhaQuickReply[]> = {
     { label: 'O que plantar agora?', input: 'O que vale mais a pena plantar nessa época?' },
     { label: 'Tem desconto?', input: 'Você faz um preço especial para um amigo?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Você precisa de algum produto? Posso te ajudar a conseguir.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para te fazer um favor. Precisa de algum material?',
+    },
+    {
+      label: 'Missão disponível?',
+      input: 'Tem algo que você precisaria que eu fosse buscar pra você?',
+    },
+  ],
 };
 
 export const DORINHA_SHOP_TRIGGER_PHRASES: string[] = [

@@ -23,6 +23,20 @@ export const ROMEU_TOPICS: Record<string, RomeuQuickReply[]> = {
     { label: 'Peixe defumado', input: 'Você tem peixe defumado disponível?' },
     { label: 'Peixe raro', input: 'Já pegou algum peixe raro no rio?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Romeu, precisa de algum peixe específico? Posso te ajudar.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para um favor. Falta alguma coisa por aqui?',
+    },
+    {
+      label: 'Missão disponível?',
+      input: 'Tem alguma tarefa que eu possa fazer para você, Romeu?',
+    },
+  ],
 };
 
 export const ROMEU_SHOP_TRIGGER_PHRASES: string[] = [

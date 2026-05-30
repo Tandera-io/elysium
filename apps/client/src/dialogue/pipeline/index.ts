@@ -7,6 +7,7 @@ export const PLAYER_ACTIONS = Object.freeze({
   WATER: 'water',
   PLANT: 'plant',
   TALK: 'talk',
+  OFFER_QUEST: 'offer_quest',
   QUEST_ACCEPT: 'quest_accept',
   QUEST_COMPLETE: 'quest_complete',
   GOODBYE: 'goodbye',
@@ -197,6 +198,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'Eu aprendi a ferraria com meu pai. Ele dizia: ferramenta ruim é pior que nenhuma.',
       'Minério bom é difícil de achar por aqui, mas quando encontro, vira obra de arte.',
     ],
+    offer_quest: [
+      'Preciso de um favor. Tô com falta de material aqui na ferraria. Você pode me ajudar?',
+      'Tenho um pedido especial — se você conseguir o que preciso, pago bem.',
+    ],
     quest_accept: ['Pode deixar. Se precisa de ferramenta forjada, eu faço.'],
     quest_complete: ['Pronto! Ficou melhor do que esperava. Testa aí.'],
     goodbye: [
@@ -216,6 +221,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'Uma ferramenta bem conservada dura a vida toda.',
       'O Tio Bento é cliente fiel há anos. Homem de bom gosto!',
     ],
+    offer_quest: [
+      'Olha, tô precisando de uns itens aqui na ferragem. Será que você pode me ajudar?',
+      'Você me faz um favor? Preciso de material e pago uma boa recompensa.',
+    ],
     quest_accept: ['Pode deixar comigo!'],
     quest_complete: ['Ótimo trabalho! Obrigada.'],
     goodbye: ['Até mais! Volta quando precisar.', 'Tchau! Cuida das ferramentas.'],
@@ -228,6 +237,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
     talk: [
       'A melhor safra que vi foi do Bento — trigo que nem parecia real.',
       'A Marina é minha amiga de infância. A gente cresceu junto aqui.',
+    ],
+    offer_quest: [
+      'Ô, você pode me fazer um favor? Tô precisando de produto e pago bem!',
+      'Tenho um pedido pra você — se me conseguir o que preciso, compenso direitinho.',
     ],
     quest_accept: ['Pode contar comigo!'],
     quest_complete: ['Valeu demais! Muito obrigada.'],
@@ -251,6 +264,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'O trabalho na roça é uma oração em movimento. Respeito quem cuida da terra.',
       'O Bento me confessou que sonha com chuva toda noite. Homem que ama a terra de verdade.',
     ],
+    offer_quest: [
+      'Meu filho, tenho um pedido para te fazer. A comunidade precisa de certos itens — você poderia ajudar?',
+      'Que bom te ver! Tenho uma missão que só alguém de bom coração pode cumprir.',
+    ],
     quest_accept: ['Pode contar comigo! É com prazer que ajudo.'],
     quest_complete: ['Graças a Deus! Muito obrigado.', 'Que bênção! Você é uma boa pessoa.'],
     goodbye: ['Que Deus te ilumine! Até logo.', 'Vai com Deus! Volte sempre.'],
@@ -265,6 +282,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'Trabalho com o Ferraz às vezes. Ele cuida do ferro, eu da madeira. Bom parceiro.',
       'A madeira tem memória. Cada peça tem sua história antes de virar mobília.',
       'Meu pai era carpinteiro também. Aprendi que paciência é a ferramenta mais importante.',
+    ],
+    offer_quest: [
+      'Olha, preciso de material e tô com pouco estoque. Você consegue me ajudar?',
+      'Tenho um serviço pra você — trago material, pago direitinho.',
     ],
     quest_accept: ['Pode deixar. Faço com qualidade.'],
     quest_complete: ['Pronto. Ficou bom, você vai ver.'],
@@ -291,6 +312,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'A Lucia me ensinou muito sobre animais e plantas medicinais. Boa amiga.',
       'Colher ervas de manhã cedo, com o orvalho ainda na folha — é quando elas têm mais força.',
     ],
+    offer_quest: [
+      'Olha, estou precisando de certas ervas e remédios que não consigo sozinha. Você me ajuda?',
+      'Tenho um favor para te pedir — preciso de material e recompenso bem quem me ajuda.',
+    ],
     quest_accept: ['Pode contar! Sei exatamente onde encontrar isso.'],
     quest_complete: ['Perfeito! Muito obrigada.', 'Que alívio! Você foi ótimo.'],
     goodbye: ['Cuida-se! Até logo.', 'Tchau! Qualquer coisa, volte aqui.'],
@@ -313,6 +338,10 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
       'O rio tem seus segredos. Só os que respeitam a correnteza descobrem os melhores lugares.',
       'Pesco desde os seis anos. Meu avô dizia que o peixe escolhe quem vai pegá-lo.',
     ],
+    offer_quest: [
+      'Eita, tenho uma proposta! Precisando de peixe específico e pago bem por isso. Topas?',
+      'Tenho um pedido pra você — o rio tem o que preciso, mas tô ocupado. Você consegue?',
+    ],
     quest_accept: ['Pode deixar comigo! Conheço o rio como a palma da mão.'],
     quest_complete: [
       'Consegui! Não foi fácil, mas valeu.',
@@ -331,6 +360,10 @@ const FALLBACK_RESPONSES: Record<string, string[]> = {
   sell: ['Me conta o que você quer vender.'],
   give_gift: ['Obrigado pelo presente!', 'Que gentileza!'],
   talk: ['Hmm, interessante...', 'É assim mesmo por aqui.'],
+  offer_quest: [
+    'Tenho um pedido pra você — pode me ajudar com algum material?',
+    'Precisando de uma mão, e pago bem!',
+  ],
   quest_accept: ['Pode contar comigo.', 'Combinado!'],
   quest_complete: ['Parabéns! Missão cumprida.', 'Muito bem!'],
   goodbye: ['Até mais!', 'Tchau!'],

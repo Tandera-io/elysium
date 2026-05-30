@@ -26,6 +26,17 @@ export const SOFIA_TOPICS: Record<string, SofiaQuickReply[]> = {
     },
     { label: 'Poção especial', input: 'Você tem alguma poção especial?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Sofia, precisa de alguma erva ou material? Posso te ajudar.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para um favor. Falta alguma coisa na botica?',
+    },
+    { label: 'Missão disponível?', input: 'Tem alguma tarefa que eu possa fazer para você?' },
+  ],
 };
 
 export const SOFIA_SHOP_TRIGGER_PHRASES: string[] = [

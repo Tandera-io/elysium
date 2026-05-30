@@ -31,6 +31,20 @@ export const NINA_TOPICS: Record<string, NinaQuickReply[]> = {
     },
     { label: 'Melhor época de plantar', input: 'Qual é a melhor época para plantar morango aqui?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Você precisa de algum produto? Posso te ajudar a conseguir.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para te fazer um favor. Precisa de algum material?',
+    },
+    {
+      label: 'Missão disponível?',
+      input: 'Tem algo que você precisaria que eu fosse buscar pra você?',
+    },
+  ],
 };
 
 export const NINA_SHOP_TRIGGER_PHRASES: string[] = [

@@ -10,7 +10,11 @@ export type EconomyItemId =
   | 'ovo'
   | 'lenha'
   | 'pao_frances'
-  | 'bolo_fuba';
+  | 'bolo_fuba'
+  | 'peixe'
+  | 'mel'
+  | 'erva_medicinal'
+  | 'madeira';
 
 export interface ItemDef {
   id: EconomyItemId;
@@ -28,4 +32,8 @@ export const ITEMS: Record<EconomyItemId, ItemDef> = {
   lenha: { id: 'lenha', name: 'Lenha', basePrice: 5 },
   pao_frances: { id: 'pao_frances', name: 'Pão francês', basePrice: 18, perishable: true },
   bolo_fuba: { id: 'bolo_fuba', name: 'Bolo de fubá', basePrice: 28, perishable: true },
+  peixe: { id: 'peixe', name: 'Peixe', basePrice: 10, perishable: true },
+  mel: { id: 'mel', name: 'Mel', basePrice: 22 },
+  erva_medicinal: { id: 'erva_medicinal', name: 'Erva medicinal', basePrice: 15 },
+  madeira: { id: 'madeira', name: 'Madeira', basePrice: 12 },
 };

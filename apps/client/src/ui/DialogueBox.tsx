@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { usePlayerStore } from '../store/playerStore';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -132,8 +133,16 @@ export function DialogueBox() {
       {activeQuest && (
         <div className="px-4 py-2 border-t border-slate-700 bg-emerald-900/20 flex items-center justify-between text-xs">
           <span>
-            Quest ativa: entregar {activeQuest.quantity}× {ITEMS[activeQuest.item].name} (
-            {haveForActive}/{activeQuest.quantity})
+            Missão ativa: {activeQuest.quantity}× {ITEMS[activeQuest.item].name}{' '}
+            <span
+              className={
+                haveForActive >= activeQuest.quantity
+                  ? 'text-emerald-400 font-semibold'
+                  : 'text-slate-400'
+              }
+            >
+              ({haveForActive}/{activeQuest.quantity})
+            </span>
           </span>
           {canTurnIn && (
             <button
@@ -141,9 +150,27 @@ export function DialogueBox() {
                 const removed = useInventoryStore
                   .getState()
                   .remove(activeQuest.item as unknown as never, activeQuest.quantity);
-                if (removed) turnInQuest(activeQuest.id);
+                if (removed) {
+                  turnInQuest(activeQuest.id);
+                  usePlayerStore
+                    .getState()
+                    .raiseHeartLevel(activeQuest.giverNpcId, activeQuest.rewardReputation);
+                  if (activeQuest.completeLine) {
+                    useDialogueStore.setState((s) => ({
+                      history: [
+                        ...s.history,
+                        {
+                          who: 'npc',
+                          text: activeQuest.completeLine!,
+                          emotion: 'happy',
+                          timestamp: Date.now(),
+                        },
+                      ],
+                    }));
+                  }
+                }
               }}
-              className="bg-emerald-500 text-slate-900 px-2 py-1 rounded font-semibold"
+              className="bg-emerald-500 text-slate-900 px-2 py-1 rounded font-semibold ml-2 shrink-0"
             >
               Entregar
             </button>
@@ -151,17 +178,21 @@ export function DialogueBox() {
         </div>
       )}
       {!activeQuest && offered && (
-        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
-          <span>
-            {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
-            {offered.rewardCash} +{offered.rewardReputation} rep.
-          </span>
-          <button
-            onClick={() => acceptQuest(offered)}
-            className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold"
-          >
-            Aceitar
-          </button>
+        <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 text-xs space-y-1.5">
+          {offered.offerLine && <p className="text-amber-200 italic">"{offered.offerLine}"</p>}
+          <div className="flex items-center justify-between">
+            <span>
+              Missão: {offered.quantity}× {ITEMS[offered.item].name} →{' '}
+              <span className="text-amber-400 font-semibold">🪙{offered.rewardCash}</span>{' '}
+              <span className="text-emerald-400">+{offered.rewardReputation} rep.</span>
+            </span>
+            <button
+              onClick={() => acceptQuest(offered)}
+              className="bg-amber-500 text-slate-900 px-2 py-1 rounded font-semibold ml-2 shrink-0"
+            >
+              Aceitar missão
+            </button>
+          </div>
         </div>
       )}
       <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">
