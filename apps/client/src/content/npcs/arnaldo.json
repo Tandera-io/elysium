@@ -1,0 +1,28 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "velho_fazendeiro",
+  "position": { "x": -12, "z": 2 },
+  "personality": {
+    "core_traits": ["sábio", "teimoso", "generoso com conselhos"],
+    "speech_style": "devagar, usa muitas expressões do interior, gosta de contar histórias longas",
+    "values": ["tradição", "respeito à terra", "memória dos antepassados"],
+    "fears": ["ver as novas gerações abandonarem o campo", "seca que não passa"]
+  },
+  "relations": {
+    "bento": "amigo_de_infancia",
+    "padre-pedro": "confidente",
+    "sofia": "neta"
+  },
+  "schedule": [
+    { "from": "05:00", "to": "10:00", "location": "roca", "activity": "colher" },
+    { "from": "10:00", "to": "12:00", "location": "praca", "activity": "conversar" },
+    { "from": "12:00", "to": "15:00", "location": "casa", "activity": "descansar" },
+    { "from": "15:00", "to": "18:00", "location": "roca", "activity": "cuidar_da_terra" }
+  ],
+  "economy_role": {
+    "produces": ["milho", "mandioca"],
+    "consumes": ["leite", "pao_frances"],
+    "shop_inventory": ["milho", "mandioca"]
+  }
+}

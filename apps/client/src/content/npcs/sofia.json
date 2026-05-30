@@ -1,0 +1,28 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "florista",
+  "position": { "x": 2, "z": 10 },
+  "personality": {
+    "core_traits": ["alegre", "curiosa", "sonhadora"],
+    "speech_style": "animada, usa muitas exclamações, faz perguntas sobre o mundo fora da aldeia",
+    "values": ["beleza natural", "amizade", "liberdade de sonhar"],
+    "fears": ["nunca sair da aldeia", "perder as flores na seca"]
+  },
+  "relations": {
+    "arnaldo": "neta",
+    "marina": "amiga_intima",
+    "dorinha": "cliente_fiel"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "09:00", "location": "jardim", "activity": "colher_flores" },
+    { "from": "09:00", "to": "13:00", "location": "barraca_flores", "activity": "vender" },
+    { "from": "13:00", "to": "15:00", "location": "casa", "activity": "almocar" },
+    { "from": "15:00", "to": "19:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": ["flores", "buque"],
+    "consumes": ["seed_strawberry"],
+    "shop_inventory": ["flores", "buque"]
+  }
+}
