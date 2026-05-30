@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useInventoryStore, type SlotItem } from '../systems/inventory/inventoryStore';
 import { CROPS, type CropId } from '../systems/farming/CropDefs';
+import { Hoe } from '../components/Tools/Hoe';
 
 const ITEM_ICON: Record<string, string> = {
+  hoe: '⛏️',
   seed_wheat: '🌾',
   seed_tomato: '🍅',
   wheat: '🌾',
@@ -10,6 +12,7 @@ const ITEM_ICON: Record<string, string> = {
 };
 
 const ITEM_NAME: Record<string, string> = {
+  hoe: 'Enxada',
   seed_wheat: 'Sementes de trigo',
   seed_tomato: 'Sementes de tomate',
   wheat: 'Trigo colhido',
@@ -110,8 +113,12 @@ function Slot({
     >
       {item && (
         <>
-          <span aria-hidden>{ITEM_ICON[item.id] ?? '?'}</span>
-          {item.qty > 1 && (
+          {item.id === 'hoe' ? (
+            <Hoe compact />
+          ) : (
+            <span aria-hidden>{ITEM_ICON[item.id] ?? '?'}</span>
+          )}
+          {item.id !== 'hoe' && item.qty > 1 && (
             <span className="absolute bottom-0 right-1 text-[10px] font-mono text-amber-300 leading-none">
               {item.qty}
             </span>
@@ -119,7 +126,11 @@ function Slot({
           {showTip && (
             <div className="absolute top-full mt-1 right-0 z-10 bg-slate-950 border border-slate-700 rounded px-2 py-1 whitespace-nowrap text-xs text-slate-200 pointer-events-none">
               <div className="font-semibold">{nameOf(item.id)}</div>
-              <div className="text-slate-500">qtd {item.qty}</div>
+              {item.id === 'hoe' ? (
+                <div className="text-slate-500">Revire o solo para plantar</div>
+              ) : (
+                <div className="text-slate-500">qtd {item.qty}</div>
+              )}
             </div>
           )}
         </>

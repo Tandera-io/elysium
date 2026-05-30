@@ -60,7 +60,13 @@ export const DECOR_SPRITES = {
   grass_tuft: 'sprites/cache/0bc489cf949e3dc3.png',
 } as const;
 
+/** Tool sprites — used by inventory slots and world-space overlays. */
+export const TOOL_SPRITES = {
+  hoe: 'sprites/tools/hoe.png',
+} as const;
+
 export type AssetSlot = keyof typeof ASSETS;
 export type SpriteSlot = keyof typeof SPRITES;
 export type CropSpriteSlot = keyof typeof CROP_SPRITES;
 export type TileTextureSlot = keyof typeof TILE_TEXTURES;
+export type ToolSpriteSlot = keyof typeof TOOL_SPRITES;
