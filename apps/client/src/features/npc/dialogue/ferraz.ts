@@ -21,6 +21,12 @@ export const FERRAZ_TOPICS: Record<string, FerrazQuickReply[]> = {
     { label: 'Sobre o minério', input: 'Onde posso encontrar bom minério de ferro por aqui?' },
     { label: 'Sobre a ferraria', input: 'Há quanto tempo você trabalha na ferraria?' },
   ],
+  farm: [
+    { label: 'Como vai a fazenda?', input: 'Como está a fazenda, Ferraz? A terra está boa?' },
+    { label: 'Dica de plantio', input: 'Você sabe qual a melhor época para plantar por aqui?' },
+    { label: 'Solo da região', input: 'O solo aqui é bom para lavoura?' },
+    { label: 'Colheita', input: 'A colheita esse ano está boa, Ferraz?' },
+  ],
   upgrades: [
     { label: 'Melhorar enxada', input: 'Quanto custa para melhorar minha enxada?' },
     { label: 'Melhorar regador', input: 'Você consegue reforçar meu regador?' },
