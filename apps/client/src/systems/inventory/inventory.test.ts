@@ -4,24 +4,24 @@ import { INVENTORY_SIZE, useInventoryStore } from './inventoryStore';
 describe('inventoryStore (slot-based)', () => {
   beforeEach(() => useInventoryStore.getState().reset());
 
-  it('starts with INVENTORY_SIZE slots, two filled', () => {
+  it('starts with INVENTORY_SIZE slots, three filled', () => {
     const slots = useInventoryStore.getState().slots;
     expect(slots).toHaveLength(INVENTORY_SIZE);
-    expect(slots.filter((s) => s !== null)).toHaveLength(2);
+    expect(slots.filter((s) => s !== null)).toHaveLength(3);
   });
 
   it('add stacks into an existing slot of same id', () => {
     useInventoryStore.getState().add('seed_wheat', 3);
     expect(useInventoryStore.getState().count('seed_wheat')).toBe(9);
-    // still 2 non-null slots
-    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(2);
+    // still 3 non-null slots (hoe + two seed types)
+    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(3);
   });
 
   it('add a new id goes to the first empty slot', () => {
     useInventoryStore.getState().add('wheat', 5);
     const slots = useInventoryStore.getState().slots;
-    // wheat in slot index 2 (after seed_wheat=0, seed_tomato=1)
-    expect(slots[2]).toEqual({ id: 'wheat', qty: 5 });
+    // wheat in slot index 3 (after hoe=0, seed_wheat=1, seed_tomato=2)
+    expect(slots[3]).toEqual({ id: 'wheat', qty: 5 });
   });
 
   it('add up to STACK_MAX then spills into next empty', () => {
@@ -52,21 +52,22 @@ describe('inventoryStore (slot-based)', () => {
   });
 
   it('swap exchanges two slots', () => {
-    useInventoryStore.getState().swap(0, 1);
+    // slots start as: [hoe, seed_wheat, seed_tomato, ...]
+    useInventoryStore.getState().swap(1, 2);
     const slots = useInventoryStore.getState().slots;
-    expect(slots[0]?.id).toBe('seed_tomato');
-    expect(slots[1]?.id).toBe('seed_wheat');
+    expect(slots[1]?.id).toBe('seed_tomato');
+    expect(slots[2]?.id).toBe('seed_wheat');
   });
 
   it('swap merges same-id stacks', () => {
-    useInventoryStore.getState().add('wheat', 10); // slot 2
-    useInventoryStore.getState().add('wheat', 5); // stacks into slot 2 — count 15
-    // Manually create a second wheat stack by filling slot 2 to max first
+    useInventoryStore.getState().add('wheat', 10); // slot 3
+    useInventoryStore.getState().add('wheat', 5); // stacks into slot 3 — count 15
+    // Manually create a second wheat stack by filling slot 3 to max first
     useInventoryStore.getState().reset();
-    useInventoryStore.getState().add('wheat', 99); // slot 2 full
-    useInventoryStore.getState().add('wheat', 30); // slot 3 with 30
-    // Now swap slots 2 and 3 — same id, slot 2 already at max so 3 stays
-    useInventoryStore.getState().swap(2, 3);
+    useInventoryStore.getState().add('wheat', 99); // slot 3 full
+    useInventoryStore.getState().add('wheat', 30); // slot 4 with 30
+    // Now swap slots 3 and 4 — same id, slot 3 already at max so 4 stays
+    useInventoryStore.getState().swap(3, 4);
     const slots = useInventoryStore.getState().slots;
     const wheatTotal = slots
       .filter((s) => s?.id === 'wheat')
