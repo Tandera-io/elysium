@@ -1,0 +1,26 @@
+{
+  "id": "romeu",
+  "name": "Romeu",
+  "role": "pescador",
+  "position": { "x": 10, "z": 10 },
+  "personality": {
+    "core_traits": ["falante", "animado", "exagerado nas histórias"],
+    "speech_style": "expansivo, conta histórias com entusiasmo, fala em português brasileiro coloquial",
+    "values": ["liberdade", "o rio", "boa pescaria"],
+    "fears": ["seca", "o rio secar", "ninguém ouvir suas histórias"]
+  },
+  "relations": {
+    "bento": "parceiro_de_pesca"
+  },
+  "schedule": [
+    { "from": "04:00", "to": "10:00", "location": "rio", "activity": "pescar" },
+    { "from": "10:00", "to": "14:00", "location": "mercado", "activity": "vender" },
+    { "from": "14:00", "to": "18:00", "location": "praca", "activity": "conversar" },
+    { "from": "18:00", "to": "20:00", "location": "rio", "activity": "preparar_iscas" }
+  ],
+  "economy_role": {
+    "produces": ["peixe_fresco", "peixe_defumado", "peixe_seco"],
+    "consumes": ["isca", "anzol"],
+    "shop_inventory": ["peixe_fresco", "peixe_defumado"]
+  }
+}

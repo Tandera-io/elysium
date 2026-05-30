@@ -96,6 +96,47 @@ describe('farmStore', () => {
     farm.advanceDay();
     expect(useFarmStore.getState().harvest(t)).toEqual({ crop: 'tomato', quantity: 3 });
   });
+
+  it('growthStage starts at 0 on plant', () => {
+    const t = { x: 7, z: 7 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'wheat');
+    const tile = useFarmStore.getState().getTile(t);
+    expect(tile.kind).toBe('planted');
+    if (tile.kind === 'planted') expect(tile.growthStage).toBe(0);
+  });
+
+  it('growthStage advances with each day for wheat', () => {
+    const t = { x: 8, z: 8 };
+    const farm = useFarmStore.getState();
+    farm.till(t);
+    farm.plant(t, 'wheat'); // 4 stages, 1 day each
+
+    farm.advanceDay(); // daysGrown=1 → stage 1
+    let tile = useFarmStore.getState().getTile(t);
+    if (tile.kind === 'planted') expect(tile.growthStage).toBe(1);
+
+    farm.advanceDay(); // daysGrown=2 → stage 2
+    tile = useFarmStore.getState().getTile(t);
+    if (tile.kind === 'planted') expect(tile.growthStage).toBe(2);
+
+    farm.advanceDay(); // daysGrown=3 → stage 3
+    tile = useFarmStore.getState().getTile(t);
+    if (tile.kind === 'planted') expect(tile.growthStage).toBe(3);
+  });
+
+  it('getGrowthStage returns -1 for empty tile and stage for planted', () => {
+    const t = { x: 9, z: 9 };
+    const farm = useFarmStore.getState();
+    expect(farm.getGrowthStage(t)).toBe(-1);
+    farm.till(t);
+    expect(farm.getGrowthStage(t)).toBe(-1);
+    farm.plant(t, 'strawberry');
+    expect(useFarmStore.getState().getGrowthStage(t)).toBe(0);
+    useFarmStore.getState().advanceDay();
+    expect(useFarmStore.getState().getGrowthStage(t)).toBe(1);
+  });
 });
 
 describe('inventoryStore', () => {

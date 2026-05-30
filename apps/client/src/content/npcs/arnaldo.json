@@ -1,0 +1,25 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "marceneiro",
+  "position": { "x": 8, "z": -6 },
+  "personality": {
+    "core_traits": ["quieto", "perfeccionista", "honesto"],
+    "speech_style": "direto, poucas palavras, fala em português brasileiro coloquial",
+    "values": ["qualidade", "trabalho bem feito", "durabilidade"],
+    "fears": ["material de baixa qualidade", "cliente insatisfeito"]
+  },
+  "relations": {
+    "ferraz": "parceiro_de_trabalho"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "marcenaria", "activity": "trabalhar" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "marcenaria", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": ["prancha", "cerca", "mobilia"],
+    "consumes": ["madeira", "ferro"],
+    "shop_inventory": ["prancha", "cerca"]
+  }
+}

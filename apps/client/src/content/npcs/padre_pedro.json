@@ -1,0 +1,27 @@
+{
+  "id": "padre_pedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "position": { "x": -8, "z": -4 },
+  "personality": {
+    "core_traits": ["bondoso", "paciente", "sábio"],
+    "speech_style": "calmo, usa termos religiosos com leveza, fala em português brasileiro coloquial",
+    "values": ["comunidade", "fé", "trabalho honesto"],
+    "fears": ["discórdia na comunidade", "abandono da terra"]
+  },
+  "relations": {
+    "bento": "confidente",
+    "marina": "paroquiana_fiel"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "rezar" },
+    { "from": "08:00", "to": "12:00", "location": "praca", "activity": "conversar" },
+    { "from": "14:00", "to": "17:00", "location": "igreja", "activity": "atender" },
+    { "from": "17:00", "to": "19:00", "location": "praca", "activity": "socializar" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": [],
+    "shop_inventory": []
+  }
+}

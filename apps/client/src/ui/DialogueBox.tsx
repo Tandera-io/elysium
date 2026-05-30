@@ -7,6 +7,14 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { getTimeOfDay, getOpeningLine, classifyContext } from '../dialogue/DialogueManager';
+
+const TIME_OF_DAY_LABELS: Record<string, string> = {
+  morning: 'Manhã',
+  afternoon: 'Tarde',
+  evening: 'Noite',
+  night: 'Madrugada',
+};
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -15,6 +23,8 @@ export function DialogueBox() {
   const error = useDialogueStore((s) => s.error);
   const close = useDialogueStore((s) => s.close);
   const send = useDialogueStore((s) => s.send);
+  const getInteractionCount = useDialogueStore((s) => s.getInteractionCount);
+  const appendNpcTurn = useDialogueStore((s) => s.appendNpcTurn);
   const npcs = useNpcStore((s) => s.npcs);
   const hour = useTimeStore((s) => s.hour);
   const dayInSeason = useTimeStore((s) => s.dayInSeason);
@@ -24,13 +34,16 @@ export function DialogueBox() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Inject NPC opening line when dialogue opens with a new NPC.
   useEffect(() => {
     if (npcId) {
       setDraft('');
-      // Focus the input when dialogue opens
+      const count = getInteractionCount(npcId);
+      const opening = getOpeningLine(npcId, hour, { interactionCount: count });
+      if (opening) appendNpcTurn(opening, 'neutral');
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [npcId]);
+  }, [npcId]); // intentionally omit callbacks — only re-run when npcId changes
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -69,6 +82,9 @@ export function DialogueBox() {
   const npc = npcs[npcId];
   if (!npc) return null;
 
+  const interactionCount = getInteractionCount(npcId);
+  const relationStage = classifyContext({ interactionCount });
+
   const haveForActive = activeQuest
     ? invSlots.reduce(
         (acc, s) => (s?.id === (activeQuest.item as unknown as string) ? acc + s.qty : acc),
@@ -94,6 +110,19 @@ export function DialogueBox() {
         <div>
           <h2 className="text-lg font-bold">{npc.def.name}</h2>
           <p className="text-xs text-slate-400">{npc.def.role}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
+            {TIME_OF_DAY_LABELS[getTimeOfDay(hour)] ?? 'Tarde'}
+          </span>
+          {interactionCount > 0 && (
+            <span
+              className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full"
+              title={`Relacionamento: ${relationStage}`}
+            >
+              #{interactionCount}
+            </span>
+          )}
         </div>
         <button
           onClick={close}
@@ -153,8 +182,8 @@ export function DialogueBox() {
       {!activeQuest && offered && (
         <div className="px-4 py-2 border-t border-slate-700 bg-amber-900/20 flex items-center justify-between text-xs">
           <span>
-            {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa: 🪙
-            {offered.rewardCash} +{offered.rewardReputation} rep.
+            {npc.def.name} precisa de {offered.quantity}× {ITEMS[offered.item].name}. Recompensa:{' '}
+            {offered.rewardCash}g +{offered.rewardReputation} rep.
           </span>
           <button
             onClick={() => acceptQuest(offered)}
