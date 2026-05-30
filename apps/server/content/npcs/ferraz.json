@@ -1,0 +1,26 @@
+{
+  "id": "ferraz",
+  "name": "Mestre Ferraz",
+  "role": "ferreiro",
+  "asset": "assets/cache/ferraz.glb",
+  "position": { "x": 10, "z": -6 },
+  "personality": {
+    "core_traits": ["austero", "perfeccionista", "orgulhoso do ofício"],
+    "speech_style": "pausado, direto, usa jargão de ferraria, fala em português brasileiro coloquial",
+    "values": ["qualidade do trabalho", "durabilidade", "artesanato honesto"],
+    "fears": ["cliente impaciente", "minério ruim", "ferramenta mal feita"]
+  },
+  "relations": {
+    "bento": "cliente_fiel"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "14:00", "location": "casa", "activity": "almocar" },
+    { "from": "14:00", "to": "18:00", "location": "ferraria", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": ["enxada_reforçada", "picareta_reforçada", "regador_reforçado"],
+    "consumes": ["ferro", "carvao", "madeira"],
+    "shop_inventory": ["enxada_reforçada", "picareta_reforçada", "regador_reforçado"]
+  }
+}
