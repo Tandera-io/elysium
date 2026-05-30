@@ -1,10 +1,11 @@
 import { useLoader } from '@react-three/fiber';
-import { useMemo } from 'react';
+import { useMemo, Suspense } from 'react';
 import { NearestFilter, TextureLoader } from 'three';
 import { useFarmStore } from '../../systems/farming/farmStore';
 import { CROPS, stageForDayCount } from '../../systems/farming/CropDefs';
 import { CROP_SPRITES, TILE_TEXTURES } from '../../content/assets';
 import { BillboardSprite } from '../loader/BillboardSprite';
+import { WheatSprite } from '../../components/Crops/WheatSprite';
 import { tileKey } from './pathfinding';
 import { tileToWorld, type GridConfig, DEFAULT_GRID } from './WorldGrid';
 
@@ -53,6 +54,8 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
         let mature = false;
         let stageColor: string | null = null;
         let cropId: keyof typeof CROP_SPRITES | null = null;
+        let isWheat = false;
+        let daysGrown = 0;
 
         if (tile.kind === 'tilled') {
           texture = tile.watered ? wateredTex : tilledTex;
@@ -63,6 +66,8 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
           stageColor = stage.color;
           mature = tile.daysGrown >= def.daysToMature;
           cropId = tile.crop as keyof typeof CROP_SPRITES;
+          isWheat = tile.crop === 'wheat';
+          daysGrown = tile.daysGrown;
         }
 
         return (
@@ -72,15 +77,20 @@ export function FarmField({ grid = DEFAULT_GRID }: FarmFieldProps) {
               <planeGeometry args={[size * 0.98, size * 0.98]} />
               <meshStandardMaterial map={texture} />
             </mesh>
-            {/* Growing-stage cone for non-mature plants */}
-            {stageColor && !mature && (
+            {/* Wheat: animated growth sprite for all stages */}
+            {isWheat && (
+              <Suspense fallback={null}>
+                <WheatSprite daysGrown={daysGrown} />
+              </Suspense>
+            )}
+            {/* Other crops: cone placeholder for pre-mature, sprite when mature */}
+            {!isWheat && stageColor && !mature && (
               <mesh position={[0, 0.2, 0]} castShadow>
                 <coneGeometry args={[0.15, 0.4, 6]} />
                 <meshStandardMaterial color={stageColor} />
               </mesh>
             )}
-            {/* Mature plant sprite */}
-            {mature && cropId && CROP_SPRITES[cropId] && (
+            {!isWheat && mature && cropId && CROP_SPRITES[cropId] && (
               <BillboardSprite path={CROP_SPRITES[cropId]} height={1.1} billboard={false} />
             )}
           </group>
