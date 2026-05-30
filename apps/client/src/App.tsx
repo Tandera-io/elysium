@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { WeatherHUD } from './systems/weather/Weather';
 
 type FetchState =
   | { kind: 'loading' }
@@ -72,6 +73,7 @@ export function App() {
         <h1 className="text-xl font-bold tracking-tight">Elysium</h1>
         <p className="text-slate-300 text-xs">Fase 12 · polish</p>
         <p className="text-amber-300 text-xs font-mono">🪙 {gold}g</p>
+        <WeatherHUD />
         <button
           onClick={() => setSaveOpen(true)}
           className="mt-1 text-[10px] text-slate-400 hover:text-slate-200"

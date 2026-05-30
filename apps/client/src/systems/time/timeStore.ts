@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { useFarmStore } from '../farming/farmStore';
+import { useWeatherStore } from '../weather/weatherStore';
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
 
@@ -71,7 +72,11 @@ export const useTimeStore = create<TimeState & TimeActions>((set, get) => ({
       }
     }
     set({ hour, dayInSeason, seasonIndex, year });
-    if (dayRolled) useFarmStore.getState().advanceDay();
+    if (dayRolled) {
+      const season = SEASONS[seasonIndex] ?? 'spring';
+      useFarmStore.getState().advanceDay(season);
+      useWeatherStore.getState().advanceWeather(season);
+    }
   },
   setPaused: (paused) => set({ paused }),
   setRealSecondsPerDay: (value) => set({ realSecondsPerDay: Math.max(10, value) }),
