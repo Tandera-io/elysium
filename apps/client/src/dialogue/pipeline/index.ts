@@ -24,52 +24,98 @@ const FIRST_MEETING_LINES: Record<string, string[]> = {
     'Ei, rosto novo! Bem-vindo à ferraria. Sou o Ferraz — se precisar de ferramenta boa ou upgrade, é aqui.',
     'Nunca te vi por aqui antes. O nome é Ferraz. Trabalho com metal desde os doze anos. O que precisa?',
     'Pode chegar, sem cerimônia. Ferraz, ferreiro. Se o seu equipamento estiver frouxo, eu resolvo.',
+    'Hm, visita nova. Sou o Ferraz. Faço ferramenta que dura. Se quiser coisa de qualidade, é aqui.',
   ],
   nina: [
     'Olá! Eu sou Nina. Se precisar de ferramenta ou semente, pode contar comigo!',
     'Bem-vindo à ferragem! Sou Nina. Temos tudo que você precisa para a roça.',
     'Chegou em boa hora! Acabei de receber estoque novo. Eu sou Nina, é um prazer!',
+    'Oi! Nunca te vi por aqui. Sou a Nina. Ferramenta boa e semente de qualidade — tudo aqui!',
   ],
   dorinha: [
     'Oi, oi! Sou a Dorinha, da quitanda. Se quiser comprar ou vender safra, é aqui!',
     'Olá! Nunca te vi por aqui. Sou a Dorinha. Pode chegar, temos sementes e compramos colheita!',
     'Bem-vindo! Sou Dorinha. Precisa de semente ou quer vender o que colheu? Pode falar!',
+    'Eita, rosto novo! Dorinha, prazer! A quitanda é aqui — semente, safra, tudo a gente resolve.',
   ],
   marina: [
     'Que bom ver um rosto novo! Sou a Marina, da padaria. Se quiser pão fresquinho, é aqui!',
     'Olá, bem-vindo! Me chamo Marina. O cheirinho de pão quentinho veio até você, né?',
+    'Oi! Nunca te vi por aqui, não. Marina, sou eu! Faço o melhor pão da região — sem modéstia.',
   ],
   bento: [
     'Hmm. Novo por aqui. Bento. Trabalho nessa terra faz tempo. Qualquer coisa, pode perguntar.',
     'Rosto novo. Sou o Bento. Se precisar de conselho sobre a roça, tô por aqui.',
+    'Novo, hein? Tio Bento. Essa terra é boa pra quem trabalha com juízo. Bem-vindo.',
   ],
   lucia: [
     'Oi! Sou a Lucia. Cuido dos animais por aqui. Se quiser saber sobre leite ou lã, pode me chamar!',
     'Bem-vindo! Lucia, criadora. Se precisar de produto animal, é comigo.',
+    'Ai que bom, visita nova! Sou a Tia Lucia, meu bem. Cuido das vacas e das galinhas — venha me visitar!',
   ],
   padre_pedro: [
     'Que bom ver você por aqui, meu filho. Sou o Padre Pedro. Se precisar de algum conselho, pode me procurar.',
     'Bem-vindo à nossa comunidade! Sou o Padre Pedro. Esta terra é abençoada com boas pessoas.',
     'Olá, rosto novo! Padre Pedro, à sua disposição. Esta comunidade é acolhedora, pode ter certeza.',
+    'Paz! Sou o Padre Pedro. Você chegou num bom momento — aqui cada pessoa que chega é uma bênção.',
   ],
   arnaldo: [
     'Oi. Sou o Arnaldo, carpinteiro. Se precisar de madeira trabalhada ou estrutura, é comigo.',
     'Nunca te vi por aqui. Arnaldo, marceneiro. Qualidade é o que ofereço.',
     'Chega com calma. Arnaldo — trabalho com madeira. Se precisar de algo sólido e bem-feito, fala.',
+    'Bom dia. Arnaldo. Não sou de muita conversa, mas de madeira boa eu entendo. O que você precisa?',
   ],
   sofia: [
     'Olá! Eu sou Sofia. Cuido da saúde da comunidade com ervas e remédios naturais.',
     'Bem-vindo! Sou Sofia, a curandeira. Se precisar de algum remédio ou conselho de saúde, pode me procurar.',
     'Que bom te ver! Sofia, da botica. A natureza tem remédio pra quase tudo — pode me perguntar.',
+    'Oi! Sofia aqui. Nunca te vi por aqui. Se estiver se sentindo mal ou só quiser conversar, pode chegar!',
   ],
   romeu: [
     'Eita, rosto novo! Sou o Romeu, pescador. O maior peixe que já peguei tinha mais de um metro — mas isso é história pra depois!',
     'Ô! Nunca te vi por aqui. Romeu, pescador do rio. Se quiser peixe fresco ou uma boa história, tô aqui!',
     'Chegou em boa hora! Acabei de voltar do rio com bastante peixe. Sou o Romeu — pode chamar!',
+    'Olha aí! Visita nova. Romeu, pescador. O rio tá bem hoje — quase tão bem quanto as minhas histórias!',
   ],
 };
 
 const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
+  marina: {
+    repeat_early: [
+      'Voltou! Tem pão quentinho esperando por você.',
+      'De volta! Sabia que ia querer mais, né?',
+    ],
+    repeat_regular: [
+      'Que bom te ver! Fiz bolo de fubá hoje — quer provar?',
+      'Sempre bom ter você por aqui! O que vai ser hoje?',
+    ],
+    friend: [
+      'Meu cliente favorito! Já deixei um pãozinho separado pra você.',
+      'Você é quase da família aqui na padaria!',
+    ],
+  },
+  bento: {
+    repeat_early: ['De volta. Precisa de mais trigo?', 'Voltou. Bom.'],
+    repeat_regular: ['Sempre bom ver. O que precisa?', 'Apareceu. Tô aqui.'],
+    friend: [
+      'Você já é velho conhecido. Fala o que precisa.',
+      'Te conheço bem já. O que vai querer hoje?',
+    ],
+  },
+  lucia: {
+    repeat_early: [
+      'Meu bem, voltou! As galinhas até reconhecem você já!',
+      'Que bom! Saudade de você! Como tá?',
+    ],
+    repeat_regular: [
+      'Que alegria de novo! Sempre bom te ver, meu filho!',
+      'Voltou! Tenho leite fresquinho do dia pra você!',
+    ],
+    friend: [
+      'Você é meu filho adotivo já! Que bom te ver!',
+      'Minha visita favorita! Pode entrar, meu bem!',
+    ],
+  },
   ferraz: {
     repeat_early: [
       'De volta, hein? Vejo que gostou do serviço.',
@@ -174,6 +220,71 @@ const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
 };
 
 const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
+  marina: {
+    greet: [
+      'Oi! Que bom ver você! Quer um pãozinho fresquinho?',
+      'Que alegria! Como posso te ajudar hoje?',
+      'Bem-vindo à padaria! Acabou de sair do forno.',
+    ],
+    buy: ['Boa escolha! O pão de hoje ficou especial.', 'Pode pegar! Fiz bastante hoje cedo.'],
+    sell: [
+      'Compro trigo e leite! Quanto você tem?',
+      'Sempre preciso de bons ingredientes. O que trouxe?',
+    ],
+    give_gift: [
+      'Que fofo você! Obrigada de coração.',
+      'Não precisava, mas adorei! Muito obrigada.',
+    ],
+    talk: [
+      'Cresci aqui com a Dorinha. A gente aprontava muito quando era pequena!',
+      'O segredo do meu pão é o trigo do Tio Bento — grão de primeira.',
+      'Às vezes sinto saudade de quando a praça ficava cheia nas festas. A gente dançava a noite toda.',
+      'Leite fresco da Tia Lucia faz toda a diferença no bolo de fubá. Ingrediente faz tudo.',
+    ],
+    quest_accept: ['Pode contar! Faço com prazer.'],
+    quest_complete: ['Que maravilha! Muito obrigada!', 'Perfeito! Você é ótimo demais.'],
+    goodbye: ['Até mais! Volta pra comer pão fresquinho!', 'Tchau! Cuida-se!'],
+  },
+  bento: {
+    greet: ['Boa. O que você precisa?', 'Fala. Tô ouvindo.', 'Chegou. O que é que é?'],
+    buy: ['Tenho trigo bom. Pode levar.', 'Vendo. Mas cobra caro não — preço justo.'],
+    sell: ['Compro lenha e material de qualidade. O que trouxe?'],
+    give_gift: ['Não era necessário. Mas obrigado.', 'Grato. Uso bem.'],
+    talk: [
+      'Terra boa precisa de paciência. Não adianta apressar.',
+      'Meu pai dizia: chão que você não cuida, não te cuida de volta.',
+      'O rio da Romeu lembra quando chove muito. Segredo da terra é respeitar o tempo dela.',
+      'Plantio sem cuidado é desperdício. Simples assim.',
+    ],
+    quest_accept: ['Tá bem. Faço o que posso.'],
+    quest_complete: ['Pronto. Feito.', 'Acabei. Testa aí.'],
+    goodbye: ['Até mais.', 'Vai com Deus.'],
+  },
+  lucia: {
+    greet: [
+      'Ai, meu bem! Que bom te ver! Como você tá?',
+      'Meu filho! Chegou! Quer leite fresquinho?',
+      'Que alegria! A casa fica mais animada com visita!',
+    ],
+    buy: [
+      'Pode levar, meu bem! Leite e ovo fresquinhos do dia.',
+      'Claro que sim! Tenho bastante hoje — as galinhas capricharam!',
+    ],
+    sell: ['Compro milho pra dar pras galinhas! Quanto você tem?'],
+    give_gift: [
+      'Ai, coração bom demais! Obrigada, meu bem!',
+      'Não precisava, meu filho! Mas fico tão feliz!',
+    ],
+    talk: [
+      'As vacas têm mais juízo do que parece. Elas sentem quando a pessoa é boa.',
+      'O Bento acorda antes de mim todo dia. Homem de trabalho mesmo, meu bem.',
+      'Cuido das minhas vacas como se fossem filha. Elas me dão leite, eu cuido delas — troca justa!',
+      'A Marina cresceu aqui pertinho. Criança danada, mas boa de coração. Ficou boa mulher!',
+    ],
+    quest_accept: ['Pode contar comigo, meu filho! Faço com todo amor!'],
+    quest_complete: ['Graças a Deus! Que alívio! Obrigada!'],
+    goodbye: ['Vai com Deus, meu bem! Volta sempre!', 'Tchau, meu filho! Cuida-se!'],
+  },
   ferraz: {
     greet: [
       'Oi! Precisando de ferramenta ou upgrade?',

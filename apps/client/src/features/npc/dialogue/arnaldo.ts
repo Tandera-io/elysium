@@ -10,6 +10,7 @@ export const ARNALDO_GREETINGS: ArnaldoQuickReply[] = [
   { label: 'Preciso de madeira', input: 'Você vende madeira trabalhada?' },
   { label: 'Quero uma cerca', input: 'Você consegue fazer uma cerca para minha fazenda?' },
   { label: 'Como vai o trabalho?', input: 'Como está a marcenaria, Arnaldo?' },
+  { label: 'Tem pronta entrega?', input: 'Você tem madeira pronta para levar hoje?' },
 ];
 
 export const ARNALDO_TOPICS: Record<string, ArnaldoQuickReply[]> = {
@@ -17,11 +18,15 @@ export const ARNALDO_TOPICS: Record<string, ArnaldoQuickReply[]> = {
     { label: 'Sobre a marcenaria', input: 'Há quanto tempo você trabalha com madeira?' },
     { label: 'Parceria com Ferraz', input: 'Você e o Ferraz trabalham juntos?' },
     { label: 'Madeira local', input: 'Qual é a melhor madeira que você encontra aqui?' },
+    { label: 'Onde busca madeira', input: 'Você mesmo derruba as árvores ou compra de alguém?' },
+    { label: 'O que mais gosta de fazer', input: 'Qual tipo de peça você mais gosta de fazer?' },
   ],
   woodwork: [
     { label: 'Comprar prancha', input: 'Quanto custa uma prancha de madeira boa?' },
     { label: 'Comprar cerca', input: 'Quanto você cobra por uma cerca?' },
     { label: 'Encomenda especial', input: 'Você faz peças sob encomenda?' },
+    { label: 'Caixote de armazenamento', input: 'Você faz caixote para guardar colheita?' },
+    { label: 'Tempo de entrega', input: 'Quanto tempo você leva para entregar uma encomenda?' },
   ],
 };
 

@@ -10,6 +10,7 @@ export const FERRAZ_GREETINGS: FerrazQuickReply[] = [
   { label: 'Quero melhorar ferramentas', input: 'Você pode melhorar minha ferramenta?' },
   { label: 'Quero comprar equipamento', input: 'O que você tem disponível na ferraria?' },
   { label: 'Como vai o trabalho?', input: 'Como está o movimento na ferraria?' },
+  { label: 'Trouxe minério!', input: 'Trouxe um pouco de minério. Você aceita?' },
 ];
 
 export const FERRAZ_TOPICS: Record<string, FerrazQuickReply[]> = {
@@ -20,11 +21,18 @@ export const FERRAZ_TOPICS: Record<string, FerrazQuickReply[]> = {
     },
     { label: 'Sobre o minério', input: 'Onde posso encontrar bom minério de ferro por aqui?' },
     { label: 'Sobre a ferraria', input: 'Há quanto tempo você trabalha na ferraria?' },
+    { label: 'Parceria com Arnaldo', input: 'Você e o Arnaldo trabalham juntos às vezes?' },
+    { label: 'O que mais gosta no ofício', input: 'O que te apaixona no trabalho de ferreiro?' },
   ],
   upgrades: [
     { label: 'Melhorar enxada', input: 'Quanto custa para melhorar minha enxada?' },
     { label: 'Melhorar regador', input: 'Você consegue reforçar meu regador?' },
     { label: 'Melhorar picareta', input: 'Quero uma picareta mais resistente.' },
+    {
+      label: 'Vale a pena fazer upgrade?',
+      input: 'Compensa mais melhorar a ferramenta ou comprar uma nova?',
+    },
+    { label: 'Quanto tempo leva?', input: 'Quanto tempo demora para fazer o upgrade?' },
   ],
   crafting: [
     { label: 'Forjar espada', input: 'Você forja armas também?' },
@@ -33,6 +41,8 @@ export const FERRAZ_TOPICS: Record<string, FerrazQuickReply[]> = {
       input: 'Que materiais você precisa para forjar algo especial?',
     },
     { label: 'Tempo de produção', input: 'Quanto tempo leva para forjar uma ferramenta nova?' },
+    { label: 'Peça sob encomenda', input: 'Você faz peça especial sob encomenda?' },
+    { label: 'O que você já forjou', input: 'Qual foi a peça mais difícil que você já forjou?' },
   ],
 };
 
