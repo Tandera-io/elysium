@@ -3,17 +3,33 @@ import { useInventoryStore, type SlotItem } from '../systems/inventory/inventory
 import { CROPS, type CropId } from '../systems/farming/CropDefs';
 
 const ITEM_ICON: Record<string, string> = {
+  // Seeds
   seed_wheat: '🌾',
   seed_tomato: '🍅',
+  seed_corn: '🌽',
+  seed_pumpkin: '🎃',
+  seed_strawberry: '🍓',
+  // Harvested crops
   wheat: '🌾',
   tomato: '🍅',
+  corn: '🌽',
+  pumpkin: '🎃',
+  strawberry: '🍓',
 };
 
 const ITEM_NAME: Record<string, string> = {
+  // Seeds
   seed_wheat: 'Sementes de trigo',
   seed_tomato: 'Sementes de tomate',
+  seed_corn: 'Sementes de milho',
+  seed_pumpkin: 'Sementes de abóbora',
+  seed_strawberry: 'Sementes de morango',
+  // Harvested crops
   wheat: 'Trigo colhido',
   tomato: 'Tomate colhido',
+  corn: 'Milho colhido',
+  pumpkin: 'Abóbora colhida',
+  strawberry: 'Morango colhido',
 };
 
 function nameOf(id: string): string {

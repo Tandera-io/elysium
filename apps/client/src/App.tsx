@@ -10,6 +10,8 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
+import { FarmInteraction, type FarmActionResult } from './systems/farming/FarmInteraction';
+import { FarmActionToast } from './ui/FarmActionToast';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 
@@ -23,6 +25,7 @@ export function App() {
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
+  const [farmResult, setFarmResult] = useState<FarmActionResult | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -100,6 +103,8 @@ export function App() {
       <DialogueBox />
       <NPCInteractions />
       <NPCShopModal />
+      <FarmInteraction onAction={setFarmResult} />
+      <FarmActionToast result={farmResult} />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
