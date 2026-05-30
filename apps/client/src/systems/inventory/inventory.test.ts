@@ -4,24 +4,24 @@ import { INVENTORY_SIZE, useInventoryStore } from './inventoryStore';
 describe('inventoryStore (slot-based)', () => {
   beforeEach(() => useInventoryStore.getState().reset());
 
-  it('starts with INVENTORY_SIZE slots, two filled', () => {
+  it('starts with INVENTORY_SIZE slots, four filled', () => {
     const slots = useInventoryStore.getState().slots;
     expect(slots).toHaveLength(INVENTORY_SIZE);
-    expect(slots.filter((s) => s !== null)).toHaveLength(2);
+    expect(slots.filter((s) => s !== null)).toHaveLength(4);
   });
 
   it('add stacks into an existing slot of same id', () => {
     useInventoryStore.getState().add('seed_wheat', 3);
     expect(useInventoryStore.getState().count('seed_wheat')).toBe(9);
-    // still 2 non-null slots
-    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(2);
+    // still 4 non-null slots (wheat stacked, no new slot used)
+    expect(useInventoryStore.getState().slots.filter((s) => s !== null)).toHaveLength(4);
   });
 
   it('add a new id goes to the first empty slot', () => {
     useInventoryStore.getState().add('wheat', 5);
     const slots = useInventoryStore.getState().slots;
-    // wheat in slot index 2 (after seed_wheat=0, seed_tomato=1)
-    expect(slots[2]).toEqual({ id: 'wheat', qty: 5 });
+    // wheat in slot index 4 (after seed_wheat=0, seed_tomato=1, seed_corn=2, hoe=3)
+    expect(slots[4]).toEqual({ id: 'wheat', qty: 5 });
   });
 
   it('add up to STACK_MAX then spills into next empty', () => {
@@ -59,18 +59,27 @@ describe('inventoryStore (slot-based)', () => {
   });
 
   it('swap merges same-id stacks', () => {
-    useInventoryStore.getState().add('wheat', 10); // slot 2
-    useInventoryStore.getState().add('wheat', 5); // stacks into slot 2 — count 15
-    // Manually create a second wheat stack by filling slot 2 to max first
+    // Reset to clean state; slots 0-3 pre-filled by makeInitial
     useInventoryStore.getState().reset();
-    useInventoryStore.getState().add('wheat', 99); // slot 2 full
-    useInventoryStore.getState().add('wheat', 30); // slot 3 with 30
-    // Now swap slots 2 and 3 — same id, slot 2 already at max so 3 stays
-    useInventoryStore.getState().swap(2, 3);
+    useInventoryStore.getState().add('wheat', 99); // slot 4 full
+    useInventoryStore.getState().add('wheat', 30); // slot 5 with 30
+    // Now swap slots 4 and 5 — same id, slot 4 already at max so 5 stays
+    useInventoryStore.getState().swap(4, 5);
     const slots = useInventoryStore.getState().slots;
     const wheatTotal = slots
       .filter((s) => s?.id === 'wheat')
       .reduce((a, s) => a + (s?.qty ?? 0), 0);
     expect(wheatTotal).toBe(129);
+  });
+
+  it('non-stackable hoe occupies its own slot and does not stack', () => {
+    useInventoryStore.getState().reset();
+    // Try adding another hoe — it should go to a new slot, not stack on slot 3
+    useInventoryStore.getState().add('hoe', 1);
+    const hoeSlots = useInventoryStore.getState().slots.filter((s) => s?.id === 'hoe');
+    // Initial hoe (slot 3) + new hoe in slot 4 = 2 slots, each qty 1
+    expect(hoeSlots).toHaveLength(2);
+    expect(hoeSlots[0]?.qty).toBe(1);
+    expect(hoeSlots[1]?.qty).toBe(1);
   });
 });

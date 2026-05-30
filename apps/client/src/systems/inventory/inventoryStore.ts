@@ -1,7 +1,11 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ToolItemId = 'hoe' | 'watering_can';
+export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn' | ToolItemId;
+
+/** Items that do not stack (max qty = 1 per slot). */
+export const NON_STACKABLE: ReadonlySet<ItemId> = new Set<ItemId>(['hoe', 'watering_can']);
 
 export interface SlotItem {
   id: ItemId;
@@ -33,6 +37,8 @@ function makeInitial(): InventoryState {
   const slots: (SlotItem | null)[] = new Array<SlotItem | null>(INVENTORY_SIZE).fill(null);
   slots[0] = { id: 'seed_wheat', qty: 6 };
   slots[1] = { id: 'seed_tomato', qty: 4 };
+  slots[2] = { id: 'seed_corn', qty: 3 };
+  slots[3] = { id: 'hoe', qty: 1 };
   return { slots, gold: 500 };
 }
 
@@ -40,22 +46,25 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
   ...makeInitial(),
   add: (id, qty) => {
     if (qty <= 0) return true;
+    const isNonStackable = NON_STACKABLE.has(id);
     const slots = [...get().slots];
     let remaining = qty;
-    // 1) fill existing stacks first
-    for (let i = 0; i < slots.length && remaining > 0; i++) {
-      const s = slots[i];
-      if (s && s.id === id && s.qty < STACK_MAX) {
-        const room = STACK_MAX - s.qty;
-        const drop = Math.min(remaining, room);
-        slots[i] = { ...s, qty: s.qty + drop };
-        remaining -= drop;
+    // 1) fill existing stacks first (skip non-stackable items — they always get their own slot)
+    if (!isNonStackable) {
+      for (let i = 0; i < slots.length && remaining > 0; i++) {
+        const s = slots[i];
+        if (s && s.id === id && s.qty < STACK_MAX) {
+          const room = STACK_MAX - s.qty;
+          const drop = Math.min(remaining, room);
+          slots[i] = { ...s, qty: s.qty + drop };
+          remaining -= drop;
+        }
       }
     }
-    // 2) place in first empty
+    // 2) place in first empty (non-stackable: always 1 per slot)
     for (let i = 0; i < slots.length && remaining > 0; i++) {
       if (slots[i] === null) {
-        const drop = Math.min(remaining, STACK_MAX);
+        const drop = isNonStackable ? 1 : Math.min(remaining, STACK_MAX);
         slots[i] = { id, qty: drop };
         remaining -= drop;
       }

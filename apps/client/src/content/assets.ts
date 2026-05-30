@@ -55,12 +55,28 @@ export const TILE_TEXTURES = {
   watered: 'sprites/cache/2a6a2a13cf05aa32.png',
 } as const;
 
+/**
+ * Per-stage wheat sprites (stages 0-2). Stage 3 (mature) uses CROP_SPRITES.wheat.
+ * Index matches daysGrown: [seed, sprout, growing].
+ */
+export const WHEAT_STAGE_SPRITES: readonly [string, string, string] = [
+  'sprites/cache/a1b2c3d4e5f60001.png', // stage 0: seeds in soil
+  'sprites/cache/a1b2c3d4e5f60002.png', // stage 1: sprout
+  'sprites/cache/a1b2c3d4e5f60003.png', // stage 2: growing stalks
+];
+
 /** Decorative props (overlays, not main characters). */
 export const DECOR_SPRITES = {
   grass_tuft: 'sprites/cache/0bc489cf949e3dc3.png',
+} as const;
+
+/** Tool sprites — used by inventory slots and world-space overlays. */
+export const TOOL_SPRITES = {
+  hoe: 'sprites/tools/hoe.png',
 } as const;
 
 export type AssetSlot = keyof typeof ASSETS;
 export type SpriteSlot = keyof typeof SPRITES;
 export type CropSpriteSlot = keyof typeof CROP_SPRITES;
 export type TileTextureSlot = keyof typeof TILE_TEXTURES;
+export type ToolSpriteSlot = keyof typeof TOOL_SPRITES;
