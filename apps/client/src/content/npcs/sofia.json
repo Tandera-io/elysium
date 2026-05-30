@@ -1,0 +1,74 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "professora",
+  "position": { "x": -6, "z": 10 },
+  "personality": {
+    "core_traits": ["curiosa", "dedicada", "entusiasta"],
+    "speech_style": "animada e clara, faz perguntas, usa exemplos práticos da natureza e da roça",
+    "values": ["educação", "curiosidade", "crescimento pessoal"],
+    "fears": ["analfabetismo na comunidade", "escola fechar por falta de recursos"]
+  },
+  "relations": {
+    "padre-pedro": "aliado_na_comunidade",
+    "marina": "amiga_e_ex_aluna"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "escola", "activity": "lecionar" },
+    { "from": "12:00", "to": "13:30", "location": "casa", "activity": "almocar" },
+    { "from": "13:30", "to": "17:00", "location": "escola", "activity": "preparar_aulas" },
+    { "from": "17:00", "to": "20:00", "location": "praca", "activity": "leitura" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances", "leite"],
+    "shop_inventory": []
+  },
+  "dialogues": [
+    {
+      "id": "morning",
+      "trigger": { "timeOfDay": "morning" },
+      "lines": [
+        "Bom dia! Manhã de aprender é manhã bem aproveitada!",
+        "Que bom te ver cedo! As crianças já chegaram cheias de energia hoje.",
+        "Bom dia! Você sabia que a planta cresce mais de manhã cedo? Fascinante, não?"
+      ]
+    },
+    {
+      "id": "afternoon",
+      "trigger": { "timeOfDay": "afternoon" },
+      "lines": [
+        "Boa tarde! Acabei de terminar as aulas. Os alunos são um regalo.",
+        "Tarde! Estava corrigindo as provas. As crianças daqui são muito espertas.",
+        "Boa tarde! Preparando as aulas de amanhã. Sempre tem muito o que aprender."
+      ]
+    },
+    {
+      "id": "evening",
+      "trigger": { "timeOfDay": "evening" },
+      "lines": [
+        "Boa noite! Terminei mais um dia repleto de descobertas.",
+        "Noite! Dando uma voltinha antes de ler. Nunca para de aprender!",
+        "Boa noite. Sabe, o sol se pôs mas minha curiosidade continua acesa."
+      ]
+    },
+    {
+      "id": "night",
+      "trigger": { "timeOfDay": "night" },
+      "lines": [
+        "Nossa, já é tão tarde! Quando começo a ler perco a noção do tempo.",
+        "Boa noite! Estava preparando um material novo. Animada demais para dormir.",
+        "Noite alta... Estava estudando. Você também é coruja?"
+      ]
+    },
+    {
+      "id": "regular-visitor",
+      "trigger": { "minInteractions": 3 },
+      "lines": [
+        "Você sempre aparece por aqui! Que ótimo, adoro sua companhia.",
+        "Nossa parceria está crescendo! Obrigada por sempre conversar comigo.",
+        "Você é um excelente ouvinte. Já pensou em virar professor também?"
+      ]
+    }
+  ]
+}

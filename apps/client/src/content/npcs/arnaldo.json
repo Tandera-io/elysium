@@ -1,0 +1,73 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "armazenista",
+  "position": { "x": 10, "z": -8 },
+  "personality": {
+    "core_traits": ["metódico", "honesto", "negociante experiente"],
+    "speech_style": "formal mas amigável, fala pausado, gosta de números e inventário",
+    "values": ["honestidade comercial", "organização", "comunidade próspera"],
+    "fears": ["prejuízo no estoque", "falta de fornecedores confiáveis"]
+  },
+  "relations": {
+    "dorinha": "fornecedora_principal",
+    "bento": "parceiro_comercial"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "armazem", "activity": "atender" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "armazem", "activity": "estoque" }
+  ],
+  "economy_role": {
+    "produces": ["farinha", "feijao"],
+    "consumes": ["trigo", "milho"],
+    "shop_inventory": ["farinha", "feijao", "milho"]
+  },
+  "dialogues": [
+    {
+      "id": "morning",
+      "trigger": { "timeOfDay": "morning" },
+      "lines": [
+        "Bom dia! Já conferi o estoque cedinho. Temos farinha e feijão frescos.",
+        "Manhã boa essa! O armazém abre cedo pra quem madruga.",
+        "Bom dia! A mercadoria chegou cedo hoje. Boa hora pra abastecer."
+      ]
+    },
+    {
+      "id": "afternoon",
+      "trigger": { "timeOfDay": "afternoon" },
+      "lines": [
+        "Boa tarde. Movimento pesado hoje — a colheita tá boa na região.",
+        "Tarde! Precisa de alguma coisa do armazém? Estamos bem abastecidos.",
+        "Boa tarde. Acabei de organizar o estoque. Tudo em ordem por aqui."
+      ]
+    },
+    {
+      "id": "evening",
+      "trigger": { "timeOfDay": "evening" },
+      "lines": [
+        "Boa noite. Dia produtivo! O armazém fecha logo, mas ainda dá tempo.",
+        "Noite boa. Dia de muito movimento hoje. A comunidade está crescendo.",
+        "Boa noite. Tenho ainda um estoque bom antes de fechar. O que precisa?"
+      ]
+    },
+    {
+      "id": "night",
+      "trigger": { "timeOfDay": "night" },
+      "lines": [
+        "Essa hora o armazém já fechou, mas posso ajudar com o que for urgente.",
+        "Noite alta... Estava conferindo o inventário de amanhã. Precisa de algo?",
+        "Boa noite. Trabalhando até tarde também? O comércio não descansa."
+      ]
+    },
+    {
+      "id": "regular-visitor",
+      "trigger": { "minInteractions": 3 },
+      "lines": [
+        "Ah, você de novo! Cliente fiel é o melhor cliente. Como posso ajudar?",
+        "Sempre bom te ver por aqui. Já sei o que você costuma levar!",
+        "Nossa parceria está rendendo! Sempre tenho o que você precisa."
+      ]
+    }
+  ]
+}

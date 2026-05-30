@@ -1,0 +1,73 @@
+{
+  "id": "padre-pedro",
+  "name": "Padre Pedro",
+  "role": "padre",
+  "position": { "x": -12, "z": 6 },
+  "personality": {
+    "core_traits": ["sábio", "compassivo", "espiritual"],
+    "speech_style": "sereno, fala em tom elevado mas acessível, usa metáforas da natureza e da fé",
+    "values": ["fé", "comunidade", "misericórdia"],
+    "fears": ["divisão da comunidade", "perda da tradição religiosa local"]
+  },
+  "relations": {
+    "marina": "paroquiana_devota",
+    "sofia": "aliada_na_educacao"
+  },
+  "schedule": [
+    { "from": "05:30", "to": "08:00", "location": "igreja", "activity": "missa" },
+    { "from": "08:00", "to": "12:00", "location": "vila", "activity": "visitas_pastorais" },
+    { "from": "15:00", "to": "19:00", "location": "igreja", "activity": "confissoes" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances", "vinho"],
+    "shop_inventory": []
+  },
+  "dialogues": [
+    {
+      "id": "morning",
+      "trigger": { "timeOfDay": "morning" },
+      "lines": [
+        "Bom dia, meu filho! Que Deus abençoe sua manhã e seus trabalhos.",
+        "Manhã abençoada! A paz do Senhor esteja com você hoje.",
+        "Que bom vê-lo cedo! A missa foi linda esta manhã."
+      ]
+    },
+    {
+      "id": "afternoon",
+      "trigger": { "timeOfDay": "afternoon" },
+      "lines": [
+        "Boa tarde! Que o meio do dia lhe traga renovação e esperança.",
+        "Tarde, meu caro. Já fez suas orações hoje? O coração agradecido é semente fértil.",
+        "A hora do descanso é também hora de agradecer. Boa tarde!"
+      ]
+    },
+    {
+      "id": "evening",
+      "trigger": { "timeOfDay": "evening" },
+      "lines": [
+        "Boa noite. O dia chega ao fim, mas as graças de Deus são novas a cada manhã.",
+        "Noite bendita! Como foi seu dia? Espero que cheio de bênçãos.",
+        "A noite convida à reflexão. Que seu descanso seja restaurador."
+      ]
+    },
+    {
+      "id": "night",
+      "trigger": { "timeOfDay": "night" },
+      "lines": [
+        "Noite alta... A comunidade já dorme. Está bem, meu filho?",
+        "Tão tarde assim... Cuide-se. O Senhor vela por nós, mas nós também precisamos dormir!",
+        "As estrelas testemunham nossas vigílias. Que paz o acompanhe."
+      ]
+    },
+    {
+      "id": "regular-visitor",
+      "trigger": { "minInteractions": 3 },
+      "lines": [
+        "Que alegria vê-lo novamente! Nossa amizade é uma bênção para mim.",
+        "Você tem honrado nossa comunidade com sua presença. Muito obrigado.",
+        "Já somos velhos conhecidos! A constância é virtude rara. Parabéns."
+      ]
+    }
+  ]
+}

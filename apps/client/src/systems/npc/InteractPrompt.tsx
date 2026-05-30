@@ -38,8 +38,9 @@ export function InteractPrompt() {
       if (!t) return;
 
       if (e.code === 'KeyE') {
-        if (useDialogueStore.getState().npcId) return; // already open
-        useDialogueStore.getState().open(t.def.id);
+        const ds = useDialogueStore.getState();
+        if (ds.npcId || ds.greetingNpcId) return; // already open
+        ds.openGreeting(t.def.id);
       }
 
       if (e.code === 'KeyG') {
