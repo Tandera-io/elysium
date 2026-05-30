@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDialogueStore } from '../dialogue/dialogueStore';
+import { useLocalDialogueStore } from './localDialogueStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { findInteractTarget } from './interaction';
 import { useNpcStore } from './npcStore';
 import { useNPCShopStore, DORINHA_SHOP_ID, NINA_SHOP_ID } from './NPCShop';
+import { FERRAZ_GREETINGS } from '../../features/npc/dialogue/ferraz';
+
+/** NPCs that use pre-scripted local dialogue instead of the AI dialogue API. */
+const LOCAL_DIALOGUE_NPCS: Record<string, string[]> = {
+  ferraz: FERRAZ_GREETINGS.map((g) => g.input),
+};
 
 const SHOP_NPCS = new Set([DORINHA_SHOP_ID, NINA_SHOP_ID]);
 
@@ -38,8 +45,20 @@ export function InteractPrompt() {
       if (!t) return;
 
       if (e.code === 'KeyE') {
-        if (useDialogueStore.getState().npcId) return; // already open
-        useDialogueStore.getState().open(t.def.id);
+        const localLines = LOCAL_DIALOGUE_NPCS[t.def.id];
+        if (localLines) {
+          // Use pre-scripted local dialogue (no API call)
+          const localStore = useLocalDialogueStore.getState();
+          if (localStore.active?.npcId === t.def.id) {
+            // Already open for this NPC — advance to next line
+            localStore.advance();
+          } else {
+            localStore.open(t.def.id, t.def.name, localLines);
+          }
+        } else {
+          if (useDialogueStore.getState().npcId) return; // already open
+          useDialogueStore.getState().open(t.def.id);
+        }
       }
 
       if (e.code === 'KeyG') {
