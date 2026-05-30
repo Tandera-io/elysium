@@ -3,6 +3,8 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
+import type { Season } from '../time/timeStore';
+
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
@@ -98,4 +100,60 @@ export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropS
 
 export function isMature(crop: CropDef, daysSincePlanted: number): boolean {
   return daysSincePlanted >= crop.daysToMature;
+}
+
+// ---------------------------------------------------------------------------
+// Season metadata
+// ---------------------------------------------------------------------------
+
+/** Ordered season keys (re-exported from timeStore for convenience). */
+export { SEASONS } from '../time/timeStore';
+
+/** Human-readable labels in Portuguese. */
+export const SEASON_LABEL: Record<Season, string> = {
+  spring: 'Primavera',
+  summer: 'Verão',
+  autumn: 'Outono',
+  winter: 'Inverno',
+};
+
+/** Accent hex color per season (used by UI overlays). */
+export const SEASON_COLOR: Record<Season, string> = {
+  spring: '#7ecb6a',
+  summer: '#f5c518',
+  autumn: '#d4732a',
+  winter: '#8bb8d4',
+};
+
+/**
+ * Which seasons each crop can grow in.
+ * Key = CropId; value = tuple of Season strings.
+ */
+const CROP_SEASONS: Record<CropId, readonly Season[]> = {
+  wheat: ['spring', 'summer'],
+  tomato: ['summer'],
+  pumpkin: ['autumn'],
+  corn: ['summer', 'autumn'],
+  strawberry: ['spring'],
+};
+
+/**
+ * Returns all crop definitions that can grow during `season`.
+ *
+ * @param season — the active Season string
+ */
+export function getAvailableCrops(season: Season): CropDef[] {
+  return (Object.values(CROPS) as CropDef[]).filter((def) =>
+    CROP_SEASONS[def.id]?.includes(season),
+  );
+}
+
+/**
+ * True when `cropId` cannot grow during `season`.
+ *
+ * @param cropId  — id of the crop to check
+ * @param season  — the active Season string
+ */
+export function isOutOfSeason(cropId: CropId, season: Season): boolean {
+  return !(CROP_SEASONS[cropId]?.includes(season) ?? false);
 }
