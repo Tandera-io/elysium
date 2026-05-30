@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import ToolUpgradeMenu from './components/ToolUpgradeMenu';
 
 type FetchState =
   | { kind: 'loading' }
@@ -22,6 +23,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [toolUpgradeOpen, setToolUpgradeOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -78,6 +80,12 @@ export function App() {
         >
           📁 menu (Esc · Ctrl+S)
         </button>
+        <button
+          onClick={() => setToolUpgradeOpen(true)}
+          className="mt-1 block text-[10px] text-slate-400 hover:text-slate-200"
+        >
+          🔨 upgrade tools
+        </button>
       </header>
       <aside
         className="absolute top-4 right-4 bg-slate-900/70 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-200 font-mono"
@@ -101,6 +109,7 @@ export function App() {
       <NPCInteractions />
       <NPCShopModal />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
+      <ToolUpgradeMenu open={toolUpgradeOpen} onClose={() => setToolUpgradeOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
   );
