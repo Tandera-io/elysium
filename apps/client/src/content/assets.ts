@@ -39,6 +39,21 @@ export const WALK_CYCLES: Partial<Record<keyof typeof SPRITES, string[]>> = {
   ],
 };
 
+/**
+ * Growth-stage sprites per crop — ordered from seed (index 0) to just-before-mature.
+ * Each entry is a path relative to the public root.
+ * Used by CropGrowthStageSprite to animate the crop growing in the 3D world.
+ * Paths are populated once growth-stage art is generated; empty arrays are safe
+ * (the component falls back to the seed placeholder).
+ */
+export const CROP_GROWTH_SPRITES: Record<string, string[]> = {
+  wheat: [],
+  tomato: [],
+  pumpkin: [],
+  corn: [],
+  strawberry: [],
+} as const;
+
 /** Ripe crop sprites — used by FarmField when a planted tile reaches mature. */
 export const CROP_SPRITES = {
   wheat: 'sprites/cache/8dcc7821fa994510.png',

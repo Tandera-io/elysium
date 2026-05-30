@@ -18,6 +18,7 @@ export interface GameSnapshot {
   };
   inventory: {
     slots: unknown[];
+    equippedSlotIndex?: number | null;
   };
   quests: {
     active: Record<string, unknown>;
