@@ -1,14 +1,21 @@
 import { create } from 'zustand';
 import type { CropId } from '../farming/CropDefs';
 
-export type ItemId = CropId | 'seed_wheat' | 'seed_tomato' | 'seed_corn';
+export type ToolItemId = 'watering_can' | 'hoe' | 'basket';
+export type SeedId =
+  | 'seed_wheat'
+  | 'seed_tomato'
+  | 'seed_corn'
+  | 'seed_pumpkin'
+  | 'seed_strawberry';
+export type ItemId = CropId | SeedId | ToolItemId;
 
 export interface SlotItem {
   id: ItemId;
   qty: number;
 }
 
-export const INVENTORY_SIZE = 12;
+export const INVENTORY_SIZE = 24;
 const STACK_MAX = 99;
 
 export interface InventoryState {
