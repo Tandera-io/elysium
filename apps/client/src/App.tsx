@@ -14,6 +14,8 @@ import { FarmInteraction, type FarmActionResult } from './systems/farming/FarmIn
 import { FarmActionToast } from './ui/FarmActionToast';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { WeatherEffect } from './ui/WeatherEffect';
+import { DayNightCycle } from './systems/DayNightCycle';
 
 type FetchState =
   | { kind: 'loading' }
@@ -96,6 +98,8 @@ export function App() {
           </span>
         )}
       </aside>
+      <DayNightCycle />
+      <WeatherEffect />
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
