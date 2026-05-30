@@ -10,6 +10,7 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
+import { CropRow } from './ui/CropRow';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 
@@ -95,6 +96,7 @@ export function App() {
       </aside>
       <InventoryPanel />
       <QuestPanel />
+      <CropRow />
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />
