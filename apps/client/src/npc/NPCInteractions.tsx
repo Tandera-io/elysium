@@ -3,7 +3,17 @@ import { useDialogueStore } from '../systems/dialogue/dialogueStore';
 import { getGreetings, getTopics } from '../dialogue/DialogueManager';
 import { useTimeStore, currentSeason } from '../systems/time/timeStore';
 
-export const HUB_NPC_IDS = ['dorinha', 'padre_pedro', 'nina', 'arnaldo', 'sofia', 'romeu'] as const;
+export const HUB_NPC_IDS = [
+  'marina',
+  'bento',
+  'lucia',
+  'dorinha',
+  'padre_pedro',
+  'nina',
+  'arnaldo',
+  'sofia',
+  'romeu',
+] as const;
 export type HubNpcId = (typeof HUB_NPC_IDS)[number];
 
 const TOPIC_LABELS: Record<string, string> = {
@@ -15,6 +25,11 @@ const TOPIC_LABELS: Record<string, string> = {
   tools: 'Ferramentas',
   seeds: 'Sementes',
   selling: 'Vender',
+  baking: 'Padaria',
+  farming: 'Lavoura',
+  animals: 'Animais',
+  quests: 'Missões',
+  info: 'Conversa',
 };
 
 /**

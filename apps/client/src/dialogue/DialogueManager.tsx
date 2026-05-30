@@ -14,6 +14,9 @@ import PADRE_PEDRO_DIALOGUE from '../features/npc/dialogue/padre_pedro';
 import ARNALDO_DIALOGUE from '../features/npc/dialogue/arnaldo';
 import SOFIA_DIALOGUE from '../features/npc/dialogue/sofia';
 import ROMEU_DIALOGUE from '../features/npc/dialogue/romeu';
+import MARINA_DIALOGUE from '../features/npc/dialogue/marina';
+import BENTO_DIALOGUE from '../features/npc/dialogue/bento';
+import LUCIA_DIALOGUE from '../features/npc/dialogue/lucia';
 
 export interface QuickReply {
   label: string;
@@ -70,3 +73,6 @@ registerNPC(PADRE_PEDRO_DIALOGUE as NpcDialogueConfig);
 registerNPC(ARNALDO_DIALOGUE as NpcDialogueConfig);
 registerNPC(SOFIA_DIALOGUE as NpcDialogueConfig);
 registerNPC(ROMEU_DIALOGUE as NpcDialogueConfig);
+registerNPC(MARINA_DIALOGUE as NpcDialogueConfig);
+registerNPC(BENTO_DIALOGUE as NpcDialogueConfig);
+registerNPC(LUCIA_DIALOGUE as NpcDialogueConfig);

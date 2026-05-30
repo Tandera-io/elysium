@@ -70,6 +70,42 @@ const FIRST_MEETING_LINES: Record<string, string[]> = {
 };
 
 const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
+  marina: {
+    repeat_early: [
+      'Voltou! Quer pão fresquinho?',
+      'Que bom te ver de novo! Tenho novidade no forno.',
+    ],
+    repeat_regular: [
+      'Sempre bom te ver! Tenho pão quentinho hoje.',
+      'Chegou na hora — saiu do forno agora mesmo!',
+    ],
+    friend: [
+      'Minha cliente preferida! Já separei o melhor pão pra você.',
+      'Você é quase da família aqui na padaria!',
+    ],
+  },
+  bento: {
+    repeat_early: ['Voltou. Bom sinal.', 'De novo por aqui. A roça tá melhorando?'],
+    repeat_regular: [
+      'Vejo que não abandona a terra. Respeito isso.',
+      'Chegou na hora certa. Tenho um conselho novo.',
+    ],
+    friend: ['Você virou paisagem por aqui. Boa paisagem.', 'Confio na sua roça. Continuação boa.'],
+  },
+  lucia: {
+    repeat_early: [
+      'Meu bem, que bom te ver de volta!',
+      'Voltou! As vacas já te conhecem pelo cheiro!',
+    ],
+    repeat_regular: [
+      'Sempre um prazer, meu filho! O que vai querer hoje?',
+      'Chegou na hora — acabei de ordenhar!',
+    ],
+    friend: [
+      'Meu bem querido! Já separei o leite mais fresquinho pra você!',
+      'Você é família aqui! As vacas adoram você!',
+    ],
+  },
   ferraz: {
     repeat_early: [
       'De volta, hein? Vejo que gostou do serviço.',
@@ -174,6 +210,77 @@ const REPEAT_VISIT_LINES: Record<string, Record<string, string[]>> = {
 };
 
 const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
+  marina: {
+    greet: [
+      'Olá! Que bom te ver! Quer pão fresquinho hoje?',
+      'Bem-vindo! O que posso fazer por você?',
+      'Chegou em boa hora — saiu do forno agora!',
+    ],
+    buy: [
+      'Boa escolha! Deixa eu te mostrar o que saiu do forno hoje.',
+      'Pode escolher — tudo fresquinho aqui!',
+    ],
+    sell: [
+      'Trigo e ovo eu aceito de bom grado! Me traz sempre.',
+      'Boa safra? Manda ver — pago bem por ingrediente de qualidade!',
+    ],
+    give_gift: [
+      'Que carinho! Você sabe como me deixar feliz.',
+      'Mel! Vou usar na receita especial. Muito obrigada!',
+    ],
+    talk: [
+      'Essa padaria é o coração da vila. Todo mundo passa por aqui no café da manhã.',
+      'Meu segredo é a farinha de qualidade. Sem bom ingrediente, não tem bom pão.',
+      'O Tio Bento me ensinou que paciência é ingrediente também. Esperar o pão crescer é uma arte.',
+    ],
+    quest_accept: ['Fico contando com você! Precisando de trigo ou leite, pode me trazer.'],
+    quest_complete: ['Que lindo! Ficou perfeito! Toma, você mais do que merece.'],
+    goodbye: ['Até mais! Volta amanhã — o pão é mais fresquinho de manhã!', 'Tchau! Cuida-se!'],
+  },
+  bento: {
+    greet: ['Hmm. O que precisa?', 'Fala.', 'Precisando de conselho ou de trigo?'],
+    buy: ['Trigo tenho. Quanto?', 'Pode levar. É produto honesto.'],
+    sell: ['O que trouxe? Deixa ver.', 'Ferro ou semente eu aceito.'],
+    give_gift: ['Ferro. Útil. Obrigado.', 'Não precisava, mas é bem-vindo.'],
+    talk: [
+      'Terra respeita quem respeita ela. Simples assim.',
+      'Meu pai me ensinou: olha o céu de manhã antes de plantar. O tempo diz o que a planta precisa.',
+      'A seca é prova. Quem sobrevive à seca entende o campo de verdade.',
+    ],
+    quest_accept: ['Combinado. Não demora.', 'Pode trazer quando tiver.'],
+    quest_complete: ['Valeu. Esse material vai durar.', 'Bom trabalho. Respeito isso.'],
+    goodbye: ['..Até mais.', 'Vai com cuidado.'],
+  },
+  lucia: {
+    greet: [
+      'Meu bem! Que bom te ver! Leite, ovo, ou só uma conversa?',
+      'Ay, chegou! As vacas vão adorar sua visita!',
+      'Meu filho, bem-vindo ao estábulo!',
+    ],
+    buy: [
+      'Pode escolher! Tudo fresquinho, saiu da vaquinha hoje cedo!',
+      'Boa escolha, meu bem! Só produto de qualidade aqui!',
+    ],
+    sell: ['Ervas e capim eu aceito sempre, meu filho! Me ajuda a cuidar dos animais!'],
+    give_gift: [
+      'Ai, que gracinha! Você não precisava, mas adorei!',
+      'Ervas medicinais! As vacas vão ficar tão contentes!',
+    ],
+    talk: [
+      'Animal bem tratado dá o melhor produto. É lei da fazenda.',
+      'Acordo todo dia às quatro e meia. As vacas não conhecem feriado, e eu tampouco!',
+      'A Marina me traz pão e eu trago leite. Troca boa essa — e boa amizade.',
+    ],
+    quest_accept: [
+      'Meu bem, que bênção você é! Fico contando!',
+      'Obrigada, meu filho! As vaquinhas agradecem!',
+    ],
+    quest_complete: ['Que lindo! As vaquinhas ficaram tão contentes! Toma esse presentinho!'],
+    goodbye: [
+      'Até mais, meu bem! Volta sempre!',
+      'Tchau! E passa no estábulo pra ver as vaquinhas!',
+    ],
+  },
   ferraz: {
     greet: [
       'Oi! Precisando de ferramenta ou upgrade?',
