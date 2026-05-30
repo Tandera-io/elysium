@@ -14,12 +14,15 @@ export interface CropStage {
   readonly color: string;
 }
 
+export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
+
 export interface CropDef {
   readonly id: CropId;
   readonly name: string;
   readonly stages: readonly CropStage[];
   readonly daysToMature: number;
   readonly yieldQuantity: number;
+  readonly seasons: readonly Season[];
 }
 
 export const CROPS: Record<CropId, CropDef> = {
@@ -34,6 +37,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 4,
     yieldQuantity: 2,
+    seasons: ['spring', 'summer', 'autumn', 'winter'],
   },
   tomato: {
     id: 'tomato',
@@ -47,6 +51,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 5,
     yieldQuantity: 3,
+    seasons: ['spring', 'summer'],
   },
   pumpkin: {
     id: 'pumpkin',
@@ -59,6 +64,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 7,
     yieldQuantity: 1,
+    seasons: ['autumn'],
   },
   corn: {
     id: 'corn',
@@ -71,6 +77,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 6,
     yieldQuantity: 3,
+    seasons: ['summer'],
   },
   strawberry: {
     id: 'strawberry',
@@ -82,6 +89,7 @@ export const CROPS: Record<CropId, CropDef> = {
     ],
     daysToMature: 3,
     yieldQuantity: 4,
+    seasons: ['spring', 'summer'],
   },
 };
 
