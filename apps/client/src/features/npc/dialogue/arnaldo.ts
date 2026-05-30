@@ -23,6 +23,20 @@ export const ARNALDO_TOPICS: Record<string, ArnaldoQuickReply[]> = {
     { label: 'Comprar cerca', input: 'Quanto você cobra por uma cerca?' },
     { label: 'Encomenda especial', input: 'Você faz peças sob encomenda?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Arnaldo, precisa de algum material? Posso te ajudar a conseguir.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para te fazer um favor. Falta algum material na marcenaria?',
+    },
+    {
+      label: 'Missão disponível?',
+      input: 'Tem alguma tarefa que eu possa fazer para você, Arnaldo?',
+    },
+  ],
 };
 
 export const ARNALDO_SHOP_TRIGGER_PHRASES: string[] = [

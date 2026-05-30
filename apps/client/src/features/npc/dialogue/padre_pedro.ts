@@ -23,6 +23,17 @@ export const PADRE_PEDRO_TOPICS: Record<string, PadrePedroQuickReply[]> = {
     { label: 'Sobre o trabalho', input: 'Como o senhor vê o trabalho na roça?' },
     { label: 'Momento difícil', input: 'Estou passando por um momento difícil...' },
   ],
+  quests: [
+    {
+      label: 'Posso ajudar a comunidade?',
+      input: 'Padre Pedro, tem alguma necessidade na comunidade que eu possa ajudar?',
+    },
+    {
+      label: 'Alguma missão?',
+      input: 'Tem alguma tarefa que precisaria que eu fizesse para ajudar?',
+    },
+    { label: 'O que falta aqui?', input: 'O que a nossa comunidade mais precisa agora, Padre?' },
+  ],
 };
 
 export const PADRE_PEDRO_SHOP_TRIGGER_PHRASES: string[] = [];

@@ -15,6 +15,7 @@ const TOPIC_LABELS: Record<string, string> = {
   tools: 'Ferramentas',
   seeds: 'Sementes',
   selling: 'Vender',
+  quests: 'Missões',
 };
 
 /**
@@ -84,20 +85,28 @@ export function NPCInteractions() {
             {reply.label}
           </button>
         ))}
-        {topicKeys.map((key) => (
-          <button
-            key={key}
-            onClick={() => setOpenTopic(openTopic === key ? null : key)}
-            disabled={pending}
-            className={`text-xs px-3 py-1.5 rounded-full border transition-colors disabled:opacity-50 ${
-              openTopic === key
-                ? 'bg-slate-600 border-slate-500 text-slate-100'
-                : 'bg-slate-800/80 hover:bg-slate-700 border-slate-600 text-slate-300'
-            }`}
-          >
-            {TOPIC_LABELS[key] ?? key} ▾
-          </button>
-        ))}
+        {topicKeys.map((key) => {
+          const isQuest = key === 'quests';
+          return (
+            <button
+              key={key}
+              onClick={() => setOpenTopic(openTopic === key ? null : key)}
+              disabled={pending}
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors disabled:opacity-50 ${
+                openTopic === key
+                  ? isQuest
+                    ? 'bg-emerald-700 border-emerald-500 text-white'
+                    : 'bg-slate-600 border-slate-500 text-slate-100'
+                  : isQuest
+                    ? 'bg-emerald-900/60 hover:bg-emerald-800/80 border-emerald-700 text-emerald-300'
+                    : 'bg-slate-800/80 hover:bg-slate-700 border-slate-600 text-slate-300'
+              }`}
+            >
+              {isQuest ? '! ' : ''}
+              {TOPIC_LABELS[key] ?? key} ▾
+            </button>
+          );
+        })}
       </div>
     </div>
   );

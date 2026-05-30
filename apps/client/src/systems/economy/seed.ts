@@ -1,11 +1,10 @@
 import type { Actor, MarketState } from './sim';
 
 /**
- * Default seeded market with Marina (padeira), Bento (fazendeiro) and Lucia
- * (vaqueira). These three close the loop: Bento produces wheat consumed by
- * Marina; Lucia produces milk consumed by Marina; Marina produces bread
- * consumed by Bento and Lucia. Player isn't modelled here — Phase 11
- * adds the player as a real economic participant.
+ * Default seeded market with all village NPCs. Marina, Bento and Lucia
+ * form the original production loop. Hub NPCs (dorinha, nina, padre_pedro,
+ * arnaldo, sofia, romeu) each have deliberate deficits so that proposeQuestFor
+ * will generate a quest for them when the player talks to them.
  */
 
 const marina: Actor = {
@@ -44,10 +43,86 @@ const lucia: Actor = {
   isProducer: true,
 };
 
+// Hub NPCs — each has a deficit large enough to always generate a quest
+// (desired − stock ≥ 3). No dailyProduces; they are quest-givers, not
+// producers in the economic simulation.
+
+const dorinha: Actor = {
+  id: 'dorinha',
+  name: 'Dorinha',
+  cash: 150,
+  stock: { trigo: 2, tomate: 1 },
+  desiredStock: { trigo: 8, tomate: 6 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
+const nina: Actor = {
+  id: 'nina',
+  name: 'Nina',
+  cash: 150,
+  stock: { lenha: 1 },
+  desiredStock: { lenha: 6 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
+const padre_pedro: Actor = {
+  id: 'padre_pedro',
+  name: 'Padre Pedro',
+  cash: 100,
+  stock: { pao_frances: 0, mel: 0 },
+  desiredStock: { pao_frances: 5, mel: 4 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
+const arnaldo: Actor = {
+  id: 'arnaldo',
+  name: 'Arnaldo',
+  cash: 180,
+  stock: { madeira: 2 },
+  desiredStock: { madeira: 10 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
+const sofia: Actor = {
+  id: 'sofia',
+  name: 'Sofia',
+  cash: 140,
+  stock: { erva_medicinal: 1, mel: 1 },
+  desiredStock: { erva_medicinal: 6, mel: 5 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
+const romeu: Actor = {
+  id: 'romeu',
+  name: 'Romeu',
+  cash: 120,
+  stock: { peixe: 2 },
+  desiredStock: { peixe: 8 },
+  dailyConsumes: {},
+  dailyProduces: {},
+  recentPurchases: {},
+  isProducer: false,
+};
+
 export function makeSeedMarket(): MarketState {
   return {
     day: 0,
-    actors: { marina, bento, lucia },
+    actors: { marina, bento, lucia, dorinha, nina, padre_pedro, arnaldo, sofia, romeu },
     lastDayLog: { trades: [], shortages: [], averagePrice: {} },
   };
 }

@@ -34,6 +34,20 @@ export const FERRAZ_TOPICS: Record<string, FerrazQuickReply[]> = {
     },
     { label: 'Tempo de produção', input: 'Quanto tempo leva para forjar uma ferramenta nova?' },
   ],
+  quests: [
+    {
+      label: 'Tem algum pedido?',
+      input: 'Ferraz, precisa de algum minério ou material? Posso te ajudar a conseguir.',
+    },
+    {
+      label: 'Posso te ajudar?',
+      input: 'Tô disponível para um favor. Falta algum material na ferraria?',
+    },
+    {
+      label: 'Missão disponível?',
+      input: 'Tem alguma tarefa que eu possa fazer para você, Ferraz?',
+    },
+  ],
 };
 
 export const FERRAZ_SHOP_TRIGGER_PHRASES: string[] = [
