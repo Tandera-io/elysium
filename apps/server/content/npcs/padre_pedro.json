@@ -1,0 +1,31 @@
+{
+  "id": "padre_pedro",
+  "name": "Padre Pedro",
+  "role": "padre da comunidade",
+  "personality": {
+    "core_traits": ["sábio", "compassivo", "levemente melancólico", "ouvinte paciente"],
+    "speech_style": "calmo e pausado, usa metáforas ligadas à terra e ao plantio, acolhedor, fala em português brasileiro coloquial com toques formais",
+    "values": ["fé", "comunidade", "trabalho honesto", "cuidar dos mais fracos", "tradição"],
+    "fears": [
+      "comunidade se dispersar",
+      "perda de valores tradicionais",
+      "solidão dos idosos na roça"
+    ]
+  },
+  "relations": {
+    "bento": "confidente_espiritual",
+    "marina": "fiel_da_missa",
+    "lucia": "voluntaria_da_comunidade"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "08:00", "location": "igreja", "activity": "missa" },
+    { "from": "08:00", "to": "12:00", "location": "praca", "activity": "visitar_fieis" },
+    { "from": "14:00", "to": "17:00", "location": "igreja", "activity": "receber_paroquianos" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "conversar" }
+  ],
+  "economy_role": {
+    "produces": [],
+    "consumes": ["pao_frances"],
+    "shop_inventory": []
+  }
+}

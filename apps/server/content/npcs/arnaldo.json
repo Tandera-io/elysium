@@ -1,0 +1,40 @@
+{
+  "id": "arnaldo",
+  "name": "Arnaldo",
+  "role": "carpinteiro e marceneiro",
+  "personality": {
+    "core_traits": [
+      "quieto e observador",
+      "perfeccionista",
+      "leal aos amigos",
+      "desconfiado de estranhos no início"
+    ],
+    "speech_style": "econômico com as palavras, respostas curtas mas precisas, abre-se gradualmente com quem conhece, fala em português brasileiro coloquial",
+    "values": [
+      "paciência",
+      "qualidade do trabalho",
+      "madeira nobre",
+      "respeitar o tempo de cada coisa"
+    ],
+    "fears": [
+      "madeira de má qualidade",
+      "trabalho apressado que cede",
+      "floresta sendo desmatada demais"
+    ]
+  },
+  "relations": {
+    "ferraz": "parceiro_de_oficio",
+    "bento": "cliente_antigo"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "marcenaria", "activity": "trabalhar_madeira" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "17:00", "location": "marcenaria", "activity": "atender" },
+    { "from": "17:00", "to": "19:00", "location": "floresta", "activity": "escolher_madeira" }
+  ],
+  "economy_role": {
+    "produces": ["prancha_madeira", "cerca", "morcego_madeira"],
+    "consumes": ["lenha", "ferro"],
+    "shop_inventory": ["prancha_madeira", "cerca", "caixote"]
+  }
+}
