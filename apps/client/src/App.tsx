@@ -12,6 +12,7 @@ import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
+import { CropDisplay } from './components/CropDisplay';
 
 type FetchState =
   | { kind: 'loading' }
@@ -22,6 +23,7 @@ export function App() {
   const [state, setState] = useState<FetchState>({ kind: 'loading' });
   const [titleOpen, setTitleOpen] = useState(true);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [cropOpen, setCropOpen] = useState(false);
   const gold = useInventoryStore((s) => s.gold);
 
   useEffect(() => {
@@ -60,6 +62,9 @@ export function App() {
       if (e.code === 'Escape' && !titleOpen && !saveOpen) {
         setSaveOpen(true);
       }
+      if (e.code === 'KeyF' && !titleOpen && !saveOpen) {
+        setCropOpen((v) => !v);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -95,6 +100,7 @@ export function App() {
       </aside>
       <InventoryPanel />
       <QuestPanel />
+      <CropDisplay open={cropOpen} onClose={() => setCropOpen(false)} />
       <Hotbar />
       <InteractPrompt />
       <DialogueBox />

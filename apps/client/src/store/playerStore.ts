@@ -38,6 +38,10 @@ export interface PlayerState {
   speed: number;
   /** Player inventory — fixed-size array of nullable slots. */
   inventory: (InventoryItem | null)[];
+  /** Active farming tool; null when not in farming mode. */
+  farmingTool: FarmingTool;
+  /** Crop selected to plant when farmingTool === 'seed'. */
+  selectedCrop: string | null;
 }
 
 export interface PlayerActions {
@@ -61,6 +65,8 @@ export interface PlayerActions {
    * Delegates to `removeItem`.
    */
   useItem: (itemId: string) => boolean;
+  setFarmingTool: (tool: FarmingTool) => void;
+  setSelectedCrop: (crop: string | null) => void;
 }
 
 /** Derived getter: effective speed (can be extended with buffs/debuffs later). */
@@ -73,6 +79,8 @@ export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => 
   path: [],
   speed: 4,
   inventory: Array<InventoryItem | null>(PLAYER_INVENTORY_SIZE).fill(null),
+  farmingTool: null,
+  selectedCrop: null,
 
   setPosition: (position) => set({ position }),
   setPath: (path) => set({ path }),
@@ -130,6 +138,9 @@ export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => 
   },
 
   useItem: (itemId) => get().removeItem(itemId, 1),
+
+  setFarmingTool: (farmingTool) => set({ farmingTool }),
+  setSelectedCrop: (selectedCrop) => set({ selectedCrop }),
 }));
 
 if (import.meta.env.DEV) {
