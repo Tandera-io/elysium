@@ -1,0 +1,26 @@
+{
+  "id": "sofia",
+  "name": "Sofia",
+  "role": "curandeira",
+  "position": { "x": -6, "z": 8 },
+  "personality": {
+    "core_traits": ["cuidadosa", "curiosa", "generosa"],
+    "speech_style": "acolhedora, usa nomes de ervas e plantas, fala em português brasileiro coloquial",
+    "values": ["saúde da comunidade", "conhecimento natural", "cuidado com os outros"],
+    "fears": ["doença sem cura", "ervas contaminadas"]
+  },
+  "relations": {
+    "lucia": "amiga_proxima",
+    "marina": "cliente_fiel"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "09:00", "location": "campo", "activity": "colher_ervas" },
+    { "from": "09:00", "to": "12:00", "location": "botica", "activity": "preparar" },
+    { "from": "13:00", "to": "18:00", "location": "botica", "activity": "atender" }
+  ],
+  "economy_role": {
+    "produces": ["remedio_herbal", "cha_calmante", "pomada"],
+    "consumes": ["ervas", "mel", "flores"],
+    "shop_inventory": ["remedio_herbal", "cha_calmante"]
+  }
+}
