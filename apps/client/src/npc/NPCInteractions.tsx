@@ -3,7 +3,17 @@ import { useDialogueStore } from '../systems/dialogue/dialogueStore';
 import { getGreetings, getTopics } from '../dialogue/DialogueManager';
 import { useTimeStore, currentSeason } from '../systems/time/timeStore';
 
-export const HUB_NPC_IDS = ['dorinha', 'padre_pedro', 'nina', 'arnaldo', 'sofia', 'romeu'] as const;
+export const HUB_NPC_IDS = [
+  'dorinha',
+  'padre_pedro',
+  'nina',
+  'arnaldo',
+  'sofia',
+  'romeu',
+  'marina',
+  'bento',
+  'lucia',
+] as const;
 export type HubNpcId = (typeof HUB_NPC_IDS)[number];
 
 const TOPIC_LABELS: Record<string, string> = {
@@ -15,10 +25,14 @@ const TOPIC_LABELS: Record<string, string> = {
   tools: 'Ferramentas',
   seeds: 'Sementes',
   selling: 'Vender',
+  bread: 'Pão',
+  farming: 'Roça',
+  animals: 'Animais',
+  products: 'Produtos',
 };
 
 /**
- * Quick-reply chip panel for the 6 hub NPCs.
+ * Quick-reply chip panel for hub NPCs.
  * Renders greeting chips and topic-group buttons when dialogue is active
  * with any hub NPC. Mount once in App.tsx.
  */
