@@ -73,4 +73,29 @@ describe('inventoryStore (slot-based)', () => {
       .reduce((a, s) => a + (s?.qty ?? 0), 0);
     expect(wheatTotal).toBe(129);
   });
+
+  it('useSlot consumes one unit from an occupied slot', () => {
+    useInventoryStore.getState().add('wheat', 3);
+    const slotIdx = useInventoryStore.getState().slots.findIndex((s) => s?.id === 'wheat');
+    expect(slotIdx).toBeGreaterThanOrEqual(0);
+    expect(useInventoryStore.getState().useSlot(slotIdx)).toBe(true);
+    expect(useInventoryStore.getState().count('wheat')).toBe(2);
+  });
+
+  it('useSlot clears slot to null when last unit is consumed', () => {
+    useInventoryStore.getState().add('wheat', 1);
+    const slotIdx = useInventoryStore.getState().slots.findIndex((s) => s?.id === 'wheat');
+    useInventoryStore.getState().useSlot(slotIdx);
+    expect(useInventoryStore.getState().slots[slotIdx]).toBeNull();
+  });
+
+  it('useSlot returns false for an empty slot', () => {
+    const emptyIdx = useInventoryStore.getState().slots.findIndex((s) => s === null);
+    expect(useInventoryStore.getState().useSlot(emptyIdx)).toBe(false);
+  });
+
+  it('useSlot returns false for out-of-bounds index', () => {
+    expect(useInventoryStore.getState().useSlot(-1)).toBe(false);
+    expect(useInventoryStore.getState().useSlot(9999)).toBe(false);
+  });
 });

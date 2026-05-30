@@ -21,6 +21,8 @@ export interface InventoryActions {
   add: (id: ItemId, qty: number) => boolean;
   /** Removes qty across stacks. Returns true if removal succeeded fully. */
   remove: (id: ItemId, qty: number) => boolean;
+  /** Uses one unit of the item at the given slot index. Returns true if successful. */
+  useSlot: (slotIndex: number) => boolean;
   count: (id: ItemId) => number;
   swap: (a: number, b: number) => void;
   reset: () => void;
@@ -78,6 +80,16 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
         remaining -= take;
       }
     }
+    set({ slots });
+    return true;
+  },
+  useSlot: (slotIndex) => {
+    const slots = [...get().slots];
+    if (slotIndex < 0 || slotIndex >= slots.length) return false;
+    const slot = slots[slotIndex];
+    if (!slot) return false;
+    const newQty = slot.qty - 1;
+    slots[slotIndex] = newQty === 0 ? null : { ...slot, qty: newQty };
     set({ slots });
     return true;
   },
