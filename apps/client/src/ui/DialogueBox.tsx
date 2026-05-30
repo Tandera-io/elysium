@@ -7,6 +7,7 @@ import { useInventoryStore } from '../systems/inventory/inventoryStore';
 import { proposeQuestFor } from '../systems/quest/generator';
 import { makeSeedMarket } from '../systems/economy/seed';
 import { ITEMS } from '../systems/economy/itemDefs';
+import { getNpcDialogueConfig } from '../features/npc/dialogue';
 
 export function DialogueBox() {
   const npcId = useDialogueStore((s) => s.npcId);
@@ -77,16 +78,30 @@ export function DialogueBox() {
     : 0;
   const canTurnIn = activeQuest !== null && haveForActive >= activeQuest.quantity;
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    void send(draft, {
+  const sendInput = (input: string) => {
+    void send(input, {
       hour,
       dayInSeason,
       season: currentSeason({ seasonIndex } as Parameters<typeof currentSeason>[0]),
       year,
     });
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendInput(draft);
     setDraft('');
   };
+
+  // Quick replies: show greetings before the player speaks (only NPC greeting in history),
+  // then show the first topic group once the conversation is underway.
+  const dialogueConfig = getNpcDialogueConfig(npcId);
+  const playerHasSpoken = history.some((t) => t.who === 'player');
+  const quickReplies = dialogueConfig
+    ? playerHasSpoken
+      ? (dialogueConfig.topics['general'] ?? [])
+      : dialogueConfig.greetings
+    : [];
 
   return (
     <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[640px] max-w-[92vw] bg-slate-900/95 backdrop-blur border border-slate-700 rounded-2xl shadow-xl text-slate-100">
@@ -162,6 +177,21 @@ export function DialogueBox() {
           >
             Aceitar
           </button>
+        </div>
+      )}
+      {quickReplies.length > 0 && !pending && (
+        <div className="px-3 pt-2 pb-1 border-t border-slate-700 flex flex-wrap gap-1.5">
+          {quickReplies.map((chip) => (
+            <button
+              key={chip.label}
+              type="button"
+              disabled={pending}
+              onClick={() => sendInput(chip.input)}
+              className="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1 rounded-full disabled:opacity-40 transition-colors"
+            >
+              {chip.label}
+            </button>
+          ))}
         </div>
       )}
       <form onSubmit={onSubmit} className="flex gap-2 px-3 py-2 border-t border-slate-700">

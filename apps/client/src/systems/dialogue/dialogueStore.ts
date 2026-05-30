@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import type { DialogueResponse, NpcEmotion } from '@elysium/shared';
+import { getGreeting } from './DialogueSystem';
+import { useNpcStore } from '../npc/npcStore';
+import { useTimeStore } from '../time/timeStore';
 
 export interface DialogueTurn {
   who: 'player' | 'npc';
@@ -32,7 +35,19 @@ export const useDialogueStore = create<DialogueState & DialogueActions>((set, ge
   history: [],
   pending: false,
   error: null,
-  open: (npcId) => set({ npcId, history: [], error: null }),
+  open: (npcId) => {
+    // Increment interaction count and select a greeting line from the static bank.
+    const newCount = useNpcStore.getState().incrementInteraction(npcId);
+    const hour = useTimeStore.getState().hour;
+    const greeting = getGreeting(npcId, hour, newCount - 1);
+    const greetingTurn: DialogueTurn = {
+      who: 'npc',
+      text: greeting.text,
+      emotion: greeting.emotion,
+      timestamp: Date.now(),
+    };
+    set({ npcId, history: [greetingTurn], error: null });
+  },
   close: () => set({ npcId: null, history: [], pending: false, error: null }),
   send: async (input, world) => {
     const npcId = get().npcId;

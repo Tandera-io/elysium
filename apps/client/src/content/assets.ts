@@ -17,6 +17,10 @@ export const SPRITES = {
   lucia: 'sprites/cache/a33beb04e212c1a9.png',
   dorinha: 'sprites/cache/7ca40c4410ad1460.png',
   nina: 'sprites/cache/e1f80277e6826d74.png',
+  /** Placeholder sprites — replace with generated assets via pnpm sprite:generate */
+  arnaldo: 'sprites/cache/c8ceff3648e5624c.png',
+  'padre-pedro': 'sprites/cache/c8ceff3648e5624c.png',
+  sofia: 'sprites/cache/a33beb04e212c1a9.png',
 } as const;
 
 /** Walk animation frames — generated via /images/edits using the idle sprite
@@ -46,6 +50,45 @@ export const CROP_SPRITES = {
   pumpkin: 'sprites/cache/578af9e39f7a8032.png',
   corn: 'sprites/cache/a62ca1163dad688c.png',
   strawberry: 'sprites/cache/3b00a3aef9e1abcf.png',
+} as const;
+
+/**
+ * Per-stage growth sprites for each crop.
+ * Index 0 = seed (just planted), increasing indices = older/larger.
+ * The last entry in each array is the harvest-ready stage.
+ * Used by CropGrowthStageSprite (3D) and CropDisplay (2D overlay).
+ */
+export const CROP_GROWTH_SPRITES: Record<string, readonly string[]> = {
+  wheat: [
+    'assets/crops/wheat_stage0.png',
+    'assets/crops/wheat_stage1.png',
+    'assets/crops/wheat_stage2.png',
+    'assets/crops/wheat_stage3.png',
+  ],
+  tomato: [
+    'assets/crops/tomato_stage0.png',
+    'assets/crops/tomato_stage1.png',
+    'assets/crops/tomato_stage2.png',
+    'assets/crops/tomato_stage3.png',
+    'assets/crops/tomato_stage4.png',
+  ],
+  pumpkin: [
+    'assets/crops/pumpkin_stage0.png',
+    'assets/crops/pumpkin_stage1.png',
+    'assets/crops/pumpkin_stage2.png',
+    'assets/crops/pumpkin_stage3.png',
+  ],
+  corn: [
+    'assets/crops/corn_stage0.png',
+    'assets/crops/corn_stage1.png',
+    'assets/crops/corn_stage2.png',
+    'assets/crops/corn_stage3.png',
+  ],
+  strawberry: [
+    'assets/crops/strawberry_stage0.png',
+    'assets/crops/strawberry_stage1.png',
+    'assets/crops/strawberry_stage2.png',
+  ],
 } as const;
 
 /** Ground tile textures — 1024×1024 tileable PNGs with opaque background. */

@@ -44,6 +44,20 @@ export interface NpcDef {
   relations?: Record<string, string>;
   schedule?: NpcSchedule[];
   economy_role?: NpcEconomyRole;
+  dialogues?: NpcDialogueEntry[];
+}
+
+export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
+
+export interface DialogueTrigger {
+  timeOfDay?: TimeOfDay;
+  minInteractions?: number;
+}
+
+export interface NpcDialogueEntry {
+  id: string;
+  trigger: DialogueTrigger;
+  lines: string[];
 }
 
 export type NpcEmotion = 'neutral' | 'happy' | 'annoyed' | 'sad' | 'excited';
