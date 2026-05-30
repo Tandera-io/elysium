@@ -9,6 +9,7 @@ import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
+import { QuestUI } from './components/QuestUI';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 
@@ -98,6 +99,7 @@ export function App() {
       <InteractPrompt />
       <DialogueBox />
       <NPCShopModal />
+      <QuestUI />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
