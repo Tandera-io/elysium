@@ -27,6 +27,8 @@ export interface InventoryActions {
   addGold: (amount: number) => void;
   /** Returns false if player has insufficient gold. */
   removeGold: (amount: number) => boolean;
+  /** Sorts filled slots by name or quantity, pushing empty slots to the end. */
+  sort: (by: 'name' | 'qty') => void;
 }
 
 function makeInitial(): InventoryState {
@@ -102,6 +104,17 @@ export const useInventoryStore = create<InventoryState & InventoryActions>((set,
   },
   reset: () => set(makeInitial()),
   addGold: (amount) => set((s) => ({ gold: s.gold + amount })),
+  sort: (by) => {
+    const slots = [...get().slots];
+    const filled = slots.filter((s): s is SlotItem => s !== null);
+    const empties = slots.filter((s) => s === null);
+    if (by === 'name') {
+      filled.sort((a, b) => a.id.localeCompare(b.id));
+    } else {
+      filled.sort((a, b) => b.qty - a.qty);
+    }
+    set({ slots: [...filled, ...empties] });
+  },
   removeGold: (amount) => {
     if (get().gold < amount) return false;
     set((s) => ({ gold: s.gold - amount }));

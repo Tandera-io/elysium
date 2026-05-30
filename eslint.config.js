@@ -16,6 +16,7 @@ export default [
       '**/*.config.mjs',
       'apps/client/public/**',
       'scripts/**/*.mjs',
+      '**/.claude/**',
     ],
   },
   js.configs.recommended,

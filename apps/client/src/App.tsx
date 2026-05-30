@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { HealthResponse } from '@elysium/shared';
 import { Scene } from './engine/scene/Scene';
 import { Hotbar } from './ui/Hotbar';
-import { InventoryPanel } from './ui/InventoryPanel';
+import { InventoryUI } from './components/Inventory/InventoryUI.js';
 import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
@@ -92,7 +92,7 @@ export function App() {
           </span>
         )}
       </aside>
-      <InventoryPanel />
+      <InventoryUI />
       <QuestPanel />
       <Hotbar />
       <InteractPrompt />

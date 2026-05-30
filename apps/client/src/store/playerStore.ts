@@ -8,6 +8,8 @@ export interface PlayerState {
   path: TileCoord[];
   /** Movement speed in tiles per second. */
   speed: number;
+  /** Whether the inventory panel is currently open. */
+  inventoryOpen: boolean;
 }
 
 export interface PlayerActions {
@@ -15,16 +17,21 @@ export interface PlayerActions {
   setPath: (path: TileCoord[]) => void;
   consumeWaypoint: () => void;
   clearPath: () => void;
+  toggleInventory: () => void;
+  setInventoryOpen: (open: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState & PlayerActions>((set) => ({
   position: { x: 0, y: 0, z: 0 },
   path: [],
   speed: 4,
+  inventoryOpen: false,
   setPosition: (position) => set({ position }),
   setPath: (path) => set({ path }),
   consumeWaypoint: () => set((s) => ({ path: s.path.length > 0 ? s.path.slice(1) : s.path })),
   clearPath: () => set({ path: [] }),
+  toggleInventory: () => set((s) => ({ inventoryOpen: !s.inventoryOpen })),
+  setInventoryOpen: (open) => set({ inventoryOpen: open }),
 }));
 
 if (import.meta.env.DEV) {
