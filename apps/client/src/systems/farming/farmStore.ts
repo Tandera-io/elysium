@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { CROPS, type CropId } from './CropDefs';
+import { CROPS, isOutOfSeason, type CropId } from './CropDefs';
 import { tileKey } from '../../engine/world/pathfinding';
 import type { TileCoord } from '../../engine/world/WorldGrid';
+import { currentSeason, useTimeStore } from '../time/timeStore';
 
 export type TileState =
   | { kind: 'empty' }
@@ -96,11 +97,18 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     set((s) => {
       const nextDay = s.day + 1;
       const nextTiles: Record<string, TileState> = { ...s.tiles };
+      const season = currentSeason(useTimeStore.getState());
       for (const [k, t] of Object.entries(s.tiles)) {
         if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          // Out-of-season crops wilt: tile reverts to empty.
+          if (isOutOfSeason(t.crop, season)) {
+            nextTiles[k] = { kind: 'empty' };
+          } else {
+            // For the MVP, in-season planted tiles always grow one day.
+            // Phase 6 reintroduces the daily-water requirement once the
+            // day cycle is real-time.
+            nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          }
         }
       }
       return { day: nextDay, tiles: nextTiles };

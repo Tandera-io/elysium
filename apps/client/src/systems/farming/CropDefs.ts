@@ -3,6 +3,8 @@
  * `daysToMature` is the sum of all stage durations.
  */
 
+import type { Season } from '../time/timeStore';
+
 export type CropId = 'wheat' | 'tomato' | 'pumpkin' | 'corn' | 'strawberry';
 
 export interface CropStage {
@@ -20,12 +22,40 @@ export interface CropDef {
   readonly stages: readonly CropStage[];
   readonly daysToMature: number;
   readonly yieldQuantity: number;
+  /** Season in which this crop can be planted and will grow. */
+  readonly season: Season;
+  /** Emoji used for quick visual identification in the UI. */
+  readonly emoji: string;
+  /** Accent color used in season-aware UI (ripe stage representative color). */
+  readonly accentColor: string;
 }
+
+/** All valid seasons, in calendar order. */
+export const SEASONS: readonly Season[] = ['spring', 'summer', 'autumn', 'winter'];
+
+/** Human-readable season labels (Portuguese, matching the rest of the UI). */
+export const SEASON_LABEL: Record<Season, string> = {
+  spring: 'Primavera',
+  summer: 'Verao',
+  autumn: 'Outono',
+  winter: 'Inverno',
+};
+
+/** Season accent colors for UI badges. */
+export const SEASON_COLOR: Record<Season, string> = {
+  spring: '#7ecb67',
+  summer: '#f5c842',
+  autumn: '#d4732a',
+  winter: '#8bb9e0',
+};
 
 export const CROPS: Record<CropId, CropDef> = {
   wheat: {
     id: 'wheat',
     name: 'Trigo',
+    season: 'spring',
+    emoji: '[wheat]',
+    accentColor: '#e8c34a',
     stages: [
       { index: 0, daysInStage: 1, color: '#5a4a2a' }, // seeded soil
       { index: 1, daysInStage: 1, color: '#8db454' }, // sprout
@@ -38,6 +68,9 @@ export const CROPS: Record<CropId, CropDef> = {
   tomato: {
     id: 'tomato',
     name: 'Tomate',
+    season: 'summer',
+    emoji: '[tomato]',
+    accentColor: '#d34a3a',
     stages: [
       { index: 0, daysInStage: 1, color: '#5a4a2a' },
       { index: 1, daysInStage: 1, color: '#7caf3e' },
@@ -50,7 +83,10 @@ export const CROPS: Record<CropId, CropDef> = {
   },
   pumpkin: {
     id: 'pumpkin',
-    name: 'Abóbora',
+    name: 'Abobora',
+    season: 'autumn',
+    emoji: '[pumpkin]',
+    accentColor: '#e8862a',
     stages: [
       { index: 0, daysInStage: 1, color: '#5a4a2a' },
       { index: 1, daysInStage: 2, color: '#7caf3e' },
@@ -63,6 +99,9 @@ export const CROPS: Record<CropId, CropDef> = {
   corn: {
     id: 'corn',
     name: 'Milho',
+    season: 'summer',
+    emoji: '[corn]',
+    accentColor: '#e6c44a',
     stages: [
       { index: 0, daysInStage: 1, color: '#5a4a2a' },
       { index: 1, daysInStage: 1, color: '#9bbf52' },
@@ -75,6 +114,9 @@ export const CROPS: Record<CropId, CropDef> = {
   strawberry: {
     id: 'strawberry',
     name: 'Morango',
+    season: 'spring',
+    emoji: '[strawberry]',
+    accentColor: '#d44a4a',
     stages: [
       { index: 0, daysInStage: 1, color: '#5a4a2a' },
       { index: 1, daysInStage: 1, color: '#7caf3e' },
@@ -84,6 +126,21 @@ export const CROPS: Record<CropId, CropDef> = {
     yieldQuantity: 4,
   },
 };
+
+/**
+ * Returns all crop definitions that can be planted in the given season.
+ */
+export function getAvailableCrops(season: Season): CropDef[] {
+  return (Object.values(CROPS) as CropDef[]).filter((c) => c.season === season);
+}
+
+/**
+ * Returns true when a planted crop is out of its natural season.
+ * Out-of-season crops should wilt at end-of-day.
+ */
+export function isOutOfSeason(cropId: CropId, currentSeason: Season): boolean {
+  return CROPS[cropId].season !== currentSeason;
+}
 
 export function stageForDayCount(crop: CropDef, daysSincePlanted: number): CropStage {
   let cumulative = 0;

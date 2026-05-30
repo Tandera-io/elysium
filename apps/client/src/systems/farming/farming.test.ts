@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CROPS, isMature, stageForDayCount } from './CropDefs';
 import { useFarmStore } from './farmStore';
 import { useInventoryStore } from '../inventory/inventoryStore';
+import { useTimeStore } from '../time/timeStore';
 
 describe('CropDefs', () => {
   it('wheat matures in 4 days', () => {
@@ -29,6 +30,7 @@ describe('farmStore', () => {
   beforeEach(() => {
     useFarmStore.getState().reset();
     useInventoryStore.getState().reset();
+    useTimeStore.getState().reset();
   });
 
   it('starts with no tiles and day=1', () => {
@@ -87,6 +89,8 @@ describe('farmStore', () => {
   });
 
   it('planted tile reaches mature in daysToMature advances', () => {
+    // Tomato is a summer crop — set season to summer before planting.
+    useTimeStore.setState({ seasonIndex: 1 });
     const t = { x: 3, z: 3 };
     const farm = useFarmStore.getState();
     farm.till(t);
