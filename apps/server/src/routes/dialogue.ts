@@ -127,7 +127,17 @@ export function buildDialogueRoutes(deps: RoutesDeps = {}): Hono {
 function buildSystemPrompt(
   npc: NpcDef,
   recent: DialogueMemoryEntry[],
-  world: { hour: number; dayInSeason: number; season: string; year: number; weather?: string },
+  world: {
+    hour: number;
+    dayInSeason: number;
+    season: string;
+    year: number;
+    weather?: string;
+    heartLevel?: number;
+    interactionCount?: number;
+    activeQuestItem?: string;
+    completedQuestCount?: number;
+  },
 ): string {
   const memorySection =
     recent.length === 0
@@ -136,6 +146,25 @@ function buildSystemPrompt(
           .map((m) => `- [${m.t.slice(0, 10)}] ${m.summary} (sentimento ${m.sentiment.toFixed(2)})`)
           .join('\n');
 
+  const heartLevel = world.heartLevel ?? 0;
+  const interactionCount = world.interactionCount ?? 0;
+  const relationshipStage =
+    interactionCount === 0
+      ? 'primeiro encontro (trate como desconhecido)'
+      : heartLevel >= 8
+        ? 'amizade profunda (trate como amigo muito próximo)'
+        : heartLevel >= 5
+          ? 'boa amizade (trate como amigo de confiança)'
+          : heartLevel >= 3
+            ? 'conhecido (trate com simpatia crescente)'
+            : 'conhecido recente (trate com cordialidade)';
+
+  const questSection = world.activeQuestItem
+    ? `- Missão ativa: jogador precisa entregar "${world.activeQuestItem}" para você. Mencione isso naturalmente se relevante.`
+    : world.completedQuestCount && world.completedQuestCount > 0
+      ? `- Jogador já completou ${world.completedQuestCount} missão(ões) para você. Mostre gratidão se relevante.`
+      : '';
+
   return `Você é ${npc.name}, ${npc.role}. Esta é a sua personalidade:
 
 Traços: ${npc.personality.core_traits.join(', ')}.
@@ -143,19 +172,25 @@ Estilo de fala: ${npc.personality.speech_style}.
 Valores: ${npc.personality.values.join(', ')}.
 Medos: ${npc.personality.fears.join(', ')}.
 
+Relacionamento com o jogador:
+- Nível de amizade: ${heartLevel}/10 corações (${interactionCount} conversa(s) no total)
+- Estágio: ${relationshipStage}
+
 Memórias recentes desta pessoa:
 ${memorySection}
 
 Contexto do mundo agora:
 - Ano ${world.year}, ${world.season}, dia ${world.dayInSeason}, hora ${world.hour.toFixed(1)}h
 ${world.weather ? `- Tempo: ${world.weather}` : ''}
+${questSection}
 
 REGRAS DE RESPOSTA:
 1. Fale APENAS como ${npc.name} falaria. Mantenha o estilo, valores e medos.
 2. Seja conciso: 1-3 frases curtas.
 3. Se as memórias forem relevantes, referencie-as naturalmente.
-4. Responda em português brasileiro coloquial.
-5. Retorne EXCLUSIVAMENTE um objeto JSON válido (sem markdown, sem prefixo) com este formato:
+4. Adapte o tom ao nível de amizade: mais formal com desconhecidos, mais íntimo com amigos.
+5. Responda em português brasileiro coloquial.
+6. Retorne EXCLUSIVAMENTE um objeto JSON válido (sem markdown, sem prefixo) com este formato:
 {
   "npcReply": "<a fala em pt-BR>",
   "emotion": "<neutral|happy|annoyed|sad|excited>",

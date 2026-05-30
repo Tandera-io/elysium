@@ -17,6 +17,8 @@ type ContextStage = 'first_meeting' | 'repeat_early' | 'repeat_regular' | 'frien
 interface Context {
   interactionCount?: number;
   heartLevel?: number;
+  activeQuestItem?: string;
+  completedQuestCount?: number;
 }
 
 const FIRST_MEETING_LINES: Record<string, string[]> = {
@@ -325,6 +327,112 @@ const ACTION_RESPONSES: Record<string, Record<string, string[]>> = {
   },
 };
 
+const QUEST_REMINDER_LINES: Record<string, string[]> = {
+  ferraz: [
+    'Ei! Ainda esperando aquele minério. Quando conseguir, é só trazer.',
+    'Não esquece da nossa missão, hein? Aquele material que preciso é raro.',
+    'Qualquer dia desses você me traz o que pedi, né? Aguardo.',
+  ],
+  nina: [
+    'Ah, lembra que precisei te pedir aquela encomenda? Ainda aguardo!',
+    'Quando trouxer o que pedi, me chama. Vou separar um brinde pra você.',
+    'Precisando de ajuda com aquela missão? Pode perguntar!',
+  ],
+  dorinha: [
+    'Não esquece da nossa combinação, hein! Quando tiver a safra, me traz.',
+    'Ainda tô esperando o que você prometeu. Sem pressa, mas não some!',
+    'Pode trazer quando quiser — tô aqui todo dia.',
+  ],
+  marina: [
+    'Ah, estava pensando em você e naquela nossa combinação. Traga quando puder.',
+    'Não esquece da missão que te dei! Quando trouxer, tenho um pão fresquinho te esperando.',
+    'Ainda preciso daquele ingrediente. Você é minha esperança!',
+  ],
+  bento: [
+    'Não esquece do que te pedi. Prazo é prazo.',
+    'Aquela missão ainda tá aberta. Não deixa pra depois.',
+    'Lembra da nossa combinação? Quando tiver pronto, é só me chamar.',
+  ],
+  lucia: [
+    'Ei! Lembra daquela encomenda? Os animais agradecem se você trouxer logo.',
+    'Ainda esperando o que você prometeu. Posso contar com você?',
+    'Quando tiver o que pedi, me chama. Vou estar por aqui.',
+  ],
+  padre_pedro: [
+    'Que bom te ver! Não esquece da nossa missão. A comunidade precisa.',
+    'Lembrei de você hoje. Ainda aguardo o que pedimos. Com fé, vai dar certo.',
+    'Toda ajuda é bem-vinda. Quando puder cumprir o que prometeu, venha me ver.',
+  ],
+  arnaldo: [
+    'Ainda tô esperando. Qualidade leva tempo, mas não esquece.',
+    'Lembra do que te pedi? Me avisa quando estiver pronto.',
+    'Não deixa a missão esfriar. Quando tiver o material, me chama.',
+  ],
+  sofia: [
+    'As ervas que precisei ainda não chegaram. Pode trazer quando achar?',
+    'Lembra da nossa combinação? As plantas medicinais são urgentes.',
+    'Ainda espero o que você prometeu. Qualquer ajuda é bem-vinda na botica.',
+  ],
+  romeu: [
+    'Ei! Lembra daquele pedido meu? Quando trouxer, te conto uma história.',
+    'A missão ainda tá aberta. O rio espera, mas eu espero mais!',
+    'Não me esqueci da nossa combinação. Você também não, né?',
+  ],
+};
+
+const QUEST_COMPLETE_LINES: Record<string, string[]> = {
+  ferraz: [
+    'Você foi incrível naquela missão. Ferramenta boa é recompensa certa!',
+    'Podia contar com você! Obrigado de verdade.',
+    'Profissional de primeira! Já sei a quem recorrer nas próximas.',
+  ],
+  nina: [
+    'Que saudade de quando você completou aquela missão! Fez a diferença.',
+    'Obrigada de novo por tudo que fez. Você é confiável de verdade.',
+    'Sabia que podia contar com você. Missão cumprida com louvor!',
+  ],
+  dorinha: [
+    'Você me salvou naquela missão! Nunca esqueço não.',
+    'Pode contar que a Dorinha guarda favores. Obrigada sempre!',
+    'Que bom que deu certo! Você é gente boa mesmo.',
+  ],
+  marina: [
+    'Aquela sua ajuda foi demais! Ainda penso com carinho.',
+    'Você foi um anjo naquela missão. Muito obrigada!',
+    'Fico feliz que tenho amigos como você por perto.',
+  ],
+  bento: [
+    'Não esqueci o que fez. Trabalhador sério merece respeito.',
+    'Você cumpriu. Isso é tudo que preciso saber sobre alguém.',
+    'Obrigado. Pode precisar de mim quando quiser.',
+  ],
+  lucia: [
+    'Os animais também agradecem o que você fez! Sério.',
+    'Nunca vou esquecer essa sua gentileza. Obrigada de coração.',
+    'Missão cumprida! Você tem meu respeito.',
+  ],
+  padre_pedro: [
+    'A comunidade lembra de você com carinho depois dessa ajuda.',
+    'Que Deus te abençoe em dobro! Foi uma graça enorme.',
+    'Eu sabia que podia contar com você. Obrigado, de verdade.',
+  ],
+  arnaldo: [
+    'Trabalho cumprido. Isso diz muito sobre o seu caráter.',
+    'Não faço elogio fácil — mas você merece. Obrigado.',
+    'Quando precisar de madeira de qualidade, você já sabe onde estou.',
+  ],
+  sofia: [
+    'As ervas chegaram na hora certa graças a você. Muito obrigada!',
+    'Você foi essencial. Já sei onde buscar ajuda nas próximas vezes.',
+    'A natureza retribui quem ajuda. Que venha coisas boas pra você!',
+  ],
+  romeu: [
+    'Missão cumprida! E que missão! Tenho uma história nova pra contar sobre isso.',
+    'Você é o tipo de pessoa que o rio gosta. Obrigado!',
+    'Nunca vou esquecer isso. Obrigado de verdade.',
+  ],
+};
+
 const FALLBACK_RESPONSES: Record<string, string[]> = {
   greet: ['Olá! Como posso ajudar?', 'Oi! O que precisa?'],
   buy: ['Claro! Veja o que tenho disponível.', 'Pode escolher.'],
@@ -345,6 +453,19 @@ function pick(arr: string[], seed = 0): string {
 function pickRandom(arr: string[]): string {
   if (!arr || arr.length === 0) return '';
   return arr[Math.floor(Math.random() * arr.length)] ?? '';
+}
+
+/** Returns a quest-aware line if quest context is present, otherwise null. */
+export function getQuestAwareLine(npcId: string, context: Context = {}): string | null {
+  if (context.activeQuestItem) {
+    const lines = QUEST_REMINDER_LINES[npcId];
+    if (lines && lines.length > 0) return pickRandom(lines);
+  }
+  if (context.completedQuestCount && context.completedQuestCount > 0) {
+    const lines = QUEST_COMPLETE_LINES[npcId];
+    if (lines && lines.length > 0) return pickRandom(lines);
+  }
+  return null;
 }
 
 export function classifyContext(context: Context = {}): ContextStage {
@@ -384,6 +505,12 @@ export function getActionResponse(
 
   if (stage === 'first_meeting' && playerAction === PLAYER_ACTIONS.GREET) {
     return getFirstMeetingLine(npcId, context.interactionCount ?? 0);
+  }
+
+  // Inject quest-aware line on greet when a quest is active or recently completed.
+  if (playerAction === PLAYER_ACTIONS.GREET) {
+    const questLine = getQuestAwareLine(npcId, context);
+    if (questLine) return questLine;
   }
 
   const npcResponses = ACTION_RESPONSES[npcId];

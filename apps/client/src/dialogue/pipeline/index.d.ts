@@ -12,26 +12,31 @@ export declare const PLAYER_ACTIONS: Readonly<{
   GOODBYE: 'goodbye';
 }>;
 
+interface DialogueContext {
+  interactionCount?: number;
+  heartLevel?: number;
+  activeQuestItem?: string;
+  completedQuestCount?: number;
+}
+
 export declare function triggerDialogue(
   npcId: string,
   playerAction: string,
-  context?: { interactionCount?: number; heartLevel?: number },
+  context?: DialogueContext,
 ): string[];
 
 export declare function getActionResponse(
   npcId: string,
   playerAction: string,
-  context?: { interactionCount?: number; heartLevel?: number },
+  context?: DialogueContext,
 ): string;
 
 export declare function getFirstMeetingLine(npcId: string, seed?: number): string;
 
-export declare function getRepeatVisitLine(
-  npcId: string,
-  context?: { interactionCount?: number; heartLevel?: number },
-): string;
+export declare function getRepeatVisitLine(npcId: string, context?: DialogueContext): string;
 
-export declare function classifyContext(context?: {
-  interactionCount?: number;
-  heartLevel?: number;
-}): 'first_meeting' | 'repeat_early' | 'repeat_regular' | 'friend';
+export declare function classifyContext(
+  context?: DialogueContext,
+): 'first_meeting' | 'repeat_early' | 'repeat_regular' | 'friend';
+
+export declare function getQuestAwareLine(npcId: string, context?: DialogueContext): string | null;

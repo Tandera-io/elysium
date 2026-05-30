@@ -54,6 +54,11 @@ export interface WorldContext {
   season: string;
   year: number;
   weather?: string;
+  /** Player–NPC relationship context for dynamic dialogue. */
+  heartLevel?: number;
+  interactionCount?: number;
+  activeQuestItem?: string;
+  completedQuestCount?: number;
 }
 
 export interface DialogueRequest {
