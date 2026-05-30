@@ -1,0 +1,41 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 8, "z": -2 },
+  "personality": {
+    "core_traits": ["durão de coração bom", "apaixonado por craftsmanship", "direto ao ponto"],
+    "speech_style": "breve e incisivo, orgulho evidente no ofício, fala em português brasileiro coloquial",
+    "values": ["qualidade", "metal bem trabalhado", "ferramenta que dura"],
+    "fears": [
+      "trabalho mal-feito sair da ferraria",
+      "cliente abandonar ferramenta boa por negligência"
+    ]
+  },
+  "relations": {
+    "arnaldo": "parceiro_de_oficio"
+  },
+  "schedule": [
+    { "from": "07:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almocar" },
+    { "from": "13:00", "to": "18:00", "location": "ferraria", "activity": "atender" },
+    { "from": "18:00", "to": "20:00", "location": "praca", "activity": "conversar" }
+  ],
+  "mock_responses": [
+    "Bem. O que precisa? Fala logo, que o ferro não espera.",
+    "Ferramenta boa custa trabalho bom. Eu faço a minha parte — você cuida da sua.",
+    "Quero melhorar sua enxada? Traga minério de ferro e a gente conversa.",
+    "Sabe por que ferrugem aparece? Descuido. Cuide melhor do equipamento.",
+    "Aprendi forjando. Não tem outro caminho. Cada martelo ensinava mais que livro.",
+    "Precisa de picareta mais resistente? Tenho uma pronta. Custa justa.",
+    "Não faço trabalho pela metade. Se sai daqui, sai certo.",
+    "Você tem boa safra. Quem respeita a terra, respeita a ferramenta também.",
+    "Arnaldo diz que madeira é vida. Eu digo que metal é alma. Os dois temos razão.",
+    "Se trouxer minério raro, posso forjar algo especial. Depende do material."
+  ],
+  "economy_role": {
+    "produces": ["pickaxe", "sword", "upgraded_hoe", "upgraded_watering_can"],
+    "consumes": ["ferro", "carvao", "minério_raro"],
+    "shop_inventory": ["pickaxe", "sword", "upgraded_hoe", "upgraded_watering_can"]
+  }
+}
