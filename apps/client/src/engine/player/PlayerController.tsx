@@ -49,7 +49,8 @@ export function PlayerController() {
     const delta = Math.min(deltaRaw, 0.1);
     const input = inputRef.current;
     const state = usePlayerStore.getState();
-    const { position, path, speed } = state;
+    const { position, path } = state;
+    const speed = state.effectiveSpeed();
 
     let dx = 0;
     let dz = 0;

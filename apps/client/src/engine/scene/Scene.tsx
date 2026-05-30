@@ -6,6 +6,7 @@ import { Floor } from '../world/Floor';
 import { StaticProps } from '../world/StaticProps';
 import { TileMap } from '../world/TileMap';
 import { Daylight } from './Daylight';
+import { WeatherEffect } from './WeatherEffect';
 import { TimeAdvancer } from '../../systems/time/TimeAdvancer';
 import { NpcView } from '../../systems/npc/NpcView';
 
@@ -21,6 +22,7 @@ export function Scene() {
       <fog attach="fog" args={['#7fbfe6', 80, 160]} />
       <IsometricCamera />
       <Daylight />
+      <WeatherEffect />
       <TimeAdvancer />
       <TileMap />
       <FarmField />

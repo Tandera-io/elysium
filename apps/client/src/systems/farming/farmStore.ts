@@ -11,7 +11,13 @@ export type TileState =
       crop: CropId;
       plantedOnDay: number;
       lastWateredOnDay: number;
+      /** Integer days grown (used for stage/maturity checks). */
       daysGrown: number;
+      /**
+       * Fractional growth accumulator — weather multipliers add partial days
+       * here; when it reaches ≥1 it is flushed into `daysGrown`.
+       */
+      growthAccum: number;
     };
 
 export interface FarmState {
@@ -28,8 +34,13 @@ export interface FarmActions {
   plant: (t: TileCoord, crop: CropId) => boolean;
   /** Returns the yielded item id and quantity, or null if nothing to harvest. */
   harvest: (t: TileCoord) => { crop: CropId; quantity: number } | null;
-  /** Advances day counter and progresses planted tiles by 1 day. */
-  advanceDay: () => void;
+  /**
+   * Advances day counter and progresses planted tiles.
+   * `growthMultiplier` defaults to 1.0 — pass the weather's
+   * cropGrowthMultiplier so rainy days grow crops faster and storms slow them.
+   * Growth is accumulated as a fractional counter and floors to integer days.
+   */
+  advanceDay: (growthMultiplier?: number) => void;
   /** Test helpers */
   reset: () => void;
 }
@@ -76,6 +87,7 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
           plantedOnDay: s.day,
           lastWateredOnDay: cur.watered ? s.day : s.day - 1,
           daysGrown: 0,
+          growthAccum: 0,
         },
       },
     }));
@@ -92,15 +104,23 @@ export const useFarmStore = create<FarmState & FarmActions>((set, get) => ({
     }));
     return { crop: cur.crop, quantity: def.yieldQuantity };
   },
-  advanceDay: () => {
+  advanceDay: (growthMultiplier = 1.0) => {
     set((s) => {
       const nextDay = s.day + 1;
       const nextTiles: Record<string, TileState> = { ...s.tiles };
       for (const [k, t] of Object.entries(s.tiles)) {
         if (t.kind === 'planted') {
-          // For the MVP, planted tiles always grow one day. Phase 6 reintroduces
-          // the daily-water requirement once the day cycle is real-time.
-          nextTiles[k] = { ...t, daysGrown: t.daysGrown + 1 };
+          // Accumulate fractional growth driven by the weather multiplier.
+          // A multiplier of 1.25 (rainy) means crops occasionally gain 2 days'
+          // worth of growth in a single calendar day.
+          const newAccum = (t.growthAccum ?? 0) + growthMultiplier;
+          const wholeDays = Math.floor(newAccum);
+          const remainder = newAccum - wholeDays;
+          nextTiles[k] = {
+            ...t,
+            daysGrown: t.daysGrown + wholeDays,
+            growthAccum: remainder,
+          };
         }
       }
       return { day: nextDay, tiles: nextTiles };

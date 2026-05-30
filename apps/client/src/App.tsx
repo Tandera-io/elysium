@@ -7,6 +7,7 @@ import { DialogueBox } from './ui/DialogueBox';
 import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
+import { WeatherOverlay } from './ui/WeatherOverlay';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
@@ -93,6 +94,7 @@ export function App() {
           </span>
         )}
       </aside>
+      <WeatherOverlay />
       <InventoryPanel />
       <QuestPanel />
       <Hotbar />
