@@ -1,0 +1,826 @@
+{
+  "nina": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Nina!", "input": "Oi, Nina! Como você está?" },
+      {
+        "id": "buy_tools",
+        "label": "Comprar ferramenta",
+        "input": "Você tem ferramentas para vender?"
+      },
+      {
+        "id": "buy_seeds",
+        "label": "Preciso de sementes",
+        "input": "Quais sementes você tem disponíveis?"
+      },
+      {
+        "id": "tip",
+        "label": "Dica de plantio",
+        "input": "Qual ferramenta é essencial para plantar bem?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Nina! Obrigado." }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Olá! Eu sou Nina. Se precisar de ferramenta ou semente, pode contar comigo!",
+        "responses": [
+          { "id": "buy_tools", "text": "Quero ver as ferramentas", "next": "tools" },
+          { "id": "buy_seeds", "text": "Preciso de sementes", "next": "seeds" },
+          { "id": "tip", "text": "Me dá uma dica de plantio", "next": "tip" },
+          { "id": "goodbye", "text": "Até mais, Nina!", "next": null }
+        ]
+      },
+      "tools": {
+        "npcText": "Tenho enxada, regador e cesto — todos resistentes e prontos para uso. Qual você quer?",
+        "responses": [
+          { "id": "buy_hoe", "text": "Quero a enxada (₩120)", "next": "buy_confirm" },
+          { "id": "buy_can", "text": "Quero o regador (₩150)", "next": "buy_confirm" },
+          { "id": "back", "text": "Deixa pra lá", "next": "root" }
+        ]
+      },
+      "seeds": {
+        "npcText": "Temos sementes de abóbora e morango. As de abóbora estão em promoção essa semana!",
+        "responses": [
+          { "id": "buy_pumpkin", "text": "Quero abóbora (₩18)", "next": "buy_confirm" },
+          { "id": "buy_strawberry", "text": "Quero morango (₩20)", "next": "buy_confirm" },
+          { "id": "back", "text": "Deixa pra lá", "next": "root" }
+        ]
+      },
+      "tip": {
+        "npcText": "Uma ferramenta bem conservada dura a vida toda. O regador é essencial — planta seca não cresce!",
+        "responses": [
+          { "id": "more", "text": "Alguma outra dica?", "next": "tip2" },
+          { "id": "buy", "text": "Vou comprar um regador", "next": "tools" },
+          { "id": "back", "text": "Obrigado, até mais!", "next": null }
+        ]
+      },
+      "tip2": {
+        "npcText": "O Tio Bento é cliente fiel há anos. Se ele usa as minhas ferramentas, é porque são boas!",
+        "responses": [
+          { "id": "buy", "text": "Me convenceu, quero ver as ferramentas", "next": "tools" },
+          { "id": "goodbye", "text": "Valeu, Nina! Até mais!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Ótima escolha! Pode voltar sempre que precisar.",
+        "responses": [
+          { "id": "more", "text": "Quero mais alguma coisa", "next": "root" },
+          { "id": "goodbye", "text": "Obrigado, até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "dorinha": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Dorinha!", "input": "Oi, Dorinha! Tudo bem?" },
+      {
+        "id": "sell",
+        "label": "Quero vender safra",
+        "input": "Quanto você paga pela minha colheita?"
+      },
+      {
+        "id": "buy_seeds",
+        "label": "Comprar sementes",
+        "input": "Quais sementes você tem para vender?"
+      },
+      { "id": "news", "label": "Novidades da cidade", "input": "Tem alguma novidade por aqui?" },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Dorinha!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Oi, oi! Sou a Dorinha, da quitanda. Se quiser comprar ou vender safra, é aqui!",
+        "responses": [
+          { "id": "sell", "text": "Quero vender minha colheita", "next": "sell" },
+          { "id": "buy_seeds", "text": "Preciso de sementes", "next": "seeds" },
+          { "id": "news", "text": "Tem novidade por aqui?", "next": "news" },
+          { "id": "goodbye", "text": "Até mais, Dorinha!", "next": null }
+        ]
+      },
+      "sell": {
+        "npcText": "Comprando sim! Pago ₩50 por trigo, ₩70 por tomate e ₩60 por milho. O que você trouxe?",
+        "responses": [
+          { "id": "sell_wheat", "text": "Quero vender trigo", "next": "sell_confirm" },
+          { "id": "sell_tomato", "text": "Quero vender tomate", "next": "sell_confirm" },
+          { "id": "sell_corn", "text": "Quero vender milho", "next": "sell_confirm" },
+          { "id": "back", "text": "Na verdade, não quero vender", "next": "root" }
+        ]
+      },
+      "seeds": {
+        "npcText": "Temos trigo (₩10), tomate (₩15) e milho (₩12). Tudo fresquinho e pronto para plantar!",
+        "responses": [
+          { "id": "buy_wheat", "text": "Quero sementes de trigo", "next": "buy_confirm" },
+          { "id": "buy_tomato", "text": "Quero sementes de tomate", "next": "buy_confirm" },
+          { "id": "buy_corn", "text": "Quero sementes de milho", "next": "buy_confirm" },
+          { "id": "back", "text": "Deixa pra lá", "next": "root" }
+        ]
+      },
+      "news": {
+        "npcText": "A melhor safra que vi foi do Bento — trigo que nem parecia real. E a Marina está pensando em ampliar a padaria!",
+        "responses": [
+          { "id": "more", "text": "Que mais você sabe?", "next": "news2" },
+          { "id": "back", "text": "Interessante, obrigado!", "next": "root" }
+        ]
+      },
+      "news2": {
+        "npcText": "A Marina e eu somos amigas de infância. Crescemos juntas aqui. A cidade tá crescendo, é bom pra todos!",
+        "responses": [
+          { "id": "buy", "text": "Vou dar uma olhada no estoque", "next": "seeds" },
+          { "id": "goodbye", "text": "Valeu, Dorinha! Até mais!", "next": null }
+        ]
+      },
+      "sell_confirm": {
+        "npcText": "Feito! Boas colheitas para você. Se tiver mais, pode trazer quando quiser.",
+        "responses": [
+          { "id": "more", "text": "Quero vender mais", "next": "sell" },
+          { "id": "buy", "text": "Quero comprar sementes também", "next": "seeds" },
+          { "id": "goodbye", "text": "Até mais, Dorinha!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Ótima escolha! Pode voltar sempre com a safra e eu pago bem.",
+        "responses": [
+          { "id": "more", "text": "Quero comprar mais sementes", "next": "seeds" },
+          { "id": "goodbye", "text": "Obrigado, até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "nina_shop": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Nina!", "input": "Oi, Nina! Como você está?" },
+      {
+        "id": "buy_tools",
+        "label": "Comprar ferramenta",
+        "input": "Você tem ferramentas para vender?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais!" }
+    ]
+  },
+  "padre_pedro": {
+    "choices": [
+      { "id": "greet", "label": "Bom dia, Padre!", "input": "Bom dia, Padre Pedro! Como vai?" },
+      {
+        "id": "advice",
+        "label": "Preciso de conselho",
+        "input": "Padre, preciso de um conselho sobre a roça."
+      },
+      {
+        "id": "community",
+        "label": "Como está a comunidade?",
+        "input": "Como está a comunidade ultimamente?"
+      },
+      {
+        "id": "bless",
+        "label": "Pode me abençoar?",
+        "input": "O senhor pode me dar uma bênção, Padre?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Que Deus o abençoe, Padre!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Que bom ver você por aqui, meu filho. Sou o Padre Pedro. Se precisar de algum conselho, pode me procurar.",
+        "responses": [
+          { "id": "advice", "text": "Preciso de um conselho", "next": "advice" },
+          { "id": "community", "text": "Como está a comunidade?", "next": "community" },
+          { "id": "bless", "text": "Pode me dar uma bênção?", "next": "bless" },
+          { "id": "goodbye", "text": "Que Deus o abençoe, Padre!", "next": null }
+        ]
+      },
+      "advice": {
+        "npcText": "O trabalho na roça é uma oração em movimento. Respeito quem cuida da terra. Plante com fé e colha com gratidão.",
+        "responses": [
+          { "id": "more", "text": "Mais algum conselho?", "next": "advice2" },
+          { "id": "bless", "text": "Pode me abençoar?", "next": "bless" },
+          { "id": "back", "text": "Obrigado, Padre!", "next": "root" }
+        ]
+      },
+      "advice2": {
+        "npcText": "Já passei por muitas dificuldades, mas a fé sempre me sustentou. A comunidade unida supera qualquer obstáculo.",
+        "responses": [
+          { "id": "bless", "text": "Uma bênção seria ótima", "next": "bless" },
+          { "id": "goodbye", "text": "Muito obrigado, Padre!", "next": null }
+        ]
+      },
+      "community": {
+        "npcText": "Esta comunidade é como um jardim — precisa de cuidado e amor para florescer. Todos têm sido muito solidários.",
+        "responses": [
+          { "id": "bento", "text": "O Bento tem algum problema?", "next": "community_bento" },
+          { "id": "back", "text": "Que bom saber disso!", "next": "root" }
+        ]
+      },
+      "community_bento": {
+        "npcText": "O Bento me confessou que sonha com chuva toda noite. Homem que ama a terra de verdade. É uma bênção ter ele aqui.",
+        "responses": [
+          { "id": "back", "text": "Interessante. Obrigado, Padre!", "next": "root" },
+          { "id": "goodbye", "text": "Até mais!", "next": null }
+        ]
+      },
+      "bless": {
+        "npcText": "Que Deus te ilumine, te proteja e te guie em todos os seus caminhos. Vai com Deus, meu filho!",
+        "responses": [
+          { "id": "thanks", "text": "Amém! Muito obrigado, Padre!", "next": "root" },
+          { "id": "goodbye", "text": "Até logo, Padre!", "next": null }
+        ]
+      }
+    }
+  },
+  "arnaldo": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Arnaldo!", "input": "Oi, Arnaldo! Tudo certo?" },
+      {
+        "id": "buy_wood",
+        "label": "Preciso de madeira",
+        "input": "Você tem madeira trabalhada para vender?"
+      },
+      {
+        "id": "craft",
+        "label": "Encomendar estrutura",
+        "input": "Posso encomendar uma estrutura de madeira?"
+      },
+      {
+        "id": "talk_trade",
+        "label": "Como vai o trabalho?",
+        "input": "O serviço de marcenaria está movimentado?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Arnaldo!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Oi. Sou o Arnaldo, carpinteiro. Se precisar de madeira trabalhada ou estrutura, é comigo.",
+        "responses": [
+          { "id": "buy_wood", "text": "Quero madeira trabalhada", "next": "wood" },
+          { "id": "craft", "text": "Quero encomendar uma estrutura", "next": "craft" },
+          { "id": "talk", "text": "Como vai o trabalho?", "next": "talk" },
+          { "id": "goodbye", "text": "Até mais, Arnaldo!", "next": null }
+        ]
+      },
+      "wood": {
+        "npcText": "Só vendo coisa de qualidade. Madeira de lei, bem curada. Qual o tamanho que você precisa?",
+        "responses": [
+          { "id": "small", "text": "Tábuas pequenas", "next": "buy_confirm" },
+          { "id": "large", "text": "Vigas maiores", "next": "buy_confirm" },
+          { "id": "back", "text": "Deixa pra lá", "next": "root" }
+        ]
+      },
+      "craft": {
+        "npcText": "Uma estrutura bem-feita dura gerações. É isso que eu faço. O que você precisa — celeiro, cerca, galpão?",
+        "responses": [
+          { "id": "barn", "text": "Um celeiro pequeno", "next": "craft_confirm" },
+          { "id": "fence", "text": "Uma cerca para o pasto", "next": "craft_confirm" },
+          { "id": "back", "text": "Só estava perguntando", "next": "root" }
+        ]
+      },
+      "talk": {
+        "npcText": "Trabalho com o Ferraz às vezes. Ele cuida do ferro, eu da madeira. Bom parceiro. A marcenaria tá movimentada.",
+        "responses": [
+          { "id": "more", "text": "Me fala mais sobre o trabalho", "next": "talk2" },
+          { "id": "buy", "text": "Vou querer madeira então", "next": "wood" },
+          { "id": "back", "text": "Legal. Obrigado!", "next": "root" }
+        ]
+      },
+      "talk2": {
+        "npcText": "A madeira tem memória. Cada peça tem sua história antes de virar mobília. Meu pai era carpinteiro — aprendi que paciência é a ferramenta mais importante.",
+        "responses": [
+          { "id": "buy", "text": "Quero comprar madeira", "next": "wood" },
+          { "id": "goodbye", "text": "Que belo ofício. Até mais!", "next": null }
+        ]
+      },
+      "craft_confirm": {
+        "npcText": "Pode deixar. Faço com qualidade. Vai ficar bom, você vai ver. Quando precisar, é só voltar.",
+        "responses": [
+          { "id": "more", "text": "Quero encomendar mais coisa", "next": "craft" },
+          { "id": "goodbye", "text": "Obrigado, Arnaldo!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Pronto. Cuida bem do que comprou. Qualidade não tem substituto.",
+        "responses": [
+          { "id": "more", "text": "Quero mais madeira", "next": "wood" },
+          { "id": "goodbye", "text": "Obrigado, Arnaldo! Até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "sofia": {
+    "choices": [
+      { "id": "greet", "label": "Olá, Sofia!", "input": "Olá, Sofia! Como você está?" },
+      {
+        "id": "health",
+        "label": "Preciso de remédio",
+        "input": "Está me sentindo mal. Tem algum remédio?"
+      },
+      {
+        "id": "herbs",
+        "label": "Me fala sobre ervas",
+        "input": "Quais ervas você usa nos seus remédios?"
+      },
+      {
+        "id": "buy",
+        "label": "Comprar remédio",
+        "input": "O que você tem para vender hoje na botica?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Sofia! Cuide-se!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Olá! Eu sou Sofia. Cuido da saúde da comunidade com ervas e remédios naturais. Como posso te ajudar?",
+        "responses": [
+          { "id": "health", "text": "Estou me sentindo mal", "next": "health" },
+          { "id": "herbs", "text": "Me fala sobre as ervas", "next": "herbs" },
+          { "id": "buy", "text": "Quero comprar remédio", "next": "buy" },
+          { "id": "goodbye", "text": "Até mais, Sofia!", "next": null }
+        ]
+      },
+      "health": {
+        "npcText": "Me conta os sintomas. Tenho chá de camomila para ansiedade, erva-cidreira para o sono e hortelã para dor de cabeça.",
+        "responses": [
+          { "id": "anxiety", "text": "Estou ansioso e estressado", "next": "remedy_anxiety" },
+          { "id": "sleep", "text": "Não consigo dormir", "next": "remedy_sleep" },
+          { "id": "headache", "text": "Dor de cabeça forte", "next": "remedy_headache" },
+          { "id": "back", "text": "Estou bem, só perguntei", "next": "root" }
+        ]
+      },
+      "remedy_anxiety": {
+        "npcText": "Chá de camomila com mel antes de dormir. Toma por três dias seguidos. A natureza tem remédio pra tudo!",
+        "responses": [
+          { "id": "buy", "text": "Vou comprar agora mesmo", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou experimentar, obrigado!", "next": "root" }
+        ]
+      },
+      "remedy_sleep": {
+        "npcText": "Erva-cidreira fresquinha, colhida de manhã com orvalho. Faça um chá forte meia hora antes de dormir.",
+        "responses": [
+          { "id": "buy", "text": "Quero comprar a erva-cidreira", "next": "buy_confirm" },
+          { "id": "back", "text": "Obrigado, vou tentar!", "next": "root" }
+        ]
+      },
+      "remedy_headache": {
+        "npcText": "Hortelã-pimenta faz milagre para enxaqueca. Coloca as folhas na testa ou faz um chá concentrado.",
+        "responses": [
+          { "id": "buy", "text": "Vou levar a hortelã", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou experimentar!", "next": "root" }
+        ]
+      },
+      "herbs": {
+        "npcText": "Aprendi com minha avó que as ervas do campo valem ouro. Uso camomila, erva-cidreira, hortelã, alecrim e lavanda.",
+        "responses": [
+          { "id": "more", "text": "Onde você acha essas ervas?", "next": "herbs2" },
+          { "id": "buy", "text": "Quero comprar algumas ervas", "next": "buy" },
+          { "id": "back", "text": "Fascinante! Obrigada", "next": "root" }
+        ]
+      },
+      "herbs2": {
+        "npcText": "A Lucia me ensinou muito sobre plantas medicinais. Colher ervas de manhã cedo, com o orvalho ainda na folha — é quando elas têm mais força.",
+        "responses": [
+          { "id": "lucia", "text": "Vou falar com a Lucia também", "next": "root" },
+          { "id": "buy", "text": "Quero comprar ervas frescas", "next": "buy" },
+          { "id": "goodbye", "text": "Muito interessante, até mais!", "next": null }
+        ]
+      },
+      "buy": {
+        "npcText": "Todos os remédios são naturais e testados. Tenho chás, pomadas e tinturas. O que você precisa?",
+        "responses": [
+          { "id": "tea", "text": "Quero chás medicinais", "next": "buy_confirm" },
+          { "id": "salve", "text": "Quero uma pomada", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou pensar", "next": "root" }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Ótima escolha! Qualquer dúvida sobre o uso, pode me perguntar. Cuide-se!",
+        "responses": [
+          { "id": "more", "text": "Quero mais alguma coisa", "next": "buy" },
+          { "id": "goodbye", "text": "Obrigado, Sofia! Até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "romeu": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Romeu!", "input": "Oi, Romeu! Pescou bastante hoje?" },
+      { "id": "buy_fish", "label": "Comprar peixe", "input": "Quanto custa o peixe fresco?" },
+      {
+        "id": "story",
+        "label": "Me conta uma história",
+        "input": "Me conta uma história do rio, Romeu!"
+      },
+      {
+        "id": "tips",
+        "label": "Dica de pesca",
+        "input": "Qual é o segredo para pegar peixe grande?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Romeu! Boa pesca!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Eita, rosto novo! Sou o Romeu, pescador. O maior peixe que já peguei tinha mais de um metro — mas isso é história pra depois!",
+        "responses": [
+          { "id": "buy_fish", "text": "Quero comprar peixe", "next": "fish" },
+          { "id": "story", "text": "Me conta essa história!", "next": "story1" },
+          { "id": "tips", "text": "Me dá uma dica de pesca", "next": "tips" },
+          { "id": "goodbye", "text": "Até mais, Romeu! Boa pesca!", "next": null }
+        ]
+      },
+      "fish": {
+        "npcText": "Tudo fresquinho do rio desta manhã! Tilápia, pintado, dourado. Também tenho peixe defumado — especialidade da casa.",
+        "responses": [
+          { "id": "fresh", "text": "Quero peixe fresco", "next": "buy_confirm" },
+          { "id": "smoked", "text": "Quero peixe defumado", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou ver depois", "next": "root" }
+        ]
+      },
+      "story1": {
+        "npcText": "Era uma madrugada fria, o rio tava cheio. Joguei a linha e senti um puxão que quase me tirou do barco. Lutei por meia hora!",
+        "responses": [
+          { "id": "continue", "text": "E aí? O que aconteceu?", "next": "story2" },
+          { "id": "back", "text": "Que história incrível!", "next": "root" }
+        ]
+      },
+      "story2": {
+        "npcText": "Quando puxei, era um pintado enorme! O Bento estava comigo e ficou boquiaberto. Pesou mais de trinta quilos. Não é mentira!",
+        "responses": [
+          { "id": "bento", "text": "O Bento pesca também?", "next": "bento" },
+          { "id": "buy", "text": "Me deu fome! Vou comprar peixe", "next": "fish" },
+          { "id": "back", "text": "Que pescaria e essa!", "next": "root" }
+        ]
+      },
+      "bento": {
+        "npcText": "O Bento é meu parceiro de pesca! Homem quieto, mas sabe onde os peixes estão. A gente pesca toda quinta-feira.",
+        "responses": [
+          { "id": "buy", "text": "Vou comprar peixe de vocês", "next": "fish" },
+          { "id": "goodbye", "text": "Que dupla! Até mais!", "next": null }
+        ]
+      },
+      "tips": {
+        "npcText": "O rio tem seus segredos. Pesco desde os seis anos. Meu avô dizia que o peixe escolhe quem vai pegá-lo.",
+        "responses": [
+          { "id": "more", "text": "Qual é o segredo mesmo?", "next": "tips2" },
+          { "id": "buy", "text": "Me deu vontade de comer peixe!", "next": "fish" },
+          { "id": "back", "text": "Obrigado pela dica!", "next": "root" }
+        ]
+      },
+      "tips2": {
+        "npcText": "Respeita a correnteza e vai cedo de manhã. Isca viva é melhor. E nunca pesca com pressa — o peixe sente.",
+        "responses": [
+          { "id": "buy", "text": "Prefiro comprar de você mesmo", "next": "fish" },
+          { "id": "goodbye", "text": "Vou tentar isso. Até mais!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Peixe mais fresco que esse só no rio! Volta amanhã cedo — o estoque é ainda maior pela manhã.",
+        "responses": [
+          { "id": "more", "text": "Quero comprar mais", "next": "fish" },
+          { "id": "story", "text": "Me conta outra história", "next": "story1" },
+          { "id": "goodbye", "text": "Obrigado, Romeu! Até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "ferraz": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Ferraz!", "input": "Oi, Ferraz! Tudo bem por aqui?" },
+      {
+        "id": "buy",
+        "label": "Comprar ferramenta",
+        "input": "O que você tem disponível na ferraria?"
+      },
+      {
+        "id": "upgrade",
+        "label": "Fazer upgrade",
+        "input": "Pode fazer upgrade na minha ferramenta?"
+      },
+      {
+        "id": "sell_ore",
+        "label": "Vender minério",
+        "input": "Você compra minério? Tenho para vender."
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Ferraz!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Ei, rosto novo! Bem-vindo à ferraria. Sou o Ferraz — se precisar de ferramenta boa ou upgrade, é aqui.",
+        "responses": [
+          { "id": "buy", "text": "Quero ver as ferramentas", "next": "buy" },
+          { "id": "upgrade", "text": "Quero fazer upgrade", "next": "upgrade" },
+          { "id": "sell_ore", "text": "Tenho minério para vender", "next": "sell_ore" },
+          { "id": "talk", "text": "Me fala sobre o seu trabalho", "next": "talk" },
+          { "id": "goodbye", "text": "Até mais, Ferraz!", "next": null }
+        ]
+      },
+      "buy": {
+        "npcText": "Só trabalho com material de qualidade. Tenho enxadas, machados, picaretas e foices. O que você precisa?",
+        "responses": [
+          { "id": "hoe", "text": "Quero uma enxada", "next": "buy_confirm" },
+          { "id": "axe", "text": "Preciso de um machado", "next": "buy_confirm" },
+          { "id": "pick", "text": "Quero uma picareta", "next": "buy_confirm" },
+          { "id": "back", "text": "Só estava olhando", "next": "root" }
+        ]
+      },
+      "upgrade": {
+        "npcText": "Que ferramenta você quer melhorar? Posso temperar o aço, afiar a lâmina ou reforçar o cabo.",
+        "responses": [
+          { "id": "sharpen", "text": "Afiar a lâmina da enxada", "next": "upgrade_confirm" },
+          { "id": "reinforce", "text": "Reforçar o cabo da ferramenta", "next": "upgrade_confirm" },
+          { "id": "temper", "text": "Temperar o aço", "next": "upgrade_confirm" },
+          { "id": "back", "text": "Vou pensar", "next": "root" }
+        ]
+      },
+      "sell_ore": {
+        "npcText": "Minério bom eu sempre aceito! Ferro e aço eu pago bem. Que tipo você trouxe?",
+        "responses": [
+          { "id": "iron", "text": "Tenho minério de ferro", "next": "sell_confirm" },
+          { "id": "steel", "text": "Tenho aço", "next": "sell_confirm" },
+          { "id": "back", "text": "Na verdade não tenho agora", "next": "root" }
+        ]
+      },
+      "talk": {
+        "npcText": "Sabe o que me apaixona nesse trabalho? Metal que você forja com as próprias mãos vira algo útil de verdade.",
+        "responses": [
+          { "id": "more", "text": "Como você aprendeu?", "next": "talk2" },
+          { "id": "buy", "text": "Me convenceu, quero comprar", "next": "buy" },
+          { "id": "back", "text": "Que ofício nobre!", "next": "root" }
+        ]
+      },
+      "talk2": {
+        "npcText": "Aprendi a ferraria com meu pai. Ele dizia: ferramenta ruim é pior que nenhuma. Minério bom é difícil de achar, mas quando encontro, vira obra de arte.",
+        "responses": [
+          { "id": "ore", "text": "Posso te trazer minério", "next": "sell_ore" },
+          { "id": "buy", "text": "Quero uma ferramenta boa", "next": "buy" },
+          { "id": "goodbye", "text": "Respeito muito isso. Até mais!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Boa escolha! Cuida dessa ferramenta, hein! Qualidade assim não se acha em qualquer lugar.",
+        "responses": [
+          { "id": "more", "text": "Quero ver mais ferramentas", "next": "buy" },
+          { "id": "upgrade", "text": "Posso fazer upgrade agora?", "next": "upgrade" },
+          { "id": "goodbye", "text": "Obrigado, Ferraz! Até mais!", "next": null }
+        ]
+      },
+      "upgrade_confirm": {
+        "npcText": "Pronto! Ficou melhor do que esperava. Testa aí — vai ver a diferença.",
+        "responses": [
+          { "id": "more", "text": "Quero outro upgrade", "next": "upgrade" },
+          { "id": "goodbye", "text": "Incrível! Obrigado, Ferraz!", "next": null }
+        ]
+      },
+      "sell_confirm": {
+        "npcText": "Minério de boa qualidade! Obrigado de verdade. Pode trazer mais quando tiver.",
+        "responses": [
+          { "id": "more", "text": "Tenho mais para vender", "next": "sell_ore" },
+          { "id": "buy", "text": "Quero comprar ferramenta", "next": "buy" },
+          { "id": "goodbye", "text": "Até mais, Ferraz!", "next": null }
+        ]
+      }
+    }
+  },
+  "marina": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Marina!", "input": "Oi, Marina! Cheiro de pão fresquinho!" },
+      { "id": "buy_bread", "label": "Comprar pão", "input": "Quanto custa o pão fresquinho?" },
+      {
+        "id": "buy_seeds",
+        "label": "Sementes da padaria",
+        "input": "Você vende sementes aqui também?"
+      },
+      {
+        "id": "recipe",
+        "label": "Me ensina uma receita",
+        "input": "Me ensina uma receita fácil, Marina?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Marina! Que cheiro bom!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Que bom ver um rosto novo! Sou a Marina, da padaria. Se quiser pão fresquinho, é aqui! O cheirinho veio até você, né?",
+        "responses": [
+          { "id": "buy_bread", "text": "Quero comprar pão", "next": "bread" },
+          { "id": "buy_seeds", "text": "Você vende sementes?", "next": "seeds" },
+          { "id": "recipe", "text": "Me ensina uma receita", "next": "recipe" },
+          { "id": "goodbye", "text": "Até mais, Marina!", "next": null }
+        ]
+      },
+      "bread": {
+        "npcText": "Tenho pão de trigo, pão de milho e broa de queijo. Todos feitos hoje de manhã, quentinhos!",
+        "responses": [
+          { "id": "wheat", "text": "Quero o pão de trigo", "next": "buy_confirm" },
+          { "id": "corn", "text": "Quero o pão de milho", "next": "buy_confirm" },
+          { "id": "cheese", "text": "Quero a broa de queijo", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou ver depois", "next": "root" }
+        ]
+      },
+      "seeds": {
+        "npcText": "Sim! Tenho sementes especiais para quem gosta de fazer o próprio pão — trigo, milho e centeio. Dou uma dica de como plantar!",
+        "responses": [
+          { "id": "wheat", "text": "Quero sementes de trigo", "next": "seeds_confirm" },
+          { "id": "corn", "text": "Quero sementes de milho", "next": "seeds_confirm" },
+          { "id": "rye", "text": "Quero sementes de centeio", "next": "seeds_confirm" },
+          { "id": "back", "text": "Interessante! Vou pensar", "next": "root" }
+        ]
+      },
+      "recipe": {
+        "npcText": "Pão de forma simples: mistura farinha, água morna, sal e fermento. Sova bem, deixa descansar e assa. O segredo é o amor na massa!",
+        "responses": [
+          { "id": "more", "text": "Tem outra receita?", "next": "recipe2" },
+          { "id": "buy", "text": "Me deu fome! Vou comprar", "next": "bread" },
+          { "id": "back", "text": "Que ótima receita!", "next": "root" }
+        ]
+      },
+      "recipe2": {
+        "npcText": "Broa de queijo: mistura farinha de milho, queijo ralado, ovos e manteiga. Assa em fogo médio. A Dorinha é minha amiga e adora essa receita!",
+        "responses": [
+          { "id": "buy", "text": "Vou comprar uma broa agora!", "next": "buy_confirm" },
+          { "id": "dorinha", "text": "A Dorinha também cozinha?", "next": "about_dorinha" },
+          { "id": "goodbye", "text": "Delicioso! Até mais, Marina!", "next": null }
+        ]
+      },
+      "about_dorinha": {
+        "npcText": "A Dorinha e eu somos amigas de infância! Ela trata da quitanda e eu da padaria. Troca muito produto entre a gente.",
+        "responses": [
+          { "id": "buy", "text": "Que fofo! Vou comprar pão", "next": "bread" },
+          { "id": "goodbye", "text": "Que comunidade boa! Até mais!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Feito! Que cheiro bom, né? Volta sempre — o pão sai fresquinho todo dia de manhã.",
+        "responses": [
+          { "id": "more", "text": "Quero mais alguma coisa", "next": "root" },
+          { "id": "goodbye", "text": "Obrigado, Marina! Até mais!", "next": null }
+        ]
+      },
+      "seeds_confirm": {
+        "npcText": "Ótima escolha! Planta com carinho e o resultado vai ser lindo. Quando colher, traz pra eu ver!",
+        "responses": [
+          { "id": "bread", "text": "Posso levar um pão também?", "next": "bread" },
+          { "id": "goodbye", "text": "Obrigado, Marina! Até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "bento": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Bento!", "input": "Oi, Bento! Como vai a roça?" },
+      {
+        "id": "advice",
+        "label": "Conselho de roça",
+        "input": "Qual é o seu conselho para uma boa colheita?"
+      },
+      {
+        "id": "buy_tools",
+        "label": "Comprar ferramenta",
+        "input": "Você tem ferramenta para vender?"
+      },
+      {
+        "id": "weather",
+        "label": "O tempo vai ajudar?",
+        "input": "Como você acha que vai ser o tempo essa semana?"
+      },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Bento!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Hmm. Novo por aqui. Bento. Trabalho nessa terra faz tempo. Qualquer coisa, pode perguntar.",
+        "responses": [
+          { "id": "advice", "text": "Me dá um conselho de roça", "next": "advice" },
+          { "id": "weather", "text": "Como vai ficar o tempo?", "next": "weather" },
+          { "id": "talk", "text": "Me fala da sua história aqui", "next": "story" },
+          { "id": "goodbye", "text": "Até mais, Bento!", "next": null }
+        ]
+      },
+      "advice": {
+        "npcText": "Regra de ouro: respeita a estação. Planta o que é da época, cuida da terra entre colheitas e não esqueça de regar cedo.",
+        "responses": [
+          { "id": "more", "text": "Mais algum conselho?", "next": "advice2" },
+          { "id": "weather", "text": "E como vai o tempo?", "next": "weather" },
+          { "id": "back", "text": "Bom conselho! Obrigado", "next": "root" }
+        ]
+      },
+      "advice2": {
+        "npcText": "Ferramenta boa faz diferença. A Nina tem as melhores da região. E minério pra afiar, o Ferraz cuida bem.",
+        "responses": [
+          { "id": "nina", "text": "Vou falar com a Nina", "next": "root" },
+          { "id": "ferraz", "text": "E o Ferraz, onde fica?", "next": "ferraz_info" },
+          { "id": "back", "text": "Obrigado, Bento!", "next": "root" }
+        ]
+      },
+      "ferraz_info": {
+        "npcText": "Ferraria fica no canto sul do vilarejo. Ferraz é bruto mas honesto. Aprendeu com o pai, igual eu.",
+        "responses": [
+          { "id": "weather", "text": "E o tempo, Bento?", "next": "weather" },
+          { "id": "goodbye", "text": "Obrigado. Até mais!", "next": null }
+        ]
+      },
+      "weather": {
+        "npcText": "Pelo jeito das nuvens e o canto dos pássaros, deve dar chuva em dois dias. Bom pra quem plantou trigo.",
+        "responses": [
+          { "id": "prepare", "text": "O que devo preparar?", "next": "weather2" },
+          { "id": "advice", "text": "Me dá mais conselho então", "next": "advice" },
+          { "id": "back", "text": "Obrigado, Bento!", "next": "root" }
+        ]
+      },
+      "weather2": {
+        "npcText": "Verifica as drenas, reforça as estacas e colhe o que já estiver maduro. Chuva forte pode derrubar planta fraca.",
+        "responses": [
+          { "id": "advice", "text": "Mais algum conselho?", "next": "advice" },
+          { "id": "goodbye", "text": "Muito útil! Até mais, Bento!", "next": null }
+        ]
+      },
+      "story": {
+        "npcText": "Trabalho nessa terra há trinta anos. Já vi seca, chuva em excesso, praga. A terra ensina quem tem paciência.",
+        "responses": [
+          { "id": "more", "text": "Qual foi o ano mais difícil?", "next": "story2" },
+          { "id": "advice", "text": "Me dá um conselho com essa experiência", "next": "advice" },
+          { "id": "back", "text": "Que história, Bento!", "next": "root" }
+        ]
+      },
+      "story2": {
+        "npcText": "A grande seca de doze anos atrás. Perdi metade da roça. Mas fiquei, reconstruí. Quem desiste cedo não colhe nunca.",
+        "responses": [
+          { "id": "advice", "text": "Isso me inspira. Me ensina mais", "next": "advice" },
+          { "id": "goodbye", "text": "Que determinação! Até mais!", "next": null }
+        ]
+      }
+    }
+  },
+  "lucia": {
+    "choices": [
+      { "id": "greet", "label": "Oi, Lucia!", "input": "Oi, Lucia! Os animais estão bem?" },
+      {
+        "id": "buy_dairy",
+        "label": "Comprar laticínio",
+        "input": "Você tem leite ou queijo para vender?"
+      },
+      {
+        "id": "animals",
+        "label": "Me fala dos animais",
+        "input": "Como você cuida dos animais aqui?"
+      },
+      { "id": "wool", "label": "Comprar lã", "input": "Você tem lã disponível?" },
+      { "id": "goodbye", "label": "Até mais!", "input": "Até mais, Lucia! Cuide bem deles!" }
+    ],
+    "nodes": {
+      "root": {
+        "npcText": "Oi! Sou a Lucia. Cuido dos animais por aqui. Se quiser saber sobre leite, queijo ou lã, pode me chamar!",
+        "responses": [
+          { "id": "dairy", "text": "Quero comprar laticínio", "next": "dairy" },
+          { "id": "wool", "text": "Preciso de lã", "next": "wool" },
+          { "id": "animals", "text": "Me fala dos animais", "next": "animals" },
+          { "id": "goodbye", "text": "Até mais, Lucia!", "next": null }
+        ]
+      },
+      "dairy": {
+        "npcText": "Tenho leite fresco, queijo curado e iogurte natural. Tudo das minhas vacas, tratadas com muito carinho!",
+        "responses": [
+          { "id": "milk", "text": "Quero leite fresco", "next": "buy_confirm" },
+          { "id": "cheese", "text": "Quero queijo curado", "next": "buy_confirm" },
+          { "id": "yogurt", "text": "Quero iogurte natural", "next": "buy_confirm" },
+          { "id": "back", "text": "Vou ver depois", "next": "root" }
+        ]
+      },
+      "wool": {
+        "npcText": "Tenho lã fina das minhas ovelhas — branca, natural, sem tingimento. Boa para fiar ou tecer.",
+        "responses": [
+          { "id": "raw", "text": "Quero lã bruta para fiar", "next": "buy_confirm" },
+          { "id": "spun", "text": "Tem fio já torcido?", "next": "wool2" },
+          { "id": "back", "text": "Obrigado, vou pensar", "next": "root" }
+        ]
+      },
+      "wool2": {
+        "npcText": "O fio já torcido eu passo para a Sofia às vezes — ela usa nas tinturas de ervas. Mas tenho um pouco aqui sim.",
+        "responses": [
+          { "id": "buy", "text": "Quero o fio torcido então", "next": "buy_confirm" },
+          { "id": "sofia", "text": "A Sofia faz o quê com o fio?", "next": "sofia_info" },
+          { "id": "back", "text": "Entendi, obrigado!", "next": "root" }
+        ]
+      },
+      "sofia_info": {
+        "npcText": "A Sofia usa o fio para fazer bolsinhas de ervas medicinais. Ela me ensinou muito sobre plantas — grande amiga!",
+        "responses": [
+          { "id": "buy", "text": "Quero lã mesmo assim", "next": "buy_confirm" },
+          { "id": "animals", "text": "Me fala mais dos seus animais", "next": "animals" },
+          { "id": "goodbye", "text": "Que interessante! Até mais!", "next": null }
+        ]
+      },
+      "animals": {
+        "npcText": "Tenho vacas, ovelhas e galinhas. Cada um tem nome! A vaca mais velha é a Mimosa — ela produz o melhor leite.",
+        "responses": [
+          { "id": "mimosa", "text": "Me fala da Mimosa!", "next": "mimosa" },
+          { "id": "dairy", "text": "Quero o leite da Mimosa então", "next": "dairy" },
+          { "id": "back", "text": "Que fofinho! Obrigado.", "next": "root" }
+        ]
+      },
+      "mimosa": {
+        "npcText": "A Mimosa tem doze anos e ainda produz três litros por dia. Gosta de ser escovada de manhã e de comer capim fresco.",
+        "responses": [
+          { "id": "dairy", "text": "Vou comprar o leite dela!", "next": "dairy" },
+          { "id": "back", "text": "Que história linda! Até mais!", "next": null }
+        ]
+      },
+      "buy_confirm": {
+        "npcText": "Ótima escolha! Os animais são tratados com muito amor — o produto reflete isso. Volta sempre!",
+        "responses": [
+          { "id": "more", "text": "Quero mais alguma coisa", "next": "root" },
+          { "id": "goodbye", "text": "Obrigado, Lucia! Cuide bem deles!", "next": null }
+        ]
+      }
+    }
+  }
+}
