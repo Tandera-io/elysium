@@ -1,0 +1,85 @@
+{
+  "id": "ferraz",
+  "name": "Ferraz",
+  "role": "ferreiro",
+  "position": { "x": 4, "z": -6 },
+  "personality": {
+    "core_traits": ["grosseiro mas justo", "apaixonado pelo ofício", "perfeccionista"],
+    "speech_style": "brusco, direto, orgulhoso do trabalho, fala em português brasileiro coloquial",
+    "values": ["metal de qualidade", "artesanato duradouro", "honestidade no preço"],
+    "fears": [
+      "ferramentas enferrujadas",
+      "trabalho malfeito",
+      "clientes que não cuidam do equipamento"
+    ]
+  },
+  "relations": {
+    "nina": "concorrente_respeitosa",
+    "bento": "cliente_antigo"
+  },
+  "schedule": [
+    { "from": "06:00", "to": "12:00", "location": "ferraria", "activity": "forjar" },
+    { "from": "12:00", "to": "13:00", "location": "casa", "activity": "almoçar" },
+    { "from": "13:00", "to": "18:00", "location": "ferraria", "activity": "atender" },
+    { "from": "18:00", "to": "21:00", "location": "praca", "activity": "descansar" }
+  ],
+  "economy_role": {
+    "produces": ["upgraded_hoe", "upgraded_watering_can", "sword", "pickaxe"],
+    "consumes": ["ferro", "minerio_raro", "carvao"],
+    "shop_inventory": ["upgraded_hoe", "upgraded_watering_can", "pickaxe", "sword", "iron_bar"]
+  },
+  "dialogue": {
+    "greetings": {
+      "morning": "Já tô no fogo desde as seis. O que você precisa?",
+      "day": "Fala logo, tô no meio de uma forja.",
+      "evening": "Fechei a ferraria, mas tudo bem. O que foi?"
+    },
+    "about_craft": [
+      "Ferro bom não mente. Você bate, ele responde.",
+      "Vinte anos nessa bigorna. Cada peça sai do jeito que eu quero ou não sai.",
+      "Trabalho malfeito é pior que não fazer nada. Aqui não tem disso.",
+      "A gente não forja ferramenta — forja confiança. Se a enxada quebra, você perde uma plantação."
+    ],
+    "player_tools": [
+      "Deixa eu ver essa enxada. Hmm. Serve, mas dá pra melhorar.",
+      "Esse regador tá com a solda fraca. Traz aqui que eu reforço.",
+      "Você tá usando isso? Milagre que ainda aguenta.",
+      "Tá em bom estado. Quem fez isso sabia o que tava fazendo."
+    ],
+    "offering_upgrades": [
+      "Traga ferro e eu te devolvo uma ferramenta que dura dez anos.",
+      "Posso reforçar o cabo e afiar a lâmina. Mas preciso de material.",
+      "Upgrade não é magia — é metal certo e fogo na medida. Traz o que eu pedi.",
+      "Da uma olhada no que tenho aqui, escolhe o que precisa."
+    ],
+    "liked_gifts": {
+      "ferro": "Ferro de boa qualidade. Agora a gente tá se entendendo.",
+      "minerio_raro": "Uai! Minério raro de verdade. Faz tempo que não via isso por aqui. Obrigado.",
+      "carvao": "Carvão bom faz toda a diferença na temperatura da forja. Valeu."
+    },
+    "disliked_gifts": [
+      "Isso aqui não me serve pra nada. Guarda de volta.",
+      "Eu trabalho com ferro, não com bugiganga. Obrigado mesmo assim."
+    ],
+    "about_village": [
+      "A Nina vende ferramenta, mas não forja nada. Cada um com seu ofício.",
+      "O Bento é cliente antigo. Enxada dele já passou pela minha bigorna umas três vezes.",
+      "Essa vila é pequena, mas tem gente que trabalha de verdade. Isso eu respeito."
+    ],
+    "seasonal_weather": [
+      "Chuva forte enferruja o que não tá guardado direito. Aviso dado.",
+      "No verão o fogo da forja fica pesado, mas o trabalho não para.",
+      "Tempo seco é bom pra forja. Metal responde melhor quando não tem umidade."
+    ],
+    "high_hearts": [
+      "Você sabe, nunca aprendi a forjar com ninguém. Meu pai deixou as ferramentas e eu fui aprendendo sozinho. Cada erro virou lição.",
+      "Tem coisa que só o tempo ensina. Fogo demais quebra o metal. Paciência é parte do ofício.",
+      "Quando eu era novo, achava que força resolvia tudo. Hoje sei que é o ângulo certo que faz a diferença."
+    ],
+    "shop": [
+      "Da uma olhada no que tenho aqui. Tudo feito aqui mesmo, na minha bigorna.",
+      "Posso te mostrar o estoque. Enxada, picareta, espada — o que você precisar.",
+      "Olha as ferramentas aqui. Pode escolher o que precisa."
+    ]
+  }
+}
