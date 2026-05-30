@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useInventoryStore, type SlotItem } from '../systems/inventory/inventoryStore';
+import { useInventoryStore, type ItemId, type SlotItem } from '../systems/inventory/inventoryStore';
+import { useToolStore, type ToolId } from '../store/toolStore';
 import { CROPS, type CropId } from '../systems/farming/CropDefs';
+
+const SEED_TOOL: Partial<Record<ItemId, ToolId>> = {
+  seed_wheat: 'seed_wheat',
+  seed_tomato: 'seed_tomato',
+};
 
 const ITEM_ICON: Record<string, string> = {
   seed_wheat: '🌾',
@@ -34,6 +40,7 @@ export function InventoryPanel() {
   const gold = useInventoryStore((s) => s.gold);
   const remove = useInventoryStore((s) => s.remove);
   const swap = useInventoryStore((s) => s.swap);
+  const setTool = useToolStore((s) => s.set);
   const [draggingFrom, setDraggingFrom] = useState<number | null>(null);
   const [hoverOver, setHoverOver] = useState<number | null>(null);
 
@@ -96,6 +103,14 @@ export function InventoryPanel() {
               setHoverOver(null);
             }}
             onDrop_item={slot ? () => remove(slot.id, slot.qty) : undefined}
+            onUse={
+              slot && SEED_TOOL[slot.id]
+                ? () => {
+                    setTool(SEED_TOOL[slot.id]!);
+                    setOpen(false);
+                  }
+                : undefined
+            }
           />
         ))}
       </div>
@@ -114,6 +129,8 @@ interface SlotProps {
   onDrop: () => void;
   /** Drop the entire stack from inventory (discard). */
   onDrop_item?: () => void;
+  /** Use item (seeds: select planting tool). */
+  onUse?: () => void;
 }
 
 function Slot({
@@ -125,6 +142,7 @@ function Slot({
   onDragEnd,
   onDrop,
   onDrop_item,
+  onUse,
 }: SlotProps) {
   const [showTip, setShowTip] = useState(false);
 
@@ -172,6 +190,22 @@ function Slot({
               <div className="font-semibold">{nameOf(item.id)}</div>
               <div className="text-slate-500">qtd {item.qty}</div>
             </div>
+          )}
+          {onUse && (
+            <button
+              className="absolute -bottom-1 -left-1 w-4 h-4 bg-amber-600 hover:bg-amber-400 text-white rounded-full text-[8px] flex items-center justify-center z-20 leading-none pointer-events-auto"
+              title={`Usar ${nameOf(item.id)}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onUse();
+              }}
+              onMouseEnter={(e) => {
+                e.stopPropagation();
+                setShowTip(false);
+              }}
+            >
+              ▶
+            </button>
           )}
           {onDrop_item && (
             <button
