@@ -10,6 +10,7 @@ import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { NPCInteractions } from './npc/NPCInteractions';
+import { DayNightCycle } from './systems/DayNightCycle';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
 import { WeatherEffect } from './ui/WeatherEffect';
@@ -104,6 +105,7 @@ export function App() {
       <DialogueBox />
       <NPCInteractions />
       <NPCShopModal />
+      <DayNightCycle />
       <SaveMenu open={saveOpen} onClose={() => setSaveOpen(false)} />
       {titleOpen && <TitleScreen onStart={() => setTitleOpen(false)} />}
     </main>
