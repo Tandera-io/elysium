@@ -32,11 +32,36 @@ export const ROMEU_SHOP_TRIGGER_PHRASES: string[] = [
   'pode escolher o que quer',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const ROMEU_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Pode deixar comigo! Esse rio não tem segredos pra mim, e esse serviço também não vai ter.',
+    'Uai, que bom! Adoro quando alguém confia no Romeu. Já vou nessa!',
+    'Tá feito! Tenho toda paciência do pescador pra essa tarefa.',
+  ],
+  working: [
+    'Pescando com paciência... isso não se apressa não.',
+    'Rio ensinou que todo bom resultado pede espera. Já já termino.',
+    'Trabalhando com calma e jeito. Sou bom nisso, pode crer.',
+  ],
+  completed: [
+    'Peguei! Missão cumprida, e ainda sobrou tempo pra uma pescaria!',
+    'Pronto! Como o Romeu sempre diz: linha no lugar certo, peixe na mão.',
+    'Acabou! Que nem um grande peixe: veio na hora certa.',
+  ],
+};
+
 export const ROMEU_DIALOGUE = {
   npcId: ROMEU_NPC_ID,
   greetings: ROMEU_GREETINGS,
   topics: ROMEU_TOPICS,
   shopTriggerPhrases: ROMEU_SHOP_TRIGGER_PHRASES,
+  choreDialogue: ROMEU_CHORE_DIALOGUE,
 } as const;
 
 export default ROMEU_DIALOGUE;

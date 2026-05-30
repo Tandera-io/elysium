@@ -38,11 +38,36 @@ export const DORINHA_SHOP_TRIGGER_PHRASES: string[] = [
   'olha o meu estoque',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const DORINHA_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Pode deixar comigo! Não decepcionarei, não!',
+    'Uai, que bom! Adoro quando me pedem algo de valor!',
+    'Já sei o que fazer. Você pode contar com a Dorinha!',
+  ],
+  working: [
+    'Tô no capricho, pode ficar tranquilo!',
+    'Trabalhando firme, que nem todo dia na quitanda!',
+    'Deixa que eu resolvo, já já termino!',
+  ],
+  completed: [
+    'Pronto! Feito com todo amor e dedicação da sua Dorinha!',
+    'Missão cumprida! Espero que fique satisfeito!',
+    'Acabou! Pode conferir, não faltou nada!',
+  ],
+};
+
 export const DORINHA_DIALOGUE = {
   npcId: DORINHA_NPC_ID,
   greetings: DORINHA_GREETINGS,
   topics: DORINHA_TOPICS,
   shopTriggerPhrases: DORINHA_SHOP_TRIGGER_PHRASES,
+  choreDialogue: DORINHA_CHORE_DIALOGUE,
 } as const;
 
 export default DORINHA_DIALOGUE;

@@ -27,11 +27,36 @@ export const PADRE_PEDRO_TOPICS: Record<string, PadrePedroQuickReply[]> = {
 
 export const PADRE_PEDRO_SHOP_TRIGGER_PHRASES: string[] = [];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const PADRE_PEDRO_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Com fé e dedicação, faremos o que for preciso para a comunidade.',
+    'É uma honra servir. Conte comigo para essa tarefa, meu filho.',
+    'A humildade do serviço engrandece o espírito. Vou fazer com prazer.',
+  ],
+  working: [
+    'Cada ato de serviço é uma oração em si. Trabalhando com calma.',
+    'O bom trabalho não tem pressa, tem propósito. Já termino.',
+    'Deus abençoa as mãos que trabalham com boas intenções.',
+  ],
+  completed: [
+    'Graças a Deus, está concluído. Que sirva ao bem de todos.',
+    'Pronto, meu filho. Feito com boa vontade e muito cuidado.',
+    'Terminei. Que esse trabalho traga frutos para toda a comunidade.',
+  ],
+};
+
 export const PADRE_PEDRO_DIALOGUE = {
   npcId: PADRE_PEDRO_NPC_ID,
   greetings: PADRE_PEDRO_GREETINGS,
   topics: PADRE_PEDRO_TOPICS,
   shopTriggerPhrases: PADRE_PEDRO_SHOP_TRIGGER_PHRASES,
+  choreDialogue: PADRE_PEDRO_CHORE_DIALOGUE,
 } as const;
 
 export default PADRE_PEDRO_DIALOGUE;

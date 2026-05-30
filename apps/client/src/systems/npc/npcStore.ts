@@ -5,6 +5,31 @@ import bentoJson from '../../content/npcs/bento.json';
 import luciaJson from '../../content/npcs/lucia.json';
 import dorinhaJson from '../../content/npcs/dorinha.json';
 import ninaJson from '../../content/npcs/nina.json';
+import { DORINHA_CHORE_DIALOGUE } from '../../features/npc/dialogue/dorinha';
+import { NINA_CHORE_DIALOGUE } from '../../features/npc/dialogue/nina';
+import { FERRAZ_CHORE_DIALOGUE } from '../../features/npc/dialogue/ferraz';
+import { ARNALDO_CHORE_DIALOGUE } from '../../features/npc/dialogue/arnaldo';
+import { SOFIA_CHORE_DIALOGUE } from '../../features/npc/dialogue/sofia';
+import { ROMEU_CHORE_DIALOGUE } from '../../features/npc/dialogue/romeu';
+import { PADRE_PEDRO_CHORE_DIALOGUE } from '../../features/npc/dialogue/padre_pedro';
+
+export type ChoreState = 'assigned' | 'working' | 'completed';
+
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+const CHORE_DIALOGUE_MAP: Record<string, ChoreDialogueLines> = {
+  dorinha: DORINHA_CHORE_DIALOGUE,
+  nina: NINA_CHORE_DIALOGUE,
+  ferraz: FERRAZ_CHORE_DIALOGUE,
+  arnaldo: ARNALDO_CHORE_DIALOGUE,
+  sofia: SOFIA_CHORE_DIALOGUE,
+  romeu: ROMEU_CHORE_DIALOGUE,
+  padre_pedro: PADRE_PEDRO_CHORE_DIALOGUE,
+};
 
 export interface NpcStateEntry {
   def: NpcDef;
@@ -18,6 +43,7 @@ export interface NpcState {
 
 export interface NpcActions {
   setPosition: (id: string, pos: { x: number; z: number }) => void;
+  getChoreDialogue: (npcId: string, state: ChoreState) => string | null;
 }
 
 function loadBootstrap(): NpcState {
@@ -44,6 +70,12 @@ export const useNpcStore = create<NpcState & NpcActions>((set) => ({
       if (!cur) return s;
       return { npcs: { ...s.npcs, [id]: { ...cur, worldPos: pos } } };
     }),
+  getChoreDialogue: (npcId, state) => {
+    const lines = CHORE_DIALOGUE_MAP[npcId];
+    if (!lines) return null;
+    const pool = lines[state];
+    return pool[Math.floor(Math.random() * pool.length)] ?? null;
+  },
 }));
 
 if (import.meta.env.DEV) {

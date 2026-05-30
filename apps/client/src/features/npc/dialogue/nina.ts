@@ -41,11 +41,36 @@ export const NINA_SHOP_TRIGGER_PHRASES: string[] = [
   'olha o que tenho aqui',
 ];
 
+export interface ChoreDialogueLines {
+  assigned: string[];
+  working: string[];
+  completed: string[];
+}
+
+export const NINA_CHORE_DIALOGUE: ChoreDialogueLines = {
+  assigned: [
+    'Fica tranquilo que eu cuido de tudo!',
+    'Pode me deixar com isso, conheço esse serviço bem!',
+    'Claro! A ferragem não vai por si mesma, né? Já começo!',
+  ],
+  working: [
+    'Tô fazendo tudo certinho aqui, não se preocupa.',
+    'Cada ferramenta no lugar, cada coisa no seu tempo.',
+    'Trabalhando direitinho, pode confiar na Nina!',
+  ],
+  completed: [
+    'Missão cumprida! Confere aí se está como você queria.',
+    'Pronto! Fiz com cuidado, pode ficar descansado.',
+    'Acabou! A ferragem tá em ordem, deixa eu te mostrar.',
+  ],
+};
+
 export const NINA_DIALOGUE = {
   npcId: NINA_NPC_ID,
   greetings: NINA_GREETINGS,
   topics: NINA_TOPICS,
   shopTriggerPhrases: NINA_SHOP_TRIGGER_PHRASES,
+  choreDialogue: NINA_CHORE_DIALOGUE,
 } as const;
 
 export default NINA_DIALOGUE;
