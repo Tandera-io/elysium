@@ -8,6 +8,7 @@ import { QuestPanel } from './ui/QuestPanel';
 import { SaveMenu } from './ui/SaveMenu';
 import { TitleScreen } from './ui/TitleScreen';
 import { InteractPrompt } from './systems/npc/InteractPrompt';
+import { mountFarmingInteractions } from './player/PlayerInteractions';
 import { NPCShopModal } from './engine/ui/NPCShopModal';
 import { useTimeStore } from './systems/time/timeStore';
 import { useInventoryStore } from './systems/inventory/inventoryStore';
@@ -49,6 +50,11 @@ export function App() {
     // doesn't auto-roll while the player is still on the menu.
     useTimeStore.getState().setPaused(titleOpen);
   }, [titleOpen]);
+
+  useEffect(() => {
+    // Mount farming keyboard interactions (E key: plow/plant on tile under player).
+    return mountFarmingInteractions();
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
